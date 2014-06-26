@@ -64,8 +64,10 @@ public:
 	Shape(CvSeq * borderContour, int w, int h);
 	int addHandle(int, double, double);
     void updateHandle(int, double, double);
+    void updateHandles(map<int, point2d<double>>);
 	void registration();
 	void compilation();
+    void updateTriangles();
 //	bool setActiveHandle(double x, double y);
 //	void modifyActiveHandle(double x, double y);
 };

@@ -281,12 +281,23 @@ int Shape::addHandle(int id, double x, double y)
 
 void Shape::updateHandle(int id, double x, double y)
 {
-	double *tmpPoints = new double[2*triangulation.numberofpoints];
-    
     handles[id].x = x;
     handles[id].y = y;
-	
-	///////////////////////////
+    updateTriangles();
+}
+
+void Shape::updateHandles(map<int, point2d<double> > newHandles)
+{
+	for (map<int, point2d<double>>::iterator h = newHandles.begin(); h != newHandles.end(); h++) {
+        handles[h->first] = h->second;
+	}
+    updateTriangles();
+}
+
+void Shape::updateTriangles()
+{
+	double *tmpPoints = new double[2*triangulation.numberofpoints];
+    ///////////////////////////
 	///   Part 1 /////////////
 	/////////////////////////
 	
@@ -319,7 +330,7 @@ void Shape::updateHandle(int id, double x, double y)
 	
 	int pi, pj, pl, pr;
 	double ck, sk, n, vix, viy, vjx, vjy;
-
+    
 	for (i=0; i<triangulation.numberofedges; i++) {
 		pi = triangulation.edgelist[2*i];
 		pj = triangulation.edgelist[2*i+1];
@@ -328,29 +339,29 @@ void Shape::updateHandle(int id, double x, double y)
 		
 		if (pr != -1){
 			ck =	g00[i]*tmpPoints[pi*2]+g10[i]*tmpPoints[pi*2+1]+
-					g20[i]*tmpPoints[pj*2]+g30[i]*tmpPoints[pj*2+1]+
-					g40[i]*tmpPoints[pl*2]+g50[i]*tmpPoints[pl*2+1]+
-					g60[i]*tmpPoints[pr*2]+g70[i]*tmpPoints[pr*2+1];
+            g20[i]*tmpPoints[pj*2]+g30[i]*tmpPoints[pj*2+1]+
+            g40[i]*tmpPoints[pl*2]+g50[i]*tmpPoints[pl*2+1]+
+            g60[i]*tmpPoints[pr*2]+g70[i]*tmpPoints[pr*2+1];
 			
 			sk =	g01[i]*tmpPoints[pi*2]+g11[i]*tmpPoints[pi*2+1]+
-					g21[i]*tmpPoints[pj*2]+g31[i]*tmpPoints[pj*2+1]+
-					g41[i]*tmpPoints[pl*2]+g51[i]*tmpPoints[pl*2+1]+
-					g61[i]*tmpPoints[pr*2]+g71[i]*tmpPoints[pr*2+1];/**/
+            g21[i]*tmpPoints[pj*2]+g31[i]*tmpPoints[pj*2+1]+
+            g41[i]*tmpPoints[pl*2]+g51[i]*tmpPoints[pl*2+1]+
+            g61[i]*tmpPoints[pr*2]+g71[i]*tmpPoints[pr*2+1];/**/
 			
 		}else{
 			ck =	g00[i]*tmpPoints[pi*2]+g10[i]*tmpPoints[pi*2+1]+
-					g20[i]*tmpPoints[pj*2]+g30[i]*tmpPoints[pj*2+1]+
-					g40[i]*tmpPoints[pl*2]+g50[i]*tmpPoints[pl*2+1];
+            g20[i]*tmpPoints[pj*2]+g30[i]*tmpPoints[pj*2+1]+
+            g40[i]*tmpPoints[pl*2]+g50[i]*tmpPoints[pl*2+1];
 			
 			sk =	g01[i]*tmpPoints[pi*2]+g11[i]*tmpPoints[pi*2+1]+
-					g21[i]*tmpPoints[pj*2]+g31[i]*tmpPoints[pj*2+1]+
-					g41[i]*tmpPoints[pl*2]+g51[i]*tmpPoints[pl*2+1];
+            g21[i]*tmpPoints[pj*2]+g31[i]*tmpPoints[pj*2+1]+
+            g41[i]*tmpPoints[pl*2]+g51[i]*tmpPoints[pl*2+1];
 		}
 		
 		//ck=100000;sk=0;
 		
 		//cout << "Ck Sk " << ck << " " << sk << endl;
-
+        
 		vix = triangulation.pointlist[pi*2];
 		viy = triangulation.pointlist[pi*2+1];
 		vjx = triangulation.pointlist[pj*2];
@@ -358,7 +369,7 @@ void Shape::updateHandle(int id, double x, double y)
 		
 		n = 1/pow((ck*ck + sk*sk),0.5);
 		ck *= n; sk *= n;
-		d2x[i]= ck*(vjx-vix) + sk*(vjy-viy);			
+		d2x[i]= ck*(vjx-vix) + sk*(vjy-viy);
 		d2y[i]=-sk*(vjx-vix) + ck*(vjy-viy);
 	}
 	
@@ -381,7 +392,7 @@ void Shape::updateHandle(int id, double x, double y)
 	tmpPoints_X = LDLT_of_A2.solve(VectorXd(C2_t*B2x+L2_t*D2x));
 	tmpPoints_Y = LDLT_of_A2.solve(VectorXd(C2_t*B2y+L2_t*D2y));/**/
 	////////////
-
+    
 	
 	//////Eigen
 	for (i=0; i<triangulation.numberofpoints; i++) {
