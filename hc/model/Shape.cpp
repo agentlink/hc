@@ -105,8 +105,8 @@ void Shape::registration()
 	
 	cout << "REGISTRATION STARTED" << endl;
 	int Ne = triangulation.numberofedges;
-    DynamicSparseMatrix<float> L1(2*Ne, 2*triangulation.numberofpoints);
-    DynamicSparseMatrix<float> L2(Ne, triangulation.numberofpoints);
+    SparseMatrix<double> L1(2*Ne, 2*triangulation.numberofpoints);
+    SparseMatrix<double> L2(Ne, triangulation.numberofpoints);
 	
 	edge_1 = new int[Ne];
 	edge_2 = new int[Ne];
@@ -240,7 +240,7 @@ void Shape::registration()
 	/////////////////////////
 	
 	////Eigen
-	L2_t = DynamicSparseMatrix<double>(L2.transpose());
+	L2_t = L2.transpose();
 	L_2 = L2_t*L2;
 	////
 	
@@ -364,11 +364,6 @@ void Shape::modifyActiveHandle(double x, double y)
 	double *b2y = new double[handles.size()], *b2my = new double[triangulation.numberofpoints];
 	double *d2x = new double[triangulation.numberofedges], *d2mx = new double[triangulation.numberofpoints];
 	double *d2y = new double[triangulation.numberofedges], *d2my = new double[triangulation.numberofpoints];
-	double *bx = new double[triangulation.numberofpoints];
-	double *by = new double[triangulation.numberofpoints];
-	double *tmpPointsx = new double[triangulation.numberofpoints];
-	double *tmpPointsy = new double[triangulation.numberofpoints];
-	
 	
 	/////////Eigen
 	for (int i=0;i<2*triangulation.numberofpoints;i++){
@@ -476,9 +471,8 @@ void Shape::compilation()
 	vector<int*>::iterator tt = handleTriangles.begin();
 	vector<double*>::iterator c = handleBarCoords.begin();
 	int Np = triangulation.numberofpoints;
-	DynamicSparseMatrix<float> C1(2*handles.size(),2*Np), C2(handles.size(),Np);
+	SparseMatrix<double> C1(2*handles.size(),2*Np), C2(handles.size(),Np);
 
-	
 	int i=0;
 	for (vector<point2d<double> >::iterator h = handles.begin(); h != handles.end(); h++, tt++,c++, i++) {
 		cout << "Handle "<< i << ": " << (*tt)[0] << " " << (*tt)[1] << " " << (*tt)[2] << endl;
@@ -512,7 +506,7 @@ void Shape::compilation()
 	/////////////////////////
 	
 	///Eigen
-	C1_t = DynamicSparseMatrix<double>(C1.transpose());
+	C1_t = C1.transpose();
 	C_1 = C1_t*C1;
 	A1 = C_1 + L_1;
 	LDLT_of_A1.compute(A1);
@@ -523,7 +517,7 @@ void Shape::compilation()
 	/////////////////////////
 
 	///Eigen
-	C2_t = DynamicSparseMatrix<double>(C2.transpose());
+	C2_t = C2.transpose();
 	C_2 = C2_t*C2;
 	A2 = C_2 + L_2;
 	LDLT_of_A2.compute(A2);

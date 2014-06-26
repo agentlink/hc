@@ -71,7 +71,7 @@ public:
 ///Eigen
 	SparseMatrix<double> L_1,L_2, C_1, C_2, A1, A2;
 	SimplicialLDLT<SparseMatrix<double> > LDLT_of_A1, LDLT_of_A2;
-	DynamicSparseMatrix<double> C1_t, C2_t, L2_t;
+	SparseMatrix<double> C1_t, C2_t, L2_t;
 
 	
 public:
