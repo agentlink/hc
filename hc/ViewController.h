@@ -8,4 +8,7 @@
 @property(nonatomic) struct Shape *shape;
 
 @property(nonatomic, strong) UIImage *texture;
+
+- (void)updateGLOnMove;
+
 @end

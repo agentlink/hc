@@ -7,60 +7,12 @@
 @property(strong, nonatomic) GLKBaseEffect *edgeEffect;
 @property(strong, nonatomic) GLKBaseEffect *triangleEffect;
 
-- (void)updateGLOnMove;
-
 - (void)tearDownGL;
 
 @end
 
 
-static int actionPointCount;
-
-@interface ShapeHandle : NSObject
-
-@property(nonatomic) int handleId;
-@property(nonatomic) CGPoint start;
-@property(nonatomic) CGPoint current;
-
-- (instancetype)initWithStart:(CGPoint)aStart;
-
-+ (instancetype)pointWithStart:(CGPoint)aStart;
-
-@end
-
-@implementation ShapeHandle
-
-+ (instancetype)pointWithStart:(CGPoint)aStart {
-    return [[self alloc] initWithStart:aStart];
-}
-
-- (instancetype)initWithStart:(CGPoint)aStart {
-    self = [super init];
-    if (self) {
-        _handleId = actionPointCount++;
-        _start = aStart;
-    }
-
-    return self;
-}
-
-- (NSString *)description {
-    NSMutableString *description = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [description appendFormat:@"ID = %d, ", _handleId];
-    [description appendFormat:@"start = %@, ", NSStringFromCGPoint(_start)];
-    [description appendFormat:@"current = %@", NSStringFromCGPoint(_current)];
-    [description appendString:@">"];
-    return description;
-}
-
-@end
-
-#define LOG_TOUCHES(fmt, ...)
-//#define LOG_TOUCHES(fmt, ...) NSLog(fmt, ##__VA_ARGS__)
-
 @implementation ViewController {
-    NSMutableDictionary *_touches2Points;
-
     GLuint _edgeVertexArray;
     GLuint _edgeVertexBuffer;
     size_t _edgeCount;
@@ -82,74 +34,8 @@ static int actionPointCount;
     GLKTextureInfo *_textureInfo;
 }
 
-
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-    for (UITouch *touch in touches) {
-        size_t ptr = [self touchId:touch];
-        CGPoint location = [touch locationInView:self.view];
-
-        ShapeHandle *ap = [ShapeHandle pointWithStart:location];
-        ap.current = ap.start;
-        _touches2Points[@(ptr)] = ap;
-        LOG_TOUCHES(@"NEW => %@", ap);
-        CGFloat y = location.y;
-        _shape->addHandle(ap.handleId, location.x, y);
-        [self updateGLOnMove];
-    }
-}
-
-- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
-    for (UITouch *touch in touches) {
-        size_t ptr = [self touchId:touch];
-        ShapeHandle *ap = _touches2Points[@(ptr)];
-
-        CGPoint location = [touch locationInView:self.view];
-        ap.current = location;
-        LOG_TOUCHES(@"MOVED => %@", ap);
-        [self updateHandle:ap location:location];
-    }
-}
-
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-    for (UITouch *touch in touches) {
-        size_t ptr = [self touchId:touch];
-        ShapeHandle *ap = _touches2Points[@(ptr)];
-
-        CGPoint location = [touch locationInView:self.view];
-        ap.current = location;
-        LOG_TOUCHES(@"ENDED => %@", ap);
-        [self updateHandle:ap location:location];
-    }
-}
-
-- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
-    for (UITouch *touch in touches) {
-        size_t ptr = [self touchId:touch];
-        ShapeHandle *ap = _touches2Points[@(ptr)];
-
-        CGPoint location = [touch locationInView:self.view];
-        ap.current = location;
-        LOG_TOUCHES(@"CANCELLED => %@", ap);
-        [self updateHandle:ap location:location];
-        [_touches2Points removeObjectForKey:@(ptr)];
-    }
-}
-
-- (void)updateHandle:(ShapeHandle *)ap location:(CGPoint)location {
-    _shape->updateHandle(ap.handleId, location.x, location.y);
-    [self updateGLOnMove];
-}
-
-- (size_t)touchId:(UITouch *)touch {
-    size_t ptr = (size_t) (__bridge CFTypeRef) touch;
-    return ptr;
-}
-
-
 - (void)viewDidLoad {
     [super viewDidLoad];
-
-    _touches2Points = [NSMutableDictionary new];
 
     self.context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
 
@@ -353,8 +239,8 @@ static int actionPointCount;
         return;
     }
 
-    NSArray *handles = [_touches2Points allValues];
-    _handleCount = handles.count;
+    map<int, point2d<double>> handles = _shape->handles;
+    _handleCount = handles.size();
     size_t dataSize = (_handleCount * 6) * 3 * sizeof(GLfloat);
 
     if (_handleVertexDataSize < dataSize) {
@@ -364,14 +250,13 @@ static int actionPointCount;
 
     GLfloat *data = _handleVertexData;
 
-    for (size_t i = 0; i < _handleCount; i++) {
-        ShapeHandle *handle = handles[i];
+    size_t i = 0;
+    for (auto kv : handles) {
+        point2d<double> point = kv.second;
         size_t base = i * 18;
 
-        CGPoint position = handle.current;
-
-        CGFloat x = position.x;
-        CGFloat y = position.y;
+        GLfloat x = (GLfloat) point.x;
+        GLfloat y = (GLfloat) point.y;
 
         _handleVertexData[base + 0] = x;
         _handleVertexData[base + 1] = y;
@@ -396,6 +281,7 @@ static int actionPointCount;
         _handleVertexData[base + 15] = 0;
         _handleVertexData[base + 16] = 0;
         _handleVertexData[base + 17] = 1;
+        i++;
     }
 
     glBindVertexArrayOES(_handleVertexArray);
@@ -471,7 +357,5 @@ static int actionPointCount;
     glDrawArrays(GL_TRIANGLES, 0, 3 * _handleCount);
 
 }
-
-#pragma mark -  OpenGL ES 2 shader compilation
 
 @end

@@ -135,9 +135,11 @@
 		2C8CCAB4195C2D9500B17BD1 /* wykobi_nd.inl in Resources */ = {isa = PBXBuildFile; fileRef = 2C8CCAA3195C2D9500B17BD1 /* wykobi_nd.inl */; };
 		2C8CCAB5195C2D9500B17BD1 /* wykobi_normalization.inl in Resources */ = {isa = PBXBuildFile; fileRef = 2C8CCAA4195C2D9500B17BD1 /* wykobi_normalization.inl */; };
 		2C8CCAB6195C2D9500B17BD1 /* wykobi_ordered_polygon.inl in Resources */ = {isa = PBXBuildFile; fileRef = 2C8CCAA5195C2D9500B17BD1 /* wykobi_ordered_polygon.inl */; };
+		30F441CE4AA3CAB41D383EBB /* Record.m in Sources */ = {isa = PBXBuildFile; fileRef = 30F44531C6ADD9463B6581A2 /* Record.m */; };
 		30F443E1740023096803BC0D /* tux.png in Resources */ = {isa = PBXBuildFile; fileRef = 30F446FE88330A85E21D98FA /* tux.png */; };
 		30F446D9098666674B58A3C1 /* AnimationController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 30F449C764F3B21C8C2FB120 /* AnimationController.mm */; };
 		30F44D173EC466CBE64D74D6 /* ImageUtil.mm in Sources */ = {isa = PBXBuildFile; fileRef = 30F441453DFC418608C150EB /* ImageUtil.mm */; };
+		30F44E973D03F6209297A25E /* ShapeHandle.mm in Sources */ = {isa = PBXBuildFile; fileRef = 30F44A24CB6D11BCA7BE4B5D /* ShapeHandle.mm */; };
 		DAAABA69195C151C0036C526 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAAABA68195C151C0036C526 /* Foundation.framework */; };
 		DAAABA6B195C151C0036C526 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAAABA6A195C151C0036C526 /* CoreGraphics.framework */; };
 		DAAABA6D195C151C0036C526 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAAABA6C195C151C0036C526 /* UIKit.framework */; };
@@ -627,9 +629,13 @@
 		2C8CCAA5195C2D9500B17BD1 /* wykobi_ordered_polygon.inl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = wykobi_ordered_polygon.inl; sourceTree = "<group>"; };
 		2C8CCAA6195C2D9500B17BD1 /* wykobi_utilities.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = wykobi_utilities.hpp; sourceTree = "<group>"; };
 		30F441453DFC418608C150EB /* ImageUtil.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ImageUtil.mm; sourceTree = "<group>"; };
+		30F44531C6ADD9463B6581A2 /* Record.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Record.m; sourceTree = "<group>"; };
+		30F4461A7D792CE57F6C06F5 /* Record.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Record.h; sourceTree = "<group>"; };
 		30F446FE88330A85E21D98FA /* tux.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tux.png; sourceTree = "<group>"; };
 		30F44813A51BFBCAFB88AF51 /* ImageUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageUtil.h; sourceTree = "<group>"; };
 		30F449C764F3B21C8C2FB120 /* AnimationController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AnimationController.mm; sourceTree = "<group>"; };
+		30F44A24CB6D11BCA7BE4B5D /* ShapeHandle.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ShapeHandle.mm; sourceTree = "<group>"; };
+		30F44A2556F9C5AE05D0E89C /* ShapeHandle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShapeHandle.h; sourceTree = "<group>"; };
 		30F44F60E61C92CC7B5B9E5D /* AnimationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnimationController.h; sourceTree = "<group>"; };
 		DAAABA65195C151C0036C526 /* hc.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = hc.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DAAABA68195C151C0036C526 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -690,6 +696,8 @@
 				2C8CC7CD195C219E00B17BD1 /* Shape.h */,
 				30F441453DFC418608C150EB /* ImageUtil.mm */,
 				30F44813A51BFBCAFB88AF51 /* ImageUtil.h */,
+				30F44531C6ADD9463B6581A2 /* Record.m */,
+				30F4461A7D792CE57F6C06F5 /* Record.h */,
 			);
 			path = model;
 			sourceTree = "<group>";
@@ -1669,6 +1677,8 @@
 				30F449C764F3B21C8C2FB120 /* AnimationController.mm */,
 				30F44F60E61C92CC7B5B9E5D /* AnimationController.h */,
 				30F446FE88330A85E21D98FA /* tux.png */,
+				30F44A2556F9C5AE05D0E89C /* ShapeHandle.h */,
+				30F44A24CB6D11BCA7BE4B5D /* ShapeHandle.mm */,
 			);
 			path = hc;
 			sourceTree = "<group>";
@@ -1934,6 +1944,8 @@
 				30F446D9098666674B58A3C1 /* AnimationController.mm in Sources */,
 				2C8CC7CE195C219E00B17BD1 /* Shape.cpp in Sources */,
 				30F44D173EC466CBE64D74D6 /* ImageUtil.mm in Sources */,
+				30F441CE4AA3CAB41D383EBB /* Record.m in Sources */,
+				30F44E973D03F6209297A25E /* ShapeHandle.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
