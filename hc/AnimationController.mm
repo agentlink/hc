@@ -16,7 +16,9 @@
     childView.frame = self.view.bounds;
     [self.view addSubview:childView];
 
-    Shape *shape = [ImageUtil loadImage];
+    UIImage *image = [UIImage imageNamed:@"tux.png"];
+    Shape *shape = [ImageUtil loadImage:image];
+    glController.texture = image;
     glController.shape = shape;
 }
 

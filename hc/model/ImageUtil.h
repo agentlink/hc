@@ -3,5 +3,5 @@
 
 
 @interface ImageUtil : NSObject
-+ (Shape *)loadImage;
++ (Shape *)loadImage:(UIImage *)uiImage;
 @end

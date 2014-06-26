@@ -6,8 +6,8 @@
 
 }
 
-+ (Shape *)loadImage {
-    CGImageRef image = [[UIImage imageNamed:@"tux.png"] CGImage];
++ (Shape *)loadImage:(UIImage *)uiImage {
+    CGImageRef image = [uiImage CGImage];
     unsigned width = CGImageGetWidth(image);
     unsigned height = CGImageGetHeight(image);
 
