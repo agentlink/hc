@@ -366,7 +366,7 @@ static int actionPointCount;
 
     for (size_t i = 0; i < _handleCount; i++) {
         ShapeHandle *handle = handles[i];
-        size_t base = i * 9;
+        size_t base = i * 18;
 
         CGPoint position = handle.current;
 
