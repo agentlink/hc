@@ -365,7 +365,7 @@ void Shape::updateHandle(int id, double x, double y)
 	////////////Eigen
 	VectorXd B2x(handles.size()), B2y(handles.size());
 	i=0;
-	for (map<int, point2d<double>>::iterator h = handles.begin(); h != handles.end(); h++) {
+	for (map<int, point2d<double>>::iterator h = handles.begin(); h != handles.end(); h++, i++) {
         point2d<double> p = h->second;
         B2x(i) = p.x*W;
 		B2y(i) = p.y*W;
