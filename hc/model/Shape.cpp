@@ -281,6 +281,8 @@ int Shape::addHandle(int id, double x, double y)
 
 void Shape::updateHandle(int id, double x, double y)
 {
+    if (handles.find(id) == handles.end())
+        return;
     handles[id].x = x;
     handles[id].y = y;
     updateTriangles();
@@ -289,6 +291,8 @@ void Shape::updateHandle(int id, double x, double y)
 void Shape::updateHandles(map<int, point2d<double> > newHandles)
 {
 	for (map<int, point2d<double>>::iterator h = newHandles.begin(); h != newHandles.end(); h++) {
+        if (handles.find(h->first) == handles.end())
+            continue;
         handles[h->first] = h->second;
 	}
     updateTriangles();
