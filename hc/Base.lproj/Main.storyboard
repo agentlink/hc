@@ -60,7 +60,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="768" height="980"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <containerView opaque="NO" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="hey-rQ-OsC">
+                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hey-rQ-OsC">
                                 <rect key="frame" x="0.0" y="0.0" width="768" height="980"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -68,13 +68,23 @@
                                     <segue destination="BV1-FR-VrT" kind="embed" id="sIS-Sq-pWO"/>
                                 </connections>
                             </containerView>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="J7Z-td-QnB">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="J7Z-td-QnB">
                                 <rect key="frame" x="0.0" y="0.0" width="768" height="980"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" cocoaTouchSystemColor="scrollViewTexturedBackgroundColor"/>
                             </imageView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="bottom" secondItem="J7Z-td-QnB" secondAttribute="bottom" id="Eox-v3-WYf"/>
+                            <constraint firstItem="J7Z-td-QnB" firstAttribute="leading" secondItem="hey-rQ-OsC" secondAttribute="leading" id="FnD-nY-dWR"/>
+                            <constraint firstItem="J7Z-td-QnB" firstAttribute="bottom" secondItem="hey-rQ-OsC" secondAttribute="bottom" id="Kq1-BP-rFV"/>
+                            <constraint firstItem="J7Z-td-QnB" firstAttribute="top" secondItem="mcc-L0-F9G" secondAttribute="top" id="Rqv-0H-a6K"/>
+                            <constraint firstAttribute="trailing" secondItem="J7Z-td-QnB" secondAttribute="trailing" id="WPg-pE-U2U"/>
+                            <constraint firstItem="J7Z-td-QnB" firstAttribute="trailing" secondItem="hey-rQ-OsC" secondAttribute="trailing" id="Wlt-kk-8an"/>
+                            <constraint firstItem="J7Z-td-QnB" firstAttribute="leading" secondItem="mcc-L0-F9G" secondAttribute="leading" id="qSk-Qd-mt4"/>
+                            <constraint firstItem="J7Z-td-QnB" firstAttribute="top" secondItem="hey-rQ-OsC" secondAttribute="top" id="zpr-sg-gBH"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="kR5-ea-yfK"/>
                 </viewController>
