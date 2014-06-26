@@ -32,7 +32,7 @@ GLfloat gCubeVertexData[18] =
 
 static int actionPointCount;
 
-@interface ActionPoint : NSObject
+@interface ShapeHandle : NSObject
 
 @property(nonatomic) int handleId;
 @property(nonatomic) CGPoint start;
@@ -44,7 +44,7 @@ static int actionPointCount;
 
 @end
 
-@implementation ActionPoint
+@implementation ShapeHandle
 
 + (instancetype)pointWithStart:(CGPoint)aStart {
     return [[self alloc] initWithStart:aStart];
@@ -89,6 +89,12 @@ static int actionPointCount;
     GLfloat *_triVertexData;
     size_t _triVertexDataSize;
 
+    GLuint _handleVertexArray;
+    GLuint _handleVertexBuffer;
+    size_t _handleCount;
+    GLfloat *_handleVertexData;
+    size_t _handleVertexDataSize;
+
     GLKTextureInfo *_textureInfo;
 }
 
@@ -98,22 +104,19 @@ static int actionPointCount;
     size_t ptr = [self touchId:touch];
     CGPoint location = [touch locationInView:self.view];
 
-    ActionPoint *ap = [ActionPoint pointWithStart:location];
+    ShapeHandle *ap = [ShapeHandle pointWithStart:location];
+    ap.current = ap.start;
     _touches2Points[@(ptr)] = ap;
     LOG_TOUCHES(@"NEW => %@", ap);
     CGFloat y = location.y;
-    _shape->addHandle(ap.handleId, location.x, [self yToGL:y]);
+    _shape->addHandle(ap.handleId, location.x, y);
     [self updateGLOnMove];
-}
-
-- (CGFloat)yToGL:(CGFloat)y {
-    return _shape->height - y;
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
     UITouch *touch = [touches anyObject];
     size_t ptr = [self touchId:touch];
-    ActionPoint *ap = _touches2Points[@(ptr)];
+    ShapeHandle *ap = _touches2Points[@(ptr)];
 
     CGPoint location = [touch locationInView:self.view];
     ap.current = location;
@@ -124,7 +127,7 @@ static int actionPointCount;
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
     UITouch *touch = [touches anyObject];
     size_t ptr = [self touchId:touch];
-    ActionPoint *ap = _touches2Points[@(ptr)];
+    ShapeHandle *ap = _touches2Points[@(ptr)];
 
     CGPoint location = [touch locationInView:self.view];
     ap.current = location;
@@ -138,7 +141,7 @@ static int actionPointCount;
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
     UITouch *touch = [touches anyObject];
     size_t ptr = [self touchId:touch];
-    ActionPoint *ap = _touches2Points[@(ptr)];
+    ShapeHandle *ap = _touches2Points[@(ptr)];
 
     CGPoint location = [touch locationInView:self.view];
     ap.current = location;
@@ -149,8 +152,8 @@ static int actionPointCount;
     [_touches2Points removeObjectForKey:@(ptr)];
 }
 
-- (void)updateHandle:(ActionPoint *)ap location:(CGPoint)location {
-    _shape->updateHandle(ap.handleId, location.x, [self yToGL:location.y]);
+- (void)updateHandle:(ShapeHandle *)ap location:(CGPoint)location {
+    _shape->updateHandle(ap.handleId, location.x, location.y);
     [self updateGLOnMove];
 }
 
@@ -218,31 +221,31 @@ static int actionPointCount;
 
     self.triangleEffect = [[GLKBaseEffect alloc] init];
 
+    self.edgeEffect = [[GLKBaseEffect alloc] init];
+    self.edgeEffect.light0.enabled = GL_TRUE;
+    self.edgeEffect.light0.diffuseColor = GLKVector4Make(1.0f, 0, 0, 1.0f);
+
 //    self.edgeEffect = [[GLKBaseEffect alloc] init];
+//    self.edgeEffect.lightingType = GLKLightingTypePerPixel;
+//
+//    // Turn on the first light
 //    self.edgeEffect.light0.enabled = GL_TRUE;
 //    self.edgeEffect.light0.diffuseColor = GLKVector4Make(1.0f, 0.4f, 0.4f, 1.0f);
-
-    self.edgeEffect = [[GLKBaseEffect alloc] init];
-    self.edgeEffect.lightingType = GLKLightingTypePerPixel;
-
-    // Turn on the first light
-    self.edgeEffect.light0.enabled = GL_TRUE;
-    self.edgeEffect.light0.diffuseColor = GLKVector4Make(1.0f, 0.4f, 0.4f, 1.0f);
-    self.edgeEffect.light0.position = GLKVector4Make(-5.f, -5.f, 10.f, 1.0f);
-    self.edgeEffect.light0.specularColor = GLKVector4Make(1.0f, 0.0f, 0.0f, 1.0f);
-
-    // Turn on the second light
-    self.edgeEffect.light1.enabled = GL_TRUE;
-    self.edgeEffect.light1.diffuseColor = GLKVector4Make(1.0f, 0.4f, 0.4f, 1.0f);
-    self.edgeEffect.light1.position = GLKVector4Make(15.f, 15.f, 10.f, 1.0f);
-    self.edgeEffect.light1.specularColor = GLKVector4Make(1.0f, 0.0f, 0.0f, 1.0f);
-
-    // Set material
-    self.edgeEffect.material.diffuseColor = GLKVector4Make(0.f, 0.5f, 1.0f, 1.0f);
-    self.edgeEffect.material.ambientColor = GLKVector4Make(0.0f, 0.5f, 0.0f, 1.0f);
-    self.edgeEffect.material.specularColor = GLKVector4Make(1.0f, 0.0f, 0.0f, 1.0f);
-    self.edgeEffect.material.shininess = 20.0f;
-    self.edgeEffect.material.emissiveColor = GLKVector4Make(0.2f, 0.f, 0.2f, 1.0f);
+//    self.edgeEffect.light0.position = GLKVector4Make(-5.f, -5.f, 10.f, 1.0f);
+//    self.edgeEffect.light0.specularColor = GLKVector4Make(1.0f, 0.0f, 0.0f, 1.0f);
+//
+//    // Turn on the second light
+//    self.edgeEffect.light1.enabled = GL_TRUE;
+//    self.edgeEffect.light1.diffuseColor = GLKVector4Make(1.0f, 0.4f, 0.4f, 1.0f);
+//    self.edgeEffect.light1.position = GLKVector4Make(15.f, 15.f, 10.f, 1.0f);
+//    self.edgeEffect.light1.specularColor = GLKVector4Make(1.0f, 0.0f, 0.0f, 1.0f);
+//
+//    // Set material
+//    self.edgeEffect.material.diffuseColor = GLKVector4Make(0.f, 0.5f, 1.0f, 1.0f);
+//    self.edgeEffect.material.ambientColor = GLKVector4Make(0.0f, 0.5f, 0.0f, 1.0f);
+//    self.edgeEffect.material.specularColor = GLKVector4Make(1.0f, 0.0f, 0.0f, 1.0f);
+//    self.edgeEffect.material.shininess = 20.0f;
+//    self.edgeEffect.material.emissiveColor = GLKVector4Make(0.2f, 0.f, 0.2f, 1.0f);
 
     glEnable(GL_DEPTH_TEST);
     glGenVertexArraysOES(1, &_edgeVertexArray);
@@ -253,6 +256,10 @@ static int actionPointCount;
     glGenVertexArraysOES(1, &_triVertexArray);
     glBindVertexArrayOES(_triVertexArray);
     glGenBuffers(1, &_triVertexBuffer);
+
+    glGenVertexArraysOES(1, &_handleVertexArray);
+    glBindVertexArrayOES(_handleVertexArray);
+    glGenBuffers(1, &_handleVertexBuffer);
 
     glBindVertexArrayOES(0);
 }
@@ -274,8 +281,9 @@ static int actionPointCount;
 }
 
 - (void)updateGLOnMove {
-    [self setupEdges];
     [self setupTriangles];
+    [self setupEdges];
+    [self setupHandles];
 }
 
 - (void)setupEdges {
@@ -292,6 +300,7 @@ static int actionPointCount;
         _edgeCount = (size_t) tr.numberofedges;
         dataSize = (size_t) (_edgeCount * 2) * 3 * sizeof(GLfloat);
 
+        double *newPoints = _shape->pointsNew;
         if (_edgeVertexDataSize < dataSize) {
             _edgeVertexData = (GLfloat *) realloc(_edgeVertexData, dataSize);
             _edgeVertexDataSize = dataSize;
@@ -300,13 +309,13 @@ static int actionPointCount;
 
         for (size_t i = 0; i < _edgeCount; i++) {
             int e1 = tr.edgelist[2 * i];
-            _edgeVertexData[i * 6] = (GLfloat) tr.pointlist[e1 * 2];
-            _edgeVertexData[i * 6 + 1] = (GLfloat) (_shape->height - tr.pointlist[e1 * 2 + 1]);
+            _edgeVertexData[i * 6] = (GLfloat) newPoints[e1 * 2];
+            _edgeVertexData[i * 6 + 1] = (GLfloat) (newPoints[e1 * 2 + 1]);
             _edgeVertexData[i * 6 + 2] = 1.01;
 
             int e2 = tr.edgelist[2 * i + 1];
-            _edgeVertexData[i * 6 + 3] = (GLfloat) tr.pointlist[e2 * 2];
-            _edgeVertexData[i * 6 + 4] = (GLfloat) (_shape->height - tr.pointlist[e2 * 2 + 1]);
+            _edgeVertexData[i * 6 + 3] = (GLfloat) newPoints[e2 * 2];
+            _edgeVertexData[i * 6 + 4] = (GLfloat) (newPoints[e2 * 2 + 1]);
             _edgeVertexData[i * 6 + 5] = 1.01;
         }
     }
@@ -334,7 +343,7 @@ static int actionPointCount;
         triangulateio tr = _shape->triangulation;
 
         _triCount = (size_t) tr.numberoftriangles;
-        dataSize = (_triCount * 5) * 3 * sizeof(CGFloat);
+        dataSize = (_triCount * 5) * 3 * sizeof(GLfloat);
 
         if (_triVertexDataSize < dataSize) {
             _triVertexData = (GLfloat *) realloc(_triVertexData, dataSize);
@@ -351,21 +360,21 @@ static int actionPointCount;
 
             int t1 = tr.trianglelist[3 * i];
             _triVertexData[base + 0] = (GLfloat) newPoints[t1 * 2];
-            _triVertexData[base + 1] = (GLfloat) (height - newPoints[t1 * 2 + 1]);
+            _triVertexData[base + 1] = (GLfloat) (newPoints[t1 * 2 + 1]);
             _triVertexData[base + 2] = 1;
             _triVertexData[base + 3] = (GLfloat) tr.pointlist[t1 * 2] / width;
             _triVertexData[base + 4] = 1 - ((GLfloat) (height - tr.pointlist[t1 * 2 + 1])) / height;
 
             int t2 = tr.trianglelist[3 * i + 1];
             _triVertexData[base + 5] = (GLfloat) newPoints[t2 * 2];
-            _triVertexData[base + 6] = (GLfloat) (height - newPoints[t2 * 2 + 1]);
+            _triVertexData[base + 6] = (GLfloat) (newPoints[t2 * 2 + 1]);
             _triVertexData[base + 7] = 1;
             _triVertexData[base + 8] = (GLfloat) tr.pointlist[t2 * 2] / width;
             _triVertexData[base + 9] = 1 - ((GLfloat) (height - tr.pointlist[t2 * 2 + 1])) / height;
 
             int t3 = tr.trianglelist[3 * i + 2];
             _triVertexData[base + 10] = (GLfloat) newPoints[t3 * 2];
-            _triVertexData[base + 11] = (GLfloat) (height - newPoints[t3 * 2 + 1]);
+            _triVertexData[base + 11] = (GLfloat) (newPoints[t3 * 2 + 1]);
             _triVertexData[base + 12] = 1;
             _triVertexData[base + 13] = (GLfloat) tr.pointlist[t3 * 2] / width;
             _triVertexData[base + 14] = 1 - ((GLfloat) (height - tr.pointlist[t3 * 2 + 1])) / height;
@@ -384,6 +393,65 @@ static int actionPointCount;
     glEnableVertexAttribArray(GLKVertexAttribTexCoord0);
     glVertexAttribPointer(GLKVertexAttribTexCoord0, 2, GL_FLOAT, GL_FALSE, 5*sizeof(GLfloat), BUFFER_OFFSET(3*sizeof(GLfloat)));
 
+
+    glBindVertexArrayOES(0);
+}
+
+- (void)setupHandles {
+    GLfloat *data;
+    size_t dataSize;
+    if (_shape == NULL) {
+        data = gCubeVertexData;
+        dataSize = sizeof(gCubeVertexData);
+        _handleCount = 1;
+    }
+    else {
+        triangulateio tr = _shape->triangulation;
+
+        NSArray *handles = [_touches2Points allValues];
+        _handleCount = handles.count;
+        dataSize = (_handleCount * 3) * 3 * sizeof(GLfloat);
+
+        if (_handleVertexDataSize < dataSize) {
+            _handleVertexData = (GLfloat *) realloc(_handleVertexData, dataSize);
+            _handleVertexDataSize = dataSize;
+        }
+        data = _handleVertexData;
+
+        int height = _shape->height;
+        int width = _shape->width;
+        double *newPoints = _shape->pointsNew;
+        
+        for (size_t i = 0; i < _handleCount; i++) {
+            ShapeHandle *handle = handles[i];
+            size_t base = i * 9;
+
+            CGPoint position = handle.current;
+
+            CGFloat x = position.x;
+            CGFloat y = position.y;
+
+            _handleVertexData[base + 0] = x;
+            _handleVertexData[base + 1] = y;
+            _handleVertexData[base + 2] = 1.2;
+
+            _handleVertexData[base + 3] = x+10;
+            _handleVertexData[base + 4] = y+10;
+            _handleVertexData[base + 5] = 1.2;
+
+            _handleVertexData[base + 6] = x + 10;
+            _handleVertexData[base + 7] = y;
+            _handleVertexData[base + 8] = 1.2;
+        }
+    }
+
+    glBindVertexArrayOES(_handleVertexArray);
+    glBindBuffer(GL_ARRAY_BUFFER, _handleVertexBuffer);
+
+    glBufferData(GL_ARRAY_BUFFER, dataSize, data, GL_STATIC_DRAW);
+
+    glEnableVertexAttribArray(GLKVertexAttribPosition);
+    glVertexAttribPointer(GLKVertexAttribPosition, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
 
     glBindVertexArrayOES(0);
 }
@@ -415,7 +483,8 @@ static int actionPointCount;
     GLKMatrix4 baseModelViewMatrix = GLKMatrix4MakeTranslation(0.0f, 0.0f, -1.0f);
 
     // Compute the model view matrix for the object rendered with GLKit
-    GLKMatrix4 modelViewMatrix = GLKMatrix4MakeTranslation(0.0f, 0.0f, -1.5f);
+    GLKMatrix4 modelViewMatrix = GLKMatrix4MakeTranslation(0.0f, self.view.frame.size.height, -1.5f);
+    modelViewMatrix = GLKMatrix4Scale(modelViewMatrix, 1, -1, 1);
     modelViewMatrix = GLKMatrix4Multiply(baseModelViewMatrix, modelViewMatrix);
 
     self.triangleEffect.transform.modelviewMatrix = modelViewMatrix;
@@ -440,6 +509,13 @@ static int actionPointCount;
     [self.edgeEffect prepareToDraw];
 
     glDrawArrays(GL_LINES, 0, 2 * _edgeCount);
+
+    // handles
+    glBindVertexArrayOES(_handleVertexArray);
+
+    [self.edgeEffect prepareToDraw];
+
+    glDrawArrays(GL_TRIANGLES, 0, 3 * _handleCount);
 
 }
 
