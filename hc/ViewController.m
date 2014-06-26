@@ -96,11 +96,105 @@ GLfloat gCubeVertexData[216] =
 - (BOOL)validateProgram:(GLuint)prog;
 @end
 
-@implementation ViewController
+
+static int actionPointCount;
+
+@interface ActionPoint : NSObject
+
+@property(nonatomic) CGPoint start;
+@property(nonatomic) CGPoint current;
+- (instancetype)initWithStart:(CGPoint)aStart;
++ (instancetype)pointWithStart:(CGPoint)aStart;
+
+@end
+
+@implementation ActionPoint {
+    int _id;
+}
+
++ (instancetype)pointWithStart:(CGPoint)aStart {
+    return [[self alloc] initWithStart:aStart];
+}
+
+- (instancetype)initWithStart:(CGPoint)aStart {
+    self = [super init];
+    if (self) {
+        _id = actionPointCount++;
+        _start = aStart;
+    }
+
+    return self;
+}
+
+- (NSString *)description {
+    NSMutableString *description = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
+    [description appendFormat:@"ID = %d, ", _id];
+    [description appendFormat:@"start = %@, ", NSStringFromCGPoint(_start)];
+    [description appendFormat:@"current = %@", NSStringFromCGPoint(_current)];
+    [description appendString:@">"];
+    return description;
+}
+
+@end
+
+#define LOG_TOUCHES(fmt, ...)
+//#define LOG_TOUCHES(fmt, ...) NSLog(fmt, ##__VA_ARGS__)
+
+@implementation ViewController {
+    NSMutableDictionary *_touches2Points;
+}
+
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    UITouch *touch = [touches anyObject];
+    int ptr = (int)(__bridge CFTypeRef)touch;
+    CGPoint location = [touch locationInView:self.view];
+
+    ActionPoint *ap = [ActionPoint pointWithStart:location];
+    _touches2Points[@(ptr)] = ap;
+    LOG_TOUCHES(@"NEW => %@", ap);
+}
+
+- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
+    UITouch *touch = [touches anyObject];
+    int ptr = (int)(__bridge CFTypeRef)touch;
+    ActionPoint *ap = _touches2Points[@(ptr)];
+    
+    CGPoint location = [touch locationInView:self.view];
+    ap.current = location;
+    LOG_TOUCHES(@"MOVED => %@", ap);
+}
+
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+    UITouch *touch = [touches anyObject];
+    int ptr = (int)(__bridge CFTypeRef)touch;
+    ActionPoint *ap = _touches2Points[@(ptr)];
+
+    CGPoint location = [touch locationInView:self.view];
+    ap.current = location;
+    LOG_TOUCHES(@"ENDED => %@", ap);
+
+    [_touches2Points removeObjectForKey:@(ptr)];
+}
+
+- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
+    UITouch *touch = [touches anyObject];
+    int ptr = (int)(__bridge CFTypeRef)touch;
+    ActionPoint *ap = _touches2Points[@(ptr)];
+
+    CGPoint location = [touch locationInView:self.view];
+    ap.current = location;
+    LOG_TOUCHES(@"CANCELLED => %@", ap);
+
+    [_touches2Points removeObjectForKey:@(ptr)];
+}
+
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+
+    _touches2Points = [NSMutableDictionary new];
     
     self.context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
 

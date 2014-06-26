@@ -22,3 +22,5 @@ python/lib/cachedir
 /flex/tools/flexunit-support/out
 project.xcworkspace/
 xcuserdata/
+
+.idea
