@@ -37,11 +37,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </glkView>
-                    <toolbarItems>
-                        <barButtonItem systemItem="add" id="yPC-iJ-7xA"/>
-                        <barButtonItem style="plain" systemItem="flexibleSpace" id="Wfe-OX-bmA"/>
-                        <barButtonItem systemItem="play" id="2FX-BN-YXs"/>
-                    </toolbarItems>
+                    <toolbarItems/>
                     <navigationItem key="navigationItem" id="yeL-e7-66b"/>
                 </glkViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SZV-WD-TEh" sceneMemberID="firstResponder"/>
@@ -86,6 +82,26 @@
                             <constraint firstItem="J7Z-td-QnB" firstAttribute="top" secondItem="hey-rQ-OsC" secondAttribute="top" id="zpr-sg-gBH"/>
                         </constraints>
                     </view>
+                    <toolbarItems>
+                        <barButtonItem systemItem="add" id="yPC-iJ-7xA"/>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="Wfe-OX-bmA"/>
+                        <barButtonItem systemItem="play" id="DGY-ok-gBO">
+                            <connections>
+                                <action selector="playRecord" destination="Jdy-0P-7NV" id="vhh-2i-CcE"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem width="42" style="plain" systemItem="fixedSpace" id="bjh-UB-Wu6"/>
+                        <barButtonItem systemItem="camera" id="2FX-BN-YXs">
+                            <connections>
+                                <action selector="startRecord" destination="Jdy-0P-7NV" id="aH7-69-cYA"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem systemItem="stop" id="te9-xi-EbJ">
+                            <connections>
+                                <action selector="stopRecord" destination="Jdy-0P-7NV" id="som-GE-DMK"/>
+                            </connections>
+                        </barButtonItem>
+                    </toolbarItems>
                     <navigationItem key="navigationItem" id="kR5-ea-yfK"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="jnr-aN-HoO" userLabel="First Responder" sceneMemberID="firstResponder"/>

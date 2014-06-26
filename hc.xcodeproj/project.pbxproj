@@ -138,6 +138,7 @@
 		30F441CE4AA3CAB41D383EBB /* Record.m in Sources */ = {isa = PBXBuildFile; fileRef = 30F44531C6ADD9463B6581A2 /* Record.m */; };
 		30F443E1740023096803BC0D /* tux.png in Resources */ = {isa = PBXBuildFile; fileRef = 30F446FE88330A85E21D98FA /* tux.png */; };
 		30F446D9098666674B58A3C1 /* AnimationController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 30F449C764F3B21C8C2FB120 /* AnimationController.mm */; };
+		30F44A6C9CBD7808CC7598B9 /* AnimationEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 30F44826B312F9D2AC7EC1BA /* AnimationEvent.m */; };
 		30F44D173EC466CBE64D74D6 /* ImageUtil.mm in Sources */ = {isa = PBXBuildFile; fileRef = 30F441453DFC418608C150EB /* ImageUtil.mm */; };
 		30F44E973D03F6209297A25E /* ShapeHandle.mm in Sources */ = {isa = PBXBuildFile; fileRef = 30F44A24CB6D11BCA7BE4B5D /* ShapeHandle.mm */; };
 		DAAABA69195C151C0036C526 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAAABA68195C151C0036C526 /* Foundation.framework */; };
@@ -633,6 +634,8 @@
 		30F4461A7D792CE57F6C06F5 /* Record.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Record.h; sourceTree = "<group>"; };
 		30F446FE88330A85E21D98FA /* tux.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tux.png; sourceTree = "<group>"; };
 		30F44813A51BFBCAFB88AF51 /* ImageUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageUtil.h; sourceTree = "<group>"; };
+		30F44826B312F9D2AC7EC1BA /* AnimationEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AnimationEvent.m; sourceTree = "<group>"; };
+		30F448E177E7981973CBD3A6 /* AnimationEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnimationEvent.h; sourceTree = "<group>"; };
 		30F449C764F3B21C8C2FB120 /* AnimationController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AnimationController.mm; sourceTree = "<group>"; };
 		30F44A24CB6D11BCA7BE4B5D /* ShapeHandle.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ShapeHandle.mm; sourceTree = "<group>"; };
 		30F44A2556F9C5AE05D0E89C /* ShapeHandle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShapeHandle.h; sourceTree = "<group>"; };
@@ -1679,6 +1682,8 @@
 				30F446FE88330A85E21D98FA /* tux.png */,
 				30F44A2556F9C5AE05D0E89C /* ShapeHandle.h */,
 				30F44A24CB6D11BCA7BE4B5D /* ShapeHandle.mm */,
+				30F44826B312F9D2AC7EC1BA /* AnimationEvent.m */,
+				30F448E177E7981973CBD3A6 /* AnimationEvent.h */,
 			);
 			path = hc;
 			sourceTree = "<group>";
@@ -1946,6 +1951,7 @@
 				30F44D173EC466CBE64D74D6 /* ImageUtil.mm in Sources */,
 				30F441CE4AA3CAB41D383EBB /* Record.m in Sources */,
 				30F44E973D03F6209297A25E /* ShapeHandle.mm in Sources */,
+				30F44A6C9CBD7808CC7598B9 /* AnimationEvent.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

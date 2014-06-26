@@ -1,7 +1,8 @@
 #import <Foundation/Foundation.h>
+#import "ViewController.h"
 
 @class Record;
 
 
-@interface AnimationController : UIViewController
+@interface AnimationController : UIViewController <AnimationDataSource>
 @end

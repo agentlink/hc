@@ -1,4 +1,5 @@
 #import "ViewController.h"
+#import "AnimationController.h"
 
 #define BUFFER_OFFSET(i) ((char *)NULL + (i))
 
@@ -124,10 +125,10 @@
 
     self.triangleEffect.texture2d0.name = tex.name;
 
-    [self updateGLOnMove];
+    [self updateGLOnChange];
 }
 
-- (void)updateGLOnMove {
+- (void)updateGLOnChange {
     [self setupTriangles];
     [self setupEdges];
     [self setupHandles];
@@ -314,6 +315,8 @@
 #pragma mark - GLKView and GLKViewController delegate methods
 
 - (void)update {
+    [_animationDataSource updateAnimation:self];
+
     CGFloat width = self.view.bounds.size.width;
     CGFloat height = self.view.bounds.size.height;
 

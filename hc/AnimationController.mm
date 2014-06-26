@@ -1,19 +1,28 @@
 #import "AnimationController.h"
 #import "ImageUtil.h"
-#import "ViewController.h"
 #import "ShapeHandle.h"
-#import "Record.h"
+#import "AnimationEvent.h"
 
 #define LOG_TOUCHES(fmt, ...)
 //#define LOG_TOUCHES(fmt, ...) NSLog(fmt, ##__VA_ARGS__)
 
+typedef enum {
+    IDLE,
+    PLAYING,
+    RECORDING
+} State;
+
 @interface AnimationController ()
-@property(nonatomic, strong) Record *record;
 @end
 
 @implementation AnimationController {
     NSMutableDictionary *_touches2Points;
     Shape *_shape;
+    NSMutableArray *_record;
+    NSUInteger _playbackPosition;
+    NSDate *_animationStart;
+    NSDate *_lastUpdate;
+    State _state;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -25,15 +34,44 @@
     childView.frame = self.view.bounds;
     [self.view addSubview:childView];
 
+    [self resetShape];
+}
+
+- (void)resetShape {
     UIImage *image = [UIImage imageNamed:@"tux.png"];
     _shape = [ImageUtil loadImage:image];
-    glController.texture = image;
-    glController.shape = _shape;
+    ViewController *controller = self.glController;
+    controller.texture = image;
+    controller.shape = _shape;
 }
 
 - (IBAction)startRecord {
-    self.record = [Record new];
+    _record = [NSMutableArray new];
+    _animationStart = [NSDate date];
+    _state = RECORDING;
 }
+
+- (IBAction)stopRecord {
+    _state = IDLE;
+}
+
+- (IBAction)playRecord {
+    if (_state != IDLE) {
+        [self stop];
+        return;
+    }
+
+    [_touches2Points removeAllObjects];
+    [self resetShape];
+    _playbackPosition = 0;
+    _animationStart = [NSDate date];
+    _state = PLAYING;
+}
+
+- (void)stop {
+    _state = IDLE;
+}
+
 
 - (ViewController *)glController {
     ViewController *child = self.childViewControllers.firstObject;
@@ -48,17 +86,36 @@
 - (void)updateTouches:(NSSet *)touches shouldRemove:(BOOL)shouldRemove {
     map<int, point2d<double>> changed;
 
+    NSTimeInterval time = [[NSDate date] timeIntervalSinceDate:_animationStart];
     for (UITouch *touch in touches) {
         size_t ptr = [self touchId:touch];
         CGPoint location = [touch locationInView:self.view];
         ShapeHandle *ap = _touches2Points[@((ptr))];
         ap.current = location;
-        changed[ap.handleId] = { location.x, location.y };
+        point2d<double> point;
+        point.x = location.x;
+        point.y = location.y;
+        int handleId = ap.handleId;
+        changed[handleId] = point;
 
-        [self.glController updateGLOnMove];
+        [self.glController updateGLOnChange];
+
+        if ([self isRecording]) {
+            [_record addObject:[AnimationEvent eventWithTime:time
+                                                        type:MOVE
+                                                    handleId:handleId
+                                                    position:location]];
+        }
+
         if (shouldRemove) {
             [_touches2Points removeObjectForKey:@((ptr))];
             LOG_TOUCHES(@"ENDED => %@", ap);
+            if ([self isRecording]) {
+                [_record addObject:[AnimationEvent eventWithTime:time
+                                                            type:REMOVE
+                                                        handleId:handleId
+                                                        position:location]];
+            }
         }
         else {
             LOG_TOUCHES(@"MOVED => %@", ap);
@@ -68,7 +125,20 @@
     _shape->updateHandles(changed);
 }
 
+- (BOOL)isPlaying {
+    return _state == PLAYING;
+}
+
+- (BOOL)isRecording {
+    return _state == RECORDING;
+}
+
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    if (self.isPlaying) {
+        return;
+    }
+
+    NSTimeInterval time = [[NSDate date] timeIntervalSinceDate:_animationStart];
     for (UITouch *touch in touches) {
         size_t ptr = [self touchId:touch];
         CGPoint location = [touch locationInView:self.view];
@@ -76,26 +146,93 @@
         ap.current = ap.start;
         _touches2Points[@(ptr)] = ap;
         LOG_TOUCHES(@"NEW => %@", ap);
-        _shape->addHandle(ap.handleId, location.x, location.y);
-        [self.glController updateGLOnMove];
+        int handleId = ap.handleId;
+        CGFloat x = location.x;
+        CGFloat y = location.y;
+        _shape->addHandle(handleId, x, y);
+        [self.glController updateGLOnChange];
+        if ([self isRecording]) {
+            [_record addObject:[AnimationEvent eventWithTime:time
+                                                        type:ADD
+                                                    handleId:handleId
+                                                    position:location]];
+        }
     }
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
+    if (self.isPlaying) {
+        return;
+    }
+
     [self updateTouches:touches shouldRemove:NO];
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+    if (self.isPlaying) {
+        return;
+    }
+
     [self updateTouches:touches shouldRemove:YES];
 }
 
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
+    if (self.isPlaying) {
+        return;
+    }
+
     [self updateTouches:touches shouldRemove:YES];
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     _touches2Points = [NSMutableDictionary new];
+    self.glController.animationDataSource = self;
+    [self stop];
+}
+
+
+- (void)updateAnimation:(ViewController *)controller {
+    if (!self.isPlaying) {
+        return;
+    }
+
+    if (_playbackPosition >= _record.count) {
+        [self stop];
+        return;
+    }
+
+    NSDate *now = [NSDate date];
+    NSTimeInterval time = [now timeIntervalSinceDate:_animationStart];
+    BOOL changed = NO;
+    while (_playbackPosition < _record.count) {
+        AnimationEvent *event = _record[_playbackPosition];
+        if (event.time > time) {
+            break;
+        }
+
+        _playbackPosition++;
+        changed = YES;
+
+        CGPoint position = event.position;
+        switch (event.type) {
+            case ADD:
+                _shape->addHandle(event.handleId, position.x, position.y);
+                break;
+            case MOVE:
+                _shape->updateHandle(event.handleId, position.x, position.y);
+                break;
+            case REMOVE:
+                _shape->updateHandle(event.handleId, position.x, position.y);
+            default:
+                break;
+        }
+    }
+
+    if (changed) {
+        [controller updateGLOnChange];
+    }
+
 }
 
 @end

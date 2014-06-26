@@ -2,6 +2,13 @@
 #import <GLKit/GLKit.h>
 #include "Shape.h"
 
+@class AnimationController;
+@class ViewController;
+
+@protocol AnimationDataSource
+- (void)updateAnimation:(ViewController *)controller;
+@end
+
 @interface ViewController : GLKViewController {
 }
 
@@ -9,6 +16,8 @@
 
 @property(nonatomic, strong) UIImage *texture;
 
-- (void)updateGLOnMove;
+@property(nonatomic, weak) id<AnimationDataSource> animationDataSource;
+
+- (void)updateGLOnChange;
 
 @end
