@@ -43,31 +43,14 @@ public:
 	triangulateio shapeGeometry, triangulation, vout;
 	int width, height;
 	
-	vector<point2d<double>> handles;
-	vector<int*> handleTriangles;
-	vector<double*> handleBarCoords;
+    map<int, point2d<double>> handles;
+	map<int, int*> handleTriangles;
+	map<int, double*> handleBarCoords;
 	double Eps;
-	
 	
 	int *edge_1, *edge_2;
 	double *G11, *G22;
 	double *g00, *g01, *g10, *g11, *g20, *g21, *g30, *g31, *g40, *g41, *g50, *g51, *g60, *g61, *g70, *g71;
-	vector<int> L1x, L1y;
-	vector<double> L1Val;
-	int *L1Ap, *L1Ai;
-	double *L1Ax;
-	
-	vector<int> C1x, C1y;
-	vector<double> C1Val;
-
-	vector<int> L2x, L2y;
-	vector<double> L2Val;
-	int *L2Ap, *L2Ai;
-	double *L2Ax;
-	
-	vector<int> C2x, C2y;
-	vector<double> C2Val;
-	vector<point2d<double>>::iterator activeHandle;
 	
 	double *pointsNew;
 
@@ -79,11 +62,12 @@ public:
 	
 public:
 	Shape(CvSeq * borderContour, int w, int h);
-	int addHandle(double, double);
+	int addHandle(int, double, double);
+    void updateHandle(int, double, double);
 	void registration();
 	void compilation();
-	bool setActiveHandle(double x, double y);
-	void modifyActiveHandle(double x, double y);
+//	bool setActiveHandle(double x, double y);
+//	void modifyActiveHandle(double x, double y);
 };
 
 #endif

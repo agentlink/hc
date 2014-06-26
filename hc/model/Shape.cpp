@@ -148,9 +148,6 @@ void Shape::registration()
 		vlx = triangulation.pointlist[pl*2];
 		vly = triangulation.pointlist[pl*2+1];
 		
-		L2x.push_back(pi); L2y.push_back(i); L2Val.push_back(-1);
-		L2x.push_back(pj); L2y.push_back(i); L2Val.push_back(1);
-		
 		//////
 		L2.coeffRef(i,pi) -= 1;
 		L2.coeffRef(i,pj) += 1;
@@ -214,21 +211,6 @@ void Shape::registration()
 		//////////////////////
 	}
 	
-	int Tn = L1x.size();
-	cout << "L1 size " <<	2*Ne << Tn << endl;
-	int *Ti = new int[Tn], *Tj = new int[Tn];
-	double *Tx = new double[Tn];
-	
-	L1Ap = new int[2*triangulation.numberofpoints+1];
-	L1Ai = new int[Tn];
-	L1Ax = new double[Tn];
-	
-	for (int i = 0; i < Tn; i++){
-		Ti[i] = L1x[i];
-		Tj[i] = L1y[i];
-		Tx[i] = L1Val[i];
-		cout << Tx[i] << endl;
-	}
 	
 	////Eigen
 	L_1 = L1.transpose()*L1;
@@ -252,21 +234,9 @@ void Shape::registration()
 /**/
 }
 
-int Shape::addHandle(double x, double y)
+int Shape::addHandle(int id, double x, double y)
 {
 	cout << "ADD HANDLE: " << x << ", " << y << endl;
-	vector<int*>::iterator tt = handleTriangles.begin();
-	vector<double*>::iterator c = handleBarCoords.begin();
-	for (vector<point2d<double>>::iterator h = handles.begin(); h != handles.end(); h++, tt++,c++) {
-		if (distance(x, y, h->x, h->y) < Eps){
-			handles.erase(h);
-			handleBarCoords.erase(c);
-			handleTriangles.erase(tt);
-            
-			compilation();
-			return -1;
-		}
-	}
     
 	int t = -1;
 	int p1, p2, p3;
@@ -275,12 +245,12 @@ int Shape::addHandle(double x, double y)
 		p1 = triangulation.trianglelist[3*i];
 		p2 = triangulation.trianglelist[3*i+1];
 		p3 = triangulation.trianglelist[3*i+2];
-		x1 = triangulation.pointlist[2*p1];
-		y1 = triangulation.pointlist[2*p1+1];
-		x2 = triangulation.pointlist[2*p2];
-		y2 = triangulation.pointlist[2*p2+1];
-		x3 = triangulation.pointlist[2*p3];
-		y3 = triangulation.pointlist[2*p3+1];
+		x1 = pointsNew[2*p1];
+		y1 = pointsNew[2*p1+1];
+		x2 = pointsNew[2*p2];
+		y2 = pointsNew[2*p2+1];
+		x3 = pointsNew[2*p3];
+		y3 = pointsNew[2*p3+1];
 		if (point_in_triangle(x, y, x1, y1, x2, y2, x3, y3)){
 			t = i;
 			break;
@@ -291,7 +261,7 @@ int Shape::addHandle(double x, double y)
         point2d<double> h;
 		h.x = x;
 		h.y = y;
-		handles.push_back(h);
+		handles[id] = h;
 		double l1 = ((y2-y3)*(x-x3)+(x3-x2)*(y-y3))/((y2-y3)*(x1-x3)+(x3-x2)*(y1-y3));
 		double l2 = ((y3-y1)*(x-x3)+(x1-x3)*(y-y3))/((y3-y1)*(x2-x3)+(x1-x3)*(y2-y3));
 		double l3 = 1 - l1 - l2;
@@ -301,55 +271,33 @@ int Shape::addHandle(double x, double y)
 		int *triangle = new int[3];
 		triangle[0] = p1; triangle[1] = p2; triangle[2] = p3;
 		
-		handleBarCoords.push_back(coords);
-		handleTriangles.push_back(triangle);
+		handleBarCoords[id] = coords;
+		handleTriangles[id] = triangle;
 		
 		compilation();
 	}
     return 0;
 }
 
-bool Shape::setActiveHandle(double x, double y)
+void Shape::updateHandle(int id, double x, double y)
 {
-	for (vector<point2d<double>>::iterator h = handles.begin(); h != handles.end(); h++) {
-		if (distance(x, y, h->x, h->y) < Eps){
-			activeHandle = h;
-			return true;
-		}
-	}
-	return false;
-}
-
-void Shape::modifyActiveHandle(double x, double y)
-{
-	activeHandle->x = x;
-	activeHandle->y = y;
-	
 	double *tmpPoints = new double[2*triangulation.numberofpoints];
+    
+    handles[id].x = x;
+    handles[id].y = y;
 	
 	///////////////////////////
 	///   Part 1 /////////////
 	/////////////////////////
 	
-	double *b1 = new double[handles.size()*2], *b1m = new double[2*triangulation.numberofpoints];
-	
-	for (int i=0;i<2*triangulation.numberofpoints;i++){
-		b1m[i]=0;
-	}
-	
-	int i=0;
-	for (vector<point2d<double>>::iterator h = handles.begin(); h != handles.end(); h++) {
-		b1[i++] = h->x*W;
-		b1[i++] = h->y*W;
-	}
-	
 	///Eigen
 	VectorXd B1(2*handles.size());
 	
-	i=0;
-	for (vector<point2d<double>>::iterator h = handles.begin(); h != handles.end(); h++) {
-		B1(i++) = h->x*W;
-		B1(i++) = h->y*W;
+	int i=0;
+	for (map<int, point2d<double>>::iterator h = handles.begin(); h != handles.end(); h++) {
+        point2d<double> p = h->second;
+		B1(i++) = p.x*W;
+		B1(i++) = p.y*W;
 	}
 	VectorXd tmpPoints_E(2*triangulation.numberofpoints);
 	tmpPoints_E = LDLT_of_A1.solve(VectorXd(C1_t*B1));
@@ -360,29 +308,14 @@ void Shape::modifyActiveHandle(double x, double y)
 	///   Part 2 /////////////
 	/////////////////////////
 	
-	double *b2x = new double[handles.size()], *b2mx = new double[triangulation.numberofpoints];
-	double *b2y = new double[handles.size()], *b2my = new double[triangulation.numberofpoints];
-	double *d2x = new double[triangulation.numberofedges], *d2mx = new double[triangulation.numberofpoints];
-	double *d2y = new double[triangulation.numberofedges], *d2my = new double[triangulation.numberofpoints];
+	double *d2x = new double[triangulation.numberofedges];
+	double *d2y = new double[triangulation.numberofedges];
 	
 	/////////Eigen
 	for (int i=0;i<2*triangulation.numberofpoints;i++){
 		tmpPoints[i]=tmpPoints_E(i);
 	}
 	/////////
-	
-	for (int i=0;i<triangulation.numberofpoints;i++){
-		b2mx[i]=0;
-		b2my[i]=0;
-		d2mx[i]=0;
-		d2my[i]=0;
-	}
-	
-	i=0;
-	for (vector<point2d<double>>::iterator h = handles.begin(); h != handles.end(); h++,i++) {
-		b2x[i] = h->x*W;
-		b2y[i] = h->y*W;
-	}
 	
 	int pi, pj, pl, pr;
 	double ck, sk, n, vix, viy, vjx, vjy;
@@ -432,9 +365,10 @@ void Shape::modifyActiveHandle(double x, double y)
 	////////////Eigen
 	VectorXd B2x(handles.size()), B2y(handles.size());
 	i=0;
-	for (vector<point2d<double>>::iterator h = handles.begin(); h != handles.end(); h++,i++) {
-		B2x(i) = h->x*W;
-		B2y(i) = h->y*W;
+	for (map<int, point2d<double>>::iterator h = handles.begin(); h != handles.end(); h++) {
+        point2d<double> p = h->second;
+        B2x(i) = p.x*W;
+		B2y(i) = p.y*W;
 	}
 	
 	VectorXd D2x(triangulation.numberofedges), D2y(triangulation.numberofedges);
@@ -459,45 +393,27 @@ void Shape::modifyActiveHandle(double x, double y)
 
 void Shape::compilation()
 {
-	C1x.clear();
-	C1y.clear();
-	C1Val.clear();
-	
-	C2x.clear();
-	C2y.clear();
-	C2Val.clear();
-	
-	
-	vector<int*>::iterator tt = handleTriangles.begin();
-	vector<double*>::iterator c = handleBarCoords.begin();
 	int Np = triangulation.numberofpoints;
 	SparseMatrix<double> C1(2*handles.size(),2*Np), C2(handles.size(),Np);
 
 	int i=0;
-	for (vector<point2d<double> >::iterator h = handles.begin(); h != handles.end(); h++, tt++,c++, i++) {
-		cout << "Handle "<< i << ": " << (*tt)[0] << " " << (*tt)[1] << " " << (*tt)[2] << endl;
-		C1x.push_back(2*((*tt)[0])); C1y.push_back(2*i); C1Val.push_back((*c)[0]*W);
-		C1x.push_back(2*((*tt)[0])+1); C1y.push_back(2*i+1); C1Val.push_back((*c)[0]*W);
-		C1x.push_back(2*((*tt)[1])); C1y.push_back(2*i); C1Val.push_back((*c)[1]*W);
-		C1x.push_back(2*((*tt)[1])+1); C1y.push_back(2*i+1); C1Val.push_back((*c)[1]*W);
-		C1x.push_back(2*((*tt)[2])); C1y.push_back(2*i); C1Val.push_back((*c)[2]*W);
-		C1x.push_back(2*((*tt)[2])+1); C1y.push_back(2*i+1); C1Val.push_back((*c)[2]*W);
-		
-		C2x.push_back((*tt)[0]); C2y.push_back(i); C2Val.push_back((*c)[0]*W);
-		C2x.push_back((*tt)[1]); C2y.push_back(i); C2Val.push_back((*c)[1]*W);
-		C2x.push_back((*tt)[2]); C2y.push_back(i); C2Val.push_back((*c)[2]*W);
+	for (map<int, point2d<double>>::iterator h = handles.begin(); h != handles.end(); h++, i++) {
+        int* triangle = handleTriangles[h->first];
+        double* barCoords = handleBarCoords[h->first];
+        point2d<double> p = h->second;
+//		cout << "Handle "<< i << ": " << triangle[0] << " " << triangle[1] << " " << triangle[2] << endl;
 		
 		//////Eigen
-		C1.coeffRef(2*i,	2*((*tt)[0]))	+= (*c)[0]*W;
-		C1.coeffRef(2*i+1,	2*((*tt)[0])+1)	+= (*c)[0]*W;
-		C1.coeffRef(2*i,	2*((*tt)[1]))	+= (*c)[1]*W;
-		C1.coeffRef(2*i+1,	2*((*tt)[1])+1)	+= (*c)[1]*W;
-		C1.coeffRef(2*i,	2*((*tt)[2]))	+= (*c)[2]*W;
-		C1.coeffRef(2*i+1,	2*((*tt)[2])+1)	+= (*c)[2]*W;
+		C1.coeffRef(2*i,	2*(triangle[0]))	+= barCoords[0]*W;
+		C1.coeffRef(2*i+1,	2*(triangle[0])+1)	+= barCoords[0]*W;
+		C1.coeffRef(2*i,	2*(triangle[1]))	+= barCoords[1]*W;
+		C1.coeffRef(2*i+1,	2*(triangle[1])+1)	+= barCoords[1]*W;
+		C1.coeffRef(2*i,	2*(triangle[2]))	+= barCoords[2]*W;
+		C1.coeffRef(2*i+1,	2*(triangle[2])+1)	+= barCoords[2]*W;
 		
-		C2.coeffRef(i,	(*tt)[0])	+= (*c)[0]*W;
-		C2.coeffRef(i,	(*tt)[1])	+= (*c)[1]*W;
-		C2.coeffRef(i,	(*tt)[2])	+= (*c)[2]*W;
+		C2.coeffRef(i,	triangle[0])	+= barCoords[0]*W;
+		C2.coeffRef(i,	triangle[1])	+= barCoords[1]*W;
+		C2.coeffRef(i,	triangle[2])	+= barCoords[2]*W;
 		//////
 	}
 	
