@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		30F446D9098666674B58A3C1 /* AnimationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 30F449C764F3B21C8C2FB120 /* AnimationController.m */; };
 		DAAABA69195C151C0036C526 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAAABA68195C151C0036C526 /* Foundation.framework */; };
 		DAAABA6B195C151C0036C526 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAAABA6A195C151C0036C526 /* CoreGraphics.framework */; };
 		DAAABA6D195C151C0036C526 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAAABA6C195C151C0036C526 /* UIKit.framework */; };
@@ -38,6 +39,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		30F449C764F3B21C8C2FB120 /* AnimationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AnimationController.m; sourceTree = "<group>"; };
+		30F44F60E61C92CC7B5B9E5D /* AnimationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnimationController.h; sourceTree = "<group>"; };
 		DAAABA65195C151C0036C526 /* hc.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = hc.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DAAABA68195C151C0036C526 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		DAAABA6A195C151C0036C526 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -133,6 +136,8 @@
 				DAAABA86195C151C0036C526 /* ViewController.m */,
 				DAAABA88195C151C0036C526 /* Images.xcassets */,
 				DAAABA73195C151C0036C526 /* Supporting Files */,
+				30F449C764F3B21C8C2FB120 /* AnimationController.m */,
+				30F44F60E61C92CC7B5B9E5D /* AnimationController.h */,
 			);
 			path = hc;
 			sourceTree = "<group>";
@@ -268,6 +273,7 @@
 				DAAABA87195C151C0036C526 /* ViewController.m in Sources */,
 				DAAABA7D195C151C0036C526 /* AppDelegate.m in Sources */,
 				DAAABA79195C151C0036C526 /* main.m in Sources */,
+				30F446D9098666674B58A3C1 /* AnimationController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -474,6 +480,7 @@
 				DAAABAA1195C151C0036C526 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		DAAABAA2195C151C0036C526 /* Build configuration list for PBXNativeTarget "hcTests" */ = {
 			isa = XCConfigurationList;
@@ -482,6 +489,7 @@
 				DAAABAA4195C151C0036C526 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
