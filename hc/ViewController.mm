@@ -84,56 +84,55 @@ static int actionPointCount;
 
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-    UITouch *touch = [touches anyObject];
-    size_t ptr = [self touchId:touch];
-    CGPoint location = [touch locationInView:self.view];
+    for (UITouch *touch in touches) {
+        size_t ptr = [self touchId:touch];
+        CGPoint location = [touch locationInView:self.view];
 
-    ShapeHandle *ap = [ShapeHandle pointWithStart:location];
-    ap.current = ap.start;
-    _touches2Points[@(ptr)] = ap;
-    LOG_TOUCHES(@"NEW => %@", ap);
-    CGFloat y = location.y;
-    _shape->addHandle(ap.handleId, location.x, y);
-    [self updateGLOnMove];
+        ShapeHandle *ap = [ShapeHandle pointWithStart:location];
+        ap.current = ap.start;
+        _touches2Points[@(ptr)] = ap;
+        LOG_TOUCHES(@"NEW => %@", ap);
+        CGFloat y = location.y;
+        _shape->addHandle(ap.handleId, location.x, y);
+        [self updateGLOnMove];
+    }
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
-    UITouch *touch = [touches anyObject];
-    size_t ptr = [self touchId:touch];
-    ShapeHandle *ap = _touches2Points[@(ptr)];
+    for (UITouch *touch in touches) {
+        size_t ptr = [self touchId:touch];
+        ShapeHandle *ap = _touches2Points[@(ptr)];
 
-    CGPoint location = [touch locationInView:self.view];
-    ap.current = location;
-    LOG_TOUCHES(@"MOVED => %@", ap);
-    [self updateHandle:ap location:location];
+        CGPoint location = [touch locationInView:self.view];
+        ap.current = location;
+        LOG_TOUCHES(@"MOVED => %@", ap);
+        [self updateHandle:ap location:location];
+    }
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-    UITouch *touch = [touches anyObject];
-    size_t ptr = [self touchId:touch];
-    ShapeHandle *ap = _touches2Points[@(ptr)];
+    for (UITouch *touch in touches) {
+        size_t ptr = [self touchId:touch];
+        ShapeHandle *ap = _touches2Points[@(ptr)];
 
-    CGPoint location = [touch locationInView:self.view];
-    ap.current = location;
-    LOG_TOUCHES(@"ENDED => %@", ap);
-
-    [self updateHandle:ap location:location];
-
-    [_touches2Points removeObjectForKey:@(ptr)];
+        CGPoint location = [touch locationInView:self.view];
+        ap.current = location;
+        LOG_TOUCHES(@"ENDED => %@", ap);
+        [self updateHandle:ap location:location];
+    }
 }
 
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
-    UITouch *touch = [touches anyObject];
-    size_t ptr = [self touchId:touch];
-    ShapeHandle *ap = _touches2Points[@(ptr)];
+    for (UITouch *touch in touches) {
+        size_t ptr = [self touchId:touch];
+        ShapeHandle *ap = _touches2Points[@(ptr)];
 
-    CGPoint location = [touch locationInView:self.view];
-    ap.current = location;
-    LOG_TOUCHES(@"CANCELLED => %@", ap);
-
-    [self updateHandle:ap location:location];
-
-    [_touches2Points removeObjectForKey:@(ptr)];
+        CGPoint location = [touch locationInView:self.view];
+        ap.current = location;
+        LOG_TOUCHES(@"CANCELLED => %@", ap);
+        [self updateHandle:ap location:location];
+        [_touches2Points removeObjectForKey:@(ptr)];
+    }
 }
 
 - (void)updateHandle:(ShapeHandle *)ap location:(CGPoint)location {
@@ -208,28 +207,6 @@ static int actionPointCount;
     self.edgeEffect = [[GLKBaseEffect alloc] init];
     self.edgeEffect.light0.enabled = GL_TRUE;
     self.edgeEffect.light0.diffuseColor = GLKVector4Make(1.0f, 0, 0, 1.0f);
-
-//    self.edgeEffect = [[GLKBaseEffect alloc] init];
-//    self.edgeEffect.lightingType = GLKLightingTypePerPixel;
-//
-//    // Turn on the first light
-//    self.edgeEffect.light0.enabled = GL_TRUE;
-//    self.edgeEffect.light0.diffuseColor = GLKVector4Make(1.0f, 0.4f, 0.4f, 1.0f);
-//    self.edgeEffect.light0.position = GLKVector4Make(-5.f, -5.f, 10.f, 1.0f);
-//    self.edgeEffect.light0.specularColor = GLKVector4Make(1.0f, 0.0f, 0.0f, 1.0f);
-//
-//    // Turn on the second light
-//    self.edgeEffect.light1.enabled = GL_TRUE;
-//    self.edgeEffect.light1.diffuseColor = GLKVector4Make(1.0f, 0.4f, 0.4f, 1.0f);
-//    self.edgeEffect.light1.position = GLKVector4Make(15.f, 15.f, 10.f, 1.0f);
-//    self.edgeEffect.light1.specularColor = GLKVector4Make(1.0f, 0.0f, 0.0f, 1.0f);
-//
-//    // Set material
-//    self.edgeEffect.material.diffuseColor = GLKVector4Make(0.f, 0.5f, 1.0f, 1.0f);
-//    self.edgeEffect.material.ambientColor = GLKVector4Make(0.0f, 0.5f, 0.0f, 1.0f);
-//    self.edgeEffect.material.specularColor = GLKVector4Make(1.0f, 0.0f, 0.0f, 1.0f);
-//    self.edgeEffect.material.shininess = 20.0f;
-//    self.edgeEffect.material.emissiveColor = GLKVector4Make(0.2f, 0.f, 0.2f, 1.0f);
 
     glEnable(GL_DEPTH_TEST);
     glGenVertexArraysOES(1, &_edgeVertexArray);
