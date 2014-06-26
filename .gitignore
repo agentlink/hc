@@ -1,8 +1,24 @@
-# CocoaPods
-#
-# We recommend against adding the Pods directory to your .gitignore. However
-# you should judge for yourself, the pros and cons are mentioned at:
-# http://guides.cocoapods.org/using/using-cocoapods.html#should-i-ignore-the-pods-directory-in-source-control?
-#
-# Pods/
-
+.idea/workspace.xml
+/android
+**/.idea/dataSources.*
+/community
+/config
+/contrib
+/out
+/system
+/test-system
+/test-config
+/bin/*.log
+.DS_Store
+*.pyc
+*~
+python/helpers/*.class
+/bin/null
+python/lib/cachedir
+/ruby/gemsData
+*.patch
+/flex-ide
+/flex/tools/flexmojos-flex-configs-generator/idea-configurator/src/main/java/com/intellij/flex/maven/IdeaConfiguratorFlexmojos5.java
+/flex/tools/flexunit-support/out
+project.xcworkspace/
+xcuserdata/
