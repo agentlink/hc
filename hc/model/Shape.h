@@ -7,6 +7,9 @@
  *
  */
 
+#ifndef SHAPE_INCLUDED
+#define SHAPE_INCLUDED
+
 //#ifdef SINGLE
 //#define REAL float
 //#else /* not SINGLE */
@@ -82,3 +85,5 @@ public:
 	bool setActiveHandle(double x, double y);
 	void modifyActiveHandle(double x, double y);
 };
+
+#endif

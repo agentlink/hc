@@ -1,4 +1,6 @@
 #import "AnimationController.h"
+#import "ImageUtil.h"
+#import "ViewController.h"
 
 
 @implementation AnimationController {
@@ -9,10 +11,18 @@
     [super viewWillAppear:animated];
 
     self.view.backgroundColor = [UIColor greenColor];
-    UIViewController * child = self.childViewControllers.firstObject;
-    UIView *childView = child.view;
+    ViewController *glController = [self glController];
+    UIView *childView = glController.view;
     childView.frame = self.view.bounds;
     [self.view addSubview:childView];
+
+    Shape *shape = [ImageUtil loadImage];
+    glController.shape = shape;
+}
+
+- (ViewController *)glController {
+    ViewController* child = self.childViewControllers.firstObject;
+    return child;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
