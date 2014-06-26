@@ -2,23 +2,7 @@
 
 #define BUFFER_OFFSET(i) ((char *)NULL + (i))
 
-GLfloat gCubeVertexData[18] =
-        {
-                // Data layout for each line below is:
-                // positionX, positionY, positionZ,     normalX, normalY, normalZ,
-
-                137.866302f, 0.919785f, 1,
-                125.569344f, 207.957230f, 1,
-
-//                0.f, 100.0f, 1.0f,
-//                100.0f, 100.0f, 1.0f,
-//                30.f, 0.f, 1.0f,
-//                0.f, 0.f, 1.0f,
-//                100.0f, 100.0f, 1.0f,
-//                100.0f, 0.f, 1.0f,
-        };
-
-@interface ViewController () 
+@interface ViewController ()
 @property(strong, nonatomic) EAGLContext *context;
 @property(strong, nonatomic) GLKBaseEffect *edgeEffect;
 @property(strong, nonatomic) GLKBaseEffect *triangleEffect;
@@ -148,7 +132,7 @@ static int actionPointCount;
     LOG_TOUCHES(@"CANCELLED => %@", ap);
 
     [self updateHandle:ap location:location];
-    
+
     [_touches2Points removeObjectForKey:@(ptr)];
 }
 
@@ -287,37 +271,32 @@ static int actionPointCount;
 }
 
 - (void)setupEdges {
-    GLfloat *data;
-    size_t dataSize;
     if (_shape == NULL) {
-        data = gCubeVertexData;
-        dataSize = sizeof(gCubeVertexData);
-        _edgeCount = 1;
+        return;
     }
-    else {
-        triangulateio tr = _shape->triangulation;
 
-        _edgeCount = (size_t) tr.numberofedges;
-        dataSize = (size_t) (_edgeCount * 2) * 3 * sizeof(GLfloat);
+    triangulateio tr = _shape->triangulation;
 
-        double *newPoints = _shape->pointsNew;
-        if (_edgeVertexDataSize < dataSize) {
-            _edgeVertexData = (GLfloat *) realloc(_edgeVertexData, dataSize);
-            _edgeVertexDataSize = dataSize;
-        }
-        data = _edgeVertexData;
+    _edgeCount = (size_t) tr.numberofedges;
+    size_t dataSize = (size_t) (_edgeCount * 2) * 3 * sizeof(GLfloat);
 
-        for (size_t i = 0; i < _edgeCount; i++) {
-            int e1 = tr.edgelist[2 * i];
-            _edgeVertexData[i * 6] = (GLfloat) newPoints[e1 * 2];
-            _edgeVertexData[i * 6 + 1] = (GLfloat) (newPoints[e1 * 2 + 1]);
-            _edgeVertexData[i * 6 + 2] = 1.01;
+    double *newPoints = _shape->pointsNew;
+    if (_edgeVertexDataSize < dataSize) {
+        _edgeVertexData = (GLfloat *) realloc(_edgeVertexData, dataSize);
+        _edgeVertexDataSize = dataSize;
+    }
+    GLfloat *data = _edgeVertexData;
 
-            int e2 = tr.edgelist[2 * i + 1];
-            _edgeVertexData[i * 6 + 3] = (GLfloat) newPoints[e2 * 2];
-            _edgeVertexData[i * 6 + 4] = (GLfloat) (newPoints[e2 * 2 + 1]);
-            _edgeVertexData[i * 6 + 5] = 1.01;
-        }
+    for (size_t i = 0; i < _edgeCount; i++) {
+        int e1 = tr.edgelist[2 * i];
+        _edgeVertexData[i * 6] = (GLfloat) newPoints[e1 * 2];
+        _edgeVertexData[i * 6 + 1] = (GLfloat) (newPoints[e1 * 2 + 1]);
+        _edgeVertexData[i * 6 + 2] = 1.01;
+
+        int e2 = tr.edgelist[2 * i + 1];
+        _edgeVertexData[i * 6 + 3] = (GLfloat) newPoints[e2 * 2];
+        _edgeVertexData[i * 6 + 4] = (GLfloat) (newPoints[e2 * 2 + 1]);
+        _edgeVertexData[i * 6 + 5] = 1.01;
     }
 
     glBindVertexArrayOES(_edgeVertexArray);
@@ -332,54 +311,49 @@ static int actionPointCount;
 }
 
 - (void)setupTriangles {
-    GLfloat *data;
-    size_t dataSize;
     if (_shape == NULL) {
-        data = gCubeVertexData;
-        dataSize = sizeof(gCubeVertexData);
-        _triCount = 1;
+        return;
     }
-    else {
-        triangulateio tr = _shape->triangulation;
 
-        _triCount = (size_t) tr.numberoftriangles;
-        dataSize = (_triCount * 5) * 3 * sizeof(GLfloat);
+    triangulateio tr = _shape->triangulation;
 
-        if (_triVertexDataSize < dataSize) {
-            _triVertexData = (GLfloat *) realloc(_triVertexData, dataSize);
-            _triVertexDataSize = dataSize;
-        }
-        data = _triVertexData;
+    _triCount = (size_t) tr.numberoftriangles;
+    size_t dataSize = (_triCount * 5) * 3 * sizeof(GLfloat);
 
-        int height = _shape->height;
-        int width = _shape->width;
-        double *newPoints = _shape->pointsNew;
-        
-        for (size_t i = 0; i < _triCount; i++) {
-            size_t base = i * 15;
+    if (_triVertexDataSize < dataSize) {
+        _triVertexData = (GLfloat *) realloc(_triVertexData, dataSize);
+        _triVertexDataSize = dataSize;
+    }
+    GLfloat *data = _triVertexData;
 
-            int t1 = tr.trianglelist[3 * i];
-            _triVertexData[base + 0] = (GLfloat) newPoints[t1 * 2];
-            _triVertexData[base + 1] = (GLfloat) (newPoints[t1 * 2 + 1]);
-            _triVertexData[base + 2] = 1;
-            _triVertexData[base + 3] = (GLfloat) tr.pointlist[t1 * 2] / width;
-            _triVertexData[base + 4] = 1 - ((GLfloat) (height - tr.pointlist[t1 * 2 + 1])) / height;
+    int height = _shape->height;
+    int width = _shape->width;
+    double *newPoints = _shape->pointsNew;
 
-            int t2 = tr.trianglelist[3 * i + 1];
-            _triVertexData[base + 5] = (GLfloat) newPoints[t2 * 2];
-            _triVertexData[base + 6] = (GLfloat) (newPoints[t2 * 2 + 1]);
-            _triVertexData[base + 7] = 1;
-            _triVertexData[base + 8] = (GLfloat) tr.pointlist[t2 * 2] / width;
-            _triVertexData[base + 9] = 1 - ((GLfloat) (height - tr.pointlist[t2 * 2 + 1])) / height;
+    for (size_t i = 0; i < _triCount; i++) {
+        size_t base = i * 15;
 
-            int t3 = tr.trianglelist[3 * i + 2];
-            _triVertexData[base + 10] = (GLfloat) newPoints[t3 * 2];
-            _triVertexData[base + 11] = (GLfloat) (newPoints[t3 * 2 + 1]);
-            _triVertexData[base + 12] = 1;
-            _triVertexData[base + 13] = (GLfloat) tr.pointlist[t3 * 2] / width;
-            _triVertexData[base + 14] = 1 - ((GLfloat) (height - tr.pointlist[t3 * 2 + 1])) / height;
+        int t1 = tr.trianglelist[3 * i];
+        _triVertexData[base + 0] = (GLfloat) newPoints[t1 * 2];
+        _triVertexData[base + 1] = (GLfloat) (newPoints[t1 * 2 + 1]);
+        _triVertexData[base + 2] = 1;
+        _triVertexData[base + 3] = (GLfloat) tr.pointlist[t1 * 2] / width;
+        _triVertexData[base + 4] = 1 - ((GLfloat) (height - tr.pointlist[t1 * 2 + 1])) / height;
 
-        }
+        int t2 = tr.trianglelist[3 * i + 1];
+        _triVertexData[base + 5] = (GLfloat) newPoints[t2 * 2];
+        _triVertexData[base + 6] = (GLfloat) (newPoints[t2 * 2 + 1]);
+        _triVertexData[base + 7] = 1;
+        _triVertexData[base + 8] = (GLfloat) tr.pointlist[t2 * 2] / width;
+        _triVertexData[base + 9] = 1 - ((GLfloat) (height - tr.pointlist[t2 * 2 + 1])) / height;
+
+        int t3 = tr.trianglelist[3 * i + 2];
+        _triVertexData[base + 10] = (GLfloat) newPoints[t3 * 2];
+        _triVertexData[base + 11] = (GLfloat) (newPoints[t3 * 2 + 1]);
+        _triVertexData[base + 12] = 1;
+        _triVertexData[base + 13] = (GLfloat) tr.pointlist[t3 * 2] / width;
+        _triVertexData[base + 14] = 1 - ((GLfloat) (height - tr.pointlist[t3 * 2 + 1])) / height;
+
     }
 
     glBindVertexArrayOES(_triVertexArray);
@@ -388,61 +362,63 @@ static int actionPointCount;
     glBufferData(GL_ARRAY_BUFFER, dataSize, data, GL_STATIC_DRAW);
 
     glEnableVertexAttribArray(GLKVertexAttribPosition);
-    glVertexAttribPointer(GLKVertexAttribPosition, 3, GL_FLOAT, GL_FALSE, 5*sizeof(GLfloat), BUFFER_OFFSET(0));
+    glVertexAttribPointer(GLKVertexAttribPosition, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), BUFFER_OFFSET(0));
 
     glEnableVertexAttribArray(GLKVertexAttribTexCoord0);
-    glVertexAttribPointer(GLKVertexAttribTexCoord0, 2, GL_FLOAT, GL_FALSE, 5*sizeof(GLfloat), BUFFER_OFFSET(3*sizeof(GLfloat)));
+    glVertexAttribPointer(GLKVertexAttribTexCoord0, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), BUFFER_OFFSET(3 * sizeof(GLfloat)));
 
 
     glBindVertexArrayOES(0);
 }
 
 - (void)setupHandles {
-    GLfloat *data;
-    size_t dataSize;
     if (_shape == NULL) {
-        data = gCubeVertexData;
-        dataSize = sizeof(gCubeVertexData);
-        _handleCount = 1;
+        return;
     }
-    else {
-        triangulateio tr = _shape->triangulation;
 
-        NSArray *handles = [_touches2Points allValues];
-        _handleCount = handles.count;
-        dataSize = (_handleCount * 3) * 3 * sizeof(GLfloat);
+    NSArray *handles = [_touches2Points allValues];
+    _handleCount = handles.count;
+    size_t dataSize = (_handleCount * 6) * 3 * sizeof(GLfloat);
 
-        if (_handleVertexDataSize < dataSize) {
-            _handleVertexData = (GLfloat *) realloc(_handleVertexData, dataSize);
-            _handleVertexDataSize = dataSize;
-        }
-        data = _handleVertexData;
+    if (_handleVertexDataSize < dataSize) {
+        _handleVertexData = (GLfloat *) realloc(_handleVertexData, dataSize);
+        _handleVertexDataSize = dataSize;
+    }
 
-        int height = _shape->height;
-        int width = _shape->width;
-        double *newPoints = _shape->pointsNew;
-        
-        for (size_t i = 0; i < _handleCount; i++) {
-            ShapeHandle *handle = handles[i];
-            size_t base = i * 9;
+    GLfloat *data = _handleVertexData;
 
-            CGPoint position = handle.current;
+    for (size_t i = 0; i < _handleCount; i++) {
+        ShapeHandle *handle = handles[i];
+        size_t base = i * 9;
 
-            CGFloat x = position.x;
-            CGFloat y = position.y;
+        CGPoint position = handle.current;
 
-            _handleVertexData[base + 0] = x;
-            _handleVertexData[base + 1] = y;
-            _handleVertexData[base + 2] = 1.2;
+        CGFloat x = position.x;
+        CGFloat y = position.y;
 
-            _handleVertexData[base + 3] = x+10;
-            _handleVertexData[base + 4] = y+10;
-            _handleVertexData[base + 5] = 1.2;
+        _handleVertexData[base + 0] = x;
+        _handleVertexData[base + 1] = y;
+        _handleVertexData[base + 2] = 1.2;
 
-            _handleVertexData[base + 6] = x + 10;
-            _handleVertexData[base + 7] = y;
-            _handleVertexData[base + 8] = 1.2;
-        }
+        _handleVertexData[base + 3] = 0;
+        _handleVertexData[base + 4] = 0;
+        _handleVertexData[base + 5] = 1;
+
+        _handleVertexData[base + 6] = x + 10;
+        _handleVertexData[base + 7] = y + 10;
+        _handleVertexData[base + 8] = 1.2;
+
+        _handleVertexData[base + 9] = 0;
+        _handleVertexData[base + 10] = 0;
+        _handleVertexData[base + 11] = 1;
+
+        _handleVertexData[base + 12] = x + 10;
+        _handleVertexData[base + 13] = y;
+        _handleVertexData[base + 14] = 1.2;
+
+        _handleVertexData[base + 15] = 0;
+        _handleVertexData[base + 16] = 0;
+        _handleVertexData[base + 17] = 1;
     }
 
     glBindVertexArrayOES(_handleVertexArray);
@@ -451,7 +427,10 @@ static int actionPointCount;
     glBufferData(GL_ARRAY_BUFFER, dataSize, data, GL_STATIC_DRAW);
 
     glEnableVertexAttribArray(GLKVertexAttribPosition);
-    glVertexAttribPointer(GLKVertexAttribPosition, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
+    glVertexAttribPointer(GLKVertexAttribPosition, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), BUFFER_OFFSET(0));
+
+    glEnableVertexAttribArray(GLKVertexAttribNormal);
+    glVertexAttribPointer(GLKVertexAttribNormal, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), BUFFER_OFFSET(3 * sizeof(GLfloat)));
 
     glBindVertexArrayOES(0);
 }
@@ -504,9 +483,6 @@ static int actionPointCount;
 
     // edges
     glBindVertexArrayOES(_edgeVertexArray);
-
-    glLineWidth(2);
-    [self.edgeEffect prepareToDraw];
 
     glDrawArrays(GL_LINES, 0, 2 * _edgeCount);
 
