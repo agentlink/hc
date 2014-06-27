@@ -37,7 +37,7 @@ typedef enum {
 }
 
 - (void)resetShape {
-    UIImage *image = [UIImage imageNamed:@"tux.png"];
+    UIImage *image = [UIImage imageNamed:@"elephant.png"];
     Shape *oldShape = _shape;
     _shape = [ImageUtil loadImage:image];
     ViewController *controller = self.glController;

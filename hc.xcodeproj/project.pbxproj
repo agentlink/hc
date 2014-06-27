@@ -159,6 +159,7 @@
 		DAAABA92195C151C0036C526 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAAABA6C195C151C0036C526 /* UIKit.framework */; };
 		DAAABA9A195C151C0036C526 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = DAAABA98195C151C0036C526 /* InfoPlist.strings */; };
 		DAAABA9C195C151C0036C526 /* hcTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DAAABA9B195C151C0036C526 /* hcTests.m */; };
+		DAAABAA8195D61BB0036C526 /* elephant.png in Resources */ = {isa = PBXBuildFile; fileRef = DAAABAA7195D61BB0036C526 /* elephant.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -663,6 +664,7 @@
 		DAAABA97195C151C0036C526 /* hcTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "hcTests-Info.plist"; sourceTree = "<group>"; };
 		DAAABA99195C151C0036C526 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		DAAABA9B195C151C0036C526 /* hcTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = hcTests.m; sourceTree = "<group>"; };
+		DAAABAA7195D61BB0036C526 /* elephant.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = elephant.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1666,6 +1668,7 @@
 		DAAABA72195C151C0036C526 /* hc */ = {
 			isa = PBXGroup;
 			children = (
+				DAAABAA7195D61BB0036C526 /* elephant.png */,
 				2C8CC7CF195C21B600B17BD1 /* lib */,
 				2C8CC7CB195C219E00B17BD1 /* model */,
 				DAAABA7B195C151C0036C526 /* AppDelegate.h */,
@@ -1900,6 +1903,7 @@
 				2C8CC976195C21B700B17BD1 /* CMakeLists.txt in Resources */,
 				2C8CCAB1195C2D9500B17BD1 /* wykobi_matrix.inl in Resources */,
 				2C8CC93E195C21B700B17BD1 /* Cholesky in Resources */,
+				DAAABAA8195D61BB0036C526 /* elephant.png in Resources */,
 				2C8CC974195C21B700B17BD1 /* CMakeLists.txt in Resources */,
 				2C8CC970195C21B700B17BD1 /* CMakeLists.txt in Resources */,
 				2C8CCA5C195C2B3200B17BD1 /* CMakeLists.txt in Resources */,
