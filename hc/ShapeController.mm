@@ -208,21 +208,22 @@
         int t1 = tr.trianglelist[3 * i];
         _triVertexData[base + 0] = (GLfloat) newPoints[t1 * 2];
         _triVertexData[base + 1] = (GLfloat) (newPoints[t1 * 2 + 1]);
-        _triVertexData[base + 2] = 1;
+        GLfloat z = 1 + ((GLfloat)tr.pointlist[t1 * 2]/width + (GLfloat)tr.pointlist[t1 * 2 + 1]/height)/10;
+        _triVertexData[base + 2] = z;
         _triVertexData[base + 3] = (GLfloat) tr.pointlist[t1 * 2] / width;
         _triVertexData[base + 4] = 1 - ((GLfloat) (height - tr.pointlist[t1 * 2 + 1])) / height;
 
         int t2 = tr.trianglelist[3 * i + 1];
         _triVertexData[base + 5] = (GLfloat) newPoints[t2 * 2];
         _triVertexData[base + 6] = (GLfloat) (newPoints[t2 * 2 + 1]);
-        _triVertexData[base + 7] = 1;
+        _triVertexData[base + 7] = z;
         _triVertexData[base + 8] = (GLfloat) tr.pointlist[t2 * 2] / width;
         _triVertexData[base + 9] = 1 - ((GLfloat) (height - tr.pointlist[t2 * 2 + 1])) / height;
 
         int t3 = tr.trianglelist[3 * i + 2];
         _triVertexData[base + 10] = (GLfloat) newPoints[t3 * 2];
         _triVertexData[base + 11] = (GLfloat) (newPoints[t3 * 2 + 1]);
-        _triVertexData[base + 12] = 1;
+        _triVertexData[base + 12] = z;
         _triVertexData[base + 13] = (GLfloat) tr.pointlist[t3 * 2] / width;
         _triVertexData[base + 14] = 1 - ((GLfloat) (height - tr.pointlist[t3 * 2 + 1])) / height;
 
