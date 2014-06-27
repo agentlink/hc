@@ -13,10 +13,8 @@
 
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
 
-    void *data = malloc(width*height*4* sizeof(char));
-
     CGContextRef context = CGBitmapContextCreate(
-            data,
+            NULL,
             width,
             height,
             8,
@@ -30,18 +28,26 @@
             image);
 
 
-    IplImage *cvimage = cvCreateImage(cvSize(width,height), IPL_DEPTH_8U, 4);
-    cvSetData(cvimage, data, width*4);
-    cvSetImageCOI(cvimage,4);
+    void *data = CGBitmapContextGetData(context);
 
-    IplImage * mask = cvCreateImage(cvSize(width,height), IPL_DEPTH_8U, 1);
+    IplImage *cvimage = cvCreateImage(cvSize(width, height), IPL_DEPTH_8U, 4);
+    cvSetData(cvimage, data, width * 4);
+    cvSetImageCOI(cvimage, 4);
+
+    IplImage *mask = cvCreateImage(cvSize(width, height), IPL_DEPTH_8U, 1);
     cvCopy(cvimage, mask, NULL);
     cvSmooth(mask, mask, 1, 4, 4, 0.1, 0.1);
     cvThreshold(mask, mask, 1, 255, CV_THRESH_BINARY);
-    CvMemStorage * storage = cvCreateMemStorage(0);
-    CvSeq * contour = 0;
+
+    CvMemStorage *storage = cvCreateMemStorage(0);
+    CvSeq *contour = 0;
     cvFindContours(mask, storage, &contour, sizeof(CvContour), CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE, cvPoint(0, 0));
     Shape *shape = new Shape(contour, width, height);
+
+    cvReleaseMemStorage(&storage);
+
+    cvSetData(mask, NULL, 0);
+    cvSetData(cvimage, NULL, 0);
 
     cvReleaseImage(&mask);
     cvReleaseImage(&cvimage);

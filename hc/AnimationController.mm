@@ -38,10 +38,14 @@ typedef enum {
 
 - (void)resetShape {
     UIImage *image = [UIImage imageNamed:@"tux.png"];
+    Shape *oldShape = _shape;
     _shape = [ImageUtil loadImage:image];
     ViewController *controller = self.glController;
     controller.texture = image;
     controller.shape = _shape;
+    if (oldShape != nullptr) {
+        delete oldShape;
+    }
 }
 
 - (IBAction)startRecord {
