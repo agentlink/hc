@@ -6,6 +6,7 @@
 #define LOG_TOUCHES(fmt, ...)
 //#define LOG_TOUCHES(fmt, ...) NSLog(fmt, ##__VA_ARGS__)
 
+static const double EXPORT_TIME_PER_FRAME = 0.03;
 static NSString *const SEGUE_SELECT_SHAPE = @"select_shape";
 static const NSTimeInterval PIN_TIME_THRESHOLD = 0.5f;
 static const float PIN_DISTANCE_THRESHOLD = 30;
@@ -156,7 +157,7 @@ typedef enum {
 
 - (void)removeTouches:(NSSet *)touches {
     NSMutableSet *moves = [NSMutableSet new];
-    
+
     NSDate *now = [NSDate date];
     NSTimeInterval time = [now timeIntervalSinceDate:_animationStart];
     vector<int> removed;
@@ -417,7 +418,8 @@ typedef enum {
         _dateFormatter.dateFormat = @"yyyy'_'MM'_'dd'__'HH'_'mm'_'ss";
     }
 
-    NSString *dateString = [_dateFormatter stringFromDate:[NSDate date]];
+    NSDate *start = [NSDate date];
+    NSString *dateString = [_dateFormatter stringFromDate:start];
     NSString *directoryName = [NSString stringWithFormat:@"export_%@", dateString];
     NSString *directory = [[LoadShapeController applicationDocumentsDirectory] stringByAppendingPathComponent:directoryName];
 
@@ -437,19 +439,26 @@ typedef enum {
     int frameIndex = 0;
     NSData *imageData = nil;
     while (_state == PLAYING) {
-        BOOL changed = [self updateAnimation:shapeController playbackTime:frameIndex*0.03];
+        BOOL changed = [self updateAnimation:shapeController playbackTime:frameIndex * EXPORT_TIME_PER_FRAME];
         if (changed || !imageData) {
-            UIImage *image = nil;
-            image = [shapeController snapshot];
-            CGSize size = image.size;
-            image = [ImageUtil imageWithImage:image scaledToSize:CGSizeMake(floor(size.width / 2), floor(size.height / 2))];
-            imageData = UIImagePNGRepresentation(image);
+            @autoreleasepool {
+                UIImage *image = [shapeController snapshot];
+                CGSize size = image.size;
+                UIImage *scaledImage = [ImageUtil imageWithImage:image scaledToSize:CGSizeMake(floor(size.width / 2), floor(size.height / 2))];
+                imageData = UIImagePNGRepresentation(scaledImage);
+            }
         }
 
         NSString *name = [NSString stringWithFormat:@"%05d.png", frameIndex];
         [imageData writeToFile:[directory stringByAppendingPathComponent:name] atomically:YES];
         frameIndex++;
     }
+
+    NSTimeInterval time = [[NSDate date] timeIntervalSinceDate:start];
+    double fps = 1 / EXPORT_TIME_PER_FRAME;
+    double rFps = frameIndex/time;
+    double total = frameIndex * EXPORT_TIME_PER_FRAME;
+    NSLog(@"exported %d frames at %.2f FPS (%.2f s) in %.2f sec (%.2f f/s) to %@", frameIndex, fps, total, time, rFps, directory);
 }
 
 @end
