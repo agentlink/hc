@@ -112,6 +112,15 @@ Shape::Shape(CvSeq * borderContour, int w, int h):width(w),height(h)
 	//trifree();
 } /**/
 
+double Cotan(double vix, double viy, double vjx, double vjy, double vlx, double vly)
+{
+    double xi = vlx - vix;
+    double xj = vlx - vjx;
+    double yi = vly - viy;
+    double yj = vly - vjy;
+    return (xi * xj + yi * yj)/(xi * yj - yi * xj);
+}
+
 
 void Shape::registration()
 {
@@ -172,12 +181,10 @@ void Shape::registration()
 		vjy = lastRegistrationPoints[pj*2+1];
 		vlx = lastRegistrationPoints[pl*2];
 		vly = lastRegistrationPoints[pl*2+1];
-		
-		//////
-		L2.coeffRef(i,pi) -= 1;
-		L2.coeffRef(i,pj) += 1;
-		//////
-		
+
+        //Calculate weight
+        double weight = Cotan(vix, viy, vjx, vjy, vlx, vly);
+
 		//cout << pi << " " <<  pj << " " << pl << endl;
 		
 		E11 = vjx - vix;
@@ -189,8 +196,12 @@ void Shape::registration()
 			pr = edge_2[i]=triangulation.trianglelist[t2*3]+triangulation.trianglelist[t2*3+1]+triangulation.trianglelist[t2*3+2]-pi-pj;
 			vrx = lastRegistrationPoints[pr*2];
 			vry = lastRegistrationPoints[pr*2+1];
-			
-			G11[i] = 1/4.0/(vix*vix+vjx*vjx+viy*viy+vjy*vjy+vlx*vlx+vly*vly+vrx*vrx+vry*vry
+
+            weight += Cotan(vjx, vjy, vix, viy, vrx, vry);
+            weight /= 2;
+
+
+            G11[i] = 1/4.0/(vix*vix+vjx*vjx+viy*viy+vjy*vjy+vlx*vlx+vly*vly+vrx*vrx+vry*vry
 						          -vlx*vix-vlx*vjx-vly*viy-vly*vjy-vrx*vix-vrx*vjx-vry*viy-vry*vjy);
 			
 			g11[i] = -(g00[i] = (4*vix-2*vlx-2*vrx)*G11[i]); g10[i] = g01[i] = (4*viy-2*vly-2*vry)*G11[i];
@@ -209,52 +220,36 @@ void Shape::registration()
 			g51[i] = -(g40[i] = (4*vlx-2*vix-2*vjx)*G11[i]); g50[i] = g41[i] = (4*vly-2*viy-2*vjy)*G11[i];
 
 		}
-		
+		weight = -1;
+        cout << "weight: " << weight << endl;
+
 		//////////////////////Eigen
-//		L1.coeffRef(2*i, 2*pi)		+= -1-E11*g00[i]-E12*g01[i];
-//		L1.coeffRef(2*i, 2*pi+1)	+=   -E11*g10[i]-E12*g11[i];
-//		L1.coeffRef(2*i+1, 2*pi)	+=   -E21*g00[i]-E22*g01[i];
-//		L1.coeffRef(2*i+1, 2*pi+1)	+= -1-E21*g10[i]-E22*g11[i];
-//		
-//		L1.coeffRef(2*i, 2*pj)		+= 1 -E11*g20[i]-E12*g21[i];
-//		L1.coeffRef(2*i, 2*pj+1)	+=   -E11*g30[i]-E12*g31[i];
-//		L1.coeffRef(2*i+1, 2*pj)	+=   -E21*g20[i]-E22*g21[i];
-//		L1.coeffRef(2*i+1, 2*pj+1)	+= 1 -E21*g30[i]-E22*g31[i];
-//
-//		L1.coeffRef(2*i, 2*pl)		+= -E11*g40[i]-E12*g41[i];
-//		L1.coeffRef(2*i, 2*pl+1)	+= -E11*g50[i]-E12*g51[i];
-//		L1.coeffRef(2*i+1, 2*pl)	+= -E21*g40[i]-E22*g41[i];
-//		L1.coeffRef(2*i+1, 2*pl+1)	+= -E21*g50[i]-E22*g51[i];
-//		
-//		if(edge_2[i] != -1){
-//			L1.coeffRef(2*i, 2*pr)		+= -E11*g60[i]-E12*g61[i];
-//			L1.coeffRef(2*i, 2*pr+1)	+= -E11*g70[i]-E12*g71[i];
-//			L1.coeffRef(2*i+1, 2*pr)	+= -E21*g60[i]-E22*g61[i];
-//			L1.coeffRef(2*i+1, 2*pr+1)	+= -E21*g70[i]-E22*g71[i];
-//		}
-        
-		L1tripletList.push_back(T(2*i, 2*pi, -1-E11*g00[i]-E12*g01[i]));
-        L1tripletList.push_back(T(2*i, 2*pi+1,   -E11*g10[i]-E12*g11[i]));
-		L1tripletList.push_back(T(2*i+1, 2*pi,   -E21*g00[i]-E22*g01[i]));
-		L1tripletList.push_back(T(2*i+1, 2*pi+1, -1-E21*g10[i]-E22*g11[i]));
+		L1tripletList.push_back(T(2*i, 2*pi, (-1-E11*g00[i]-E12*g01[i])*weight));
+        L1tripletList.push_back(T(2*i, 2*pi+1,  (-E11*g10[i]-E12*g11[i])*weight));
+		L1tripletList.push_back(T(2*i+1, 2*pi,   (-E21*g00[i]-E22*g01[i])*weight));
+		L1tripletList.push_back(T(2*i+1, 2*pi+1, (-1-E21*g10[i]-E22*g11[i])*weight));
 		
-		L1tripletList.push_back(T(2*i, 2*pj, 1 -E11*g20[i]-E12*g21[i]));
-		L1tripletList.push_back(T(2*i, 2*pj+1,   -E11*g30[i]-E12*g31[i]));
-		L1tripletList.push_back(T(2*i+1, 2*pj,   -E21*g20[i]-E22*g21[i]));
-		L1tripletList.push_back(T(2*i+1, 2*pj+1, 1 -E21*g30[i]-E22*g31[i]));
+		L1tripletList.push_back(T(2*i, 2*pj, (1 -E11*g20[i]-E12*g21[i])*weight));
+		L1tripletList.push_back(T(2*i, 2*pj+1,   (-E11*g30[i]-E12*g31[i])*weight));
+		L1tripletList.push_back(T(2*i+1, 2*pj,   (-E21*g20[i]-E22*g21[i])*weight));
+		L1tripletList.push_back(T(2*i+1, 2*pj+1, (1 -E21*g30[i]-E22*g31[i])*weight));
         
-		L1tripletList.push_back(T(2*i, 2*pl, -E11*g40[i]-E12*g41[i]));
-		L1tripletList.push_back(T(2*i, 2*pl+1, -E11*g50[i]-E12*g51[i]));
-		L1tripletList.push_back(T(2*i+1, 2*pl, -E21*g40[i]-E22*g41[i]));
-		L1tripletList.push_back(T(2*i+1, 2*pl+1, -E21*g50[i]-E22*g51[i]));
+		L1tripletList.push_back(T(2*i, 2*pl, (-E11*g40[i]-E12*g41[i])*weight));
+		L1tripletList.push_back(T(2*i, 2*pl+1, (-E11*g50[i]-E12*g51[i])*weight));
+		L1tripletList.push_back(T(2*i+1, 2*pl, (-E21*g40[i]-E22*g41[i])*weight));
+		L1tripletList.push_back(T(2*i+1, 2*pl+1, (-E21*g50[i]-E22*g51[i])*weight));
 		
 		if(edge_2[i] != -1){
-			L1tripletList.push_back(T(2*i, 2*pr, -E11*g60[i]-E12*g61[i]));
-			L1tripletList.push_back(T(2*i, 2*pr+1, -E11*g70[i]-E12*g71[i]));
-			L1tripletList.push_back(T(2*i+1, 2*pr, -E21*g60[i]-E22*g61[i]));
-			L1tripletList.push_back(T(2*i+1, 2*pr+1, -E21*g70[i]-E22*g71[i]));
+			L1tripletList.push_back(T(2*i, 2*pr, (-E11*g60[i]-E12*g61[i])*weight));
+			L1tripletList.push_back(T(2*i, 2*pr+1, (-E11*g70[i]-E12*g71[i])*weight));
+			L1tripletList.push_back(T(2*i+1, 2*pr, (-E21*g60[i]-E22*g61[i])*weight));
+			L1tripletList.push_back(T(2*i+1, 2*pr+1, (-E21*g70[i]-E22*g71[i])*weight));
 		}
-		//////////////////////
+
+        L2.coeffRef(i,pi) -= 1 * weight;
+        L2.coeffRef(i,pj) += 1 * weight;
+
+        //////////////////////
 	}
 	
 	
@@ -371,28 +366,8 @@ void Shape::releaseHandles(vector<int> ids)
 void Shape::updateTriangles()
 {
     if (handles.size() == 0)
-    {
-//        for (int i = 0; i < 2*triangulation.numberofpoints; i++){
-//            pointsNew[i] = triangulation.pointlist[i];
-//        }
         return;
-    }
-    
-//    if (handles.size() == 1)
-//    {
-//        int id = handles.begin()->first;
-//        point2d<double> h = handles.begin()->second;
-//        point2d<double> t_Point;
-//        t_Point.x = triangulation.pointlist[handleTriangles[id][0] * 2];
-//        t_Point.y = triangulation.pointlist[handleTriangles[id][0] * 2 + 1];
-//       
-//        for (int i = 0; i < 2*triangulation.numberofpoints; i+=2){
-//            pointsNew[i] = triangulation.pointlist[i] + h.x - t_Point.x;
-//            pointsNew[i+1] = triangulation.pointlist[i+1] + h.y - t_Point.y;
-//        }
-//        return;
-//    }
-    
+
 	double *tmpPoints = new double[2*triangulation.numberofpoints];
     ///////////////////////////
 	///   Part 1 /////////////
@@ -433,9 +408,25 @@ void Shape::updateTriangles()
 		pj = triangulation.edgelist[2*i+1];
 		pl = edge_1[i];
 		pr = edge_2[i];
-		
-		if (pr != -1){
-			ck =	g00[i]*tmpPoints[pi*2]+g10[i]*tmpPoints[pi*2+1]+
+        vix = lastRegistrationPoints[pi*2];
+        viy = lastRegistrationPoints[pi*2+1];
+        vjx = lastRegistrationPoints[pj*2];
+        vjy = lastRegistrationPoints[pj*2+1];
+        double vlx = lastRegistrationPoints[pl*2];
+        double vly = lastRegistrationPoints[pl*2+1];
+
+        //Calculate weight
+        double weight = Cotan(vix, viy, vjx, vjy, vlx, vly);
+
+        if (pr != -1){
+            double vrx = lastRegistrationPoints[pr*2];
+            double vry = lastRegistrationPoints[pr*2+1];
+
+            weight += Cotan(vjx, vjy, vix, viy, vrx, vry);
+            weight /= 2;
+
+
+            ck =	g00[i]*tmpPoints[pi*2]+g10[i]*tmpPoints[pi*2+1]+
             g20[i]*tmpPoints[pj*2]+g30[i]*tmpPoints[pj*2+1]+
             g40[i]*tmpPoints[pl*2]+g50[i]*tmpPoints[pl*2+1]+
             g60[i]*tmpPoints[pr*2]+g70[i]*tmpPoints[pr*2+1];
@@ -454,8 +445,13 @@ void Shape::updateTriangles()
             g21[i]*tmpPoints[pj*2]+g31[i]*tmpPoints[pj*2+1]+
             g41[i]*tmpPoints[pl*2]+g51[i]*tmpPoints[pl*2+1];
 		}
-		
-		//ck=100000;sk=0;
+
+        weight = -1;
+        cout << "weight1: " << weight << endl;
+
+
+
+        //ck=100000;sk=0;
 		
 		//cout << "Ck Sk " << ck << " " << sk << endl;
         
@@ -465,15 +461,11 @@ void Shape::updateTriangles()
             sk = 0;
         }
         
-		vix = lastRegistrationPoints[pi*2];
-		viy = lastRegistrationPoints[pi*2+1];
-		vjx = lastRegistrationPoints[pj*2];
-		vjy = lastRegistrationPoints[pj*2+1];
-		
+
 		n = 1/pow((ck*ck + sk*sk),0.5);
 		ck *= n; sk *= n;
-		d2x[i]= ck*(vjx-vix) + sk*(vjy-viy);
-		d2y[i]=-sk*(vjx-vix) + ck*(vjy-viy);
+		d2x[i]= ( ck*(vjx-vix) + sk*(vjy-viy))*weight;
+		d2y[i]= (-sk*(vjx-vix) + ck*(vjy-viy))*weight;
 	}
 	
 	////////////Eigen
