@@ -58,13 +58,14 @@ public:
 	SparseMatrix<double> L_1,L_2, C_1, C_2, A1, A2;
 	SimplicialLDLT<SparseMatrix<double> > LDLT_of_A1, LDLT_of_A2;
 	SparseMatrix<double> C1_t, C2_t, L2_t;
-
 	
 public:
 	Shape(CvSeq * borderContour, int w, int h);
 	int addHandle(int, double, double);
     void updateHandle(int, double, double);
     void updateHandles(map<int, point2d<double>>);
+    void releaseHandle(int);
+    void Shape::releaseHandles(vector<int>);
 	void registration();
 	void compilation();
     void updateTriangles();

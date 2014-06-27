@@ -298,6 +298,19 @@ void Shape::updateHandles(map<int, point2d<double> > newHandles)
     updateTriangles();
 }
 
+void Shape::releaseHandle(int id)
+{
+    handles.erase(id);
+    updateTriangles();
+}
+
+void Shape::releaseHandles(vector<int> ids)
+{
+    for (vector<int>::iterator id = ids.begin(); id != ids.end(); id++)
+        handles.erase(*id);
+    updateTriangles();
+}
+
 void Shape::updateTriangles()
 {
 	double *tmpPoints = new double[2*triangulation.numberofpoints];
