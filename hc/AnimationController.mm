@@ -7,7 +7,7 @@
 
 static NSString *const SEGUE_SELECT_SHAPE = @"select_shape";
 static const NSTimeInterval PIN_TIME_THRESHOLD = 0.5f;
-static const float PIN_DISTANCE_THRESHOLD = 22;
+static const float PIN_DISTANCE_THRESHOLD = 30;
 
 typedef enum {
     IDLE,
@@ -25,11 +25,16 @@ typedef enum {
     NSUInteger _playbackPosition;
     NSDate *_animationStart;
     State _state;
+    NSDate *_recordZero;
+    NSDate *_recordStart;
+    NSDate *_playbackStart;
 }
 
 
 - (void)resetShape {
     self.shapeController.shapeImage = _image;
+
+    _animationStart = [NSDate date];
 }
 
 - (IBAction)startRecord {
@@ -41,8 +46,8 @@ typedef enum {
         return;
     }
 
-    [self clearRecord];
-    _animationStart = [NSDate date];
+    _recordZero = _animationStart;
+    _recordStart = [NSDate date];
     _state = RECORDING;
 }
 
@@ -60,10 +65,41 @@ typedef enum {
     [_touches2Points removeAllObjects];
     [_pins removeAllObjects];
 
+    NSTimeInterval preRecordTime = [_recordStart timeIntervalSinceDate:_recordZero];
+
     [self resetShape];
     _playbackPosition = 0;
-    _animationStart = [NSDate date];
+    NSDate *now = [NSDate date];
+    _playbackStart = now;
     _state = PLAYING;
+
+    [self fastForward:preRecordTime];
+}
+
+- (void)fastForward:(NSTimeInterval)interval {
+    ShapeController *shapeController = self.shapeController;
+
+    for (AnimationEvent *event in _record) {
+        if (event.time >= interval) {
+            break;
+        }
+
+        switch (event.type) {
+            case ADD:
+                [shapeController addHandle:event.handleId atLocation:event.position update:NO];
+                break;
+            case REMOVE:
+                [self releaseHandle:shapeController handleId:event.handleId];
+                break;
+            case MOVE:
+                [self moveHandle:shapeController position:event.position handleId:event.handleId];
+            default:
+                break;
+        }
+        _playbackPosition++;
+    }
+
+    [shapeController updateOnShapeTransform];
 }
 
 - (ShapeController *)shapeController {
@@ -90,12 +126,10 @@ typedef enum {
         int handleId = handle.handleId;
         changed[handleId] = point;
 
-        if ([self isRecording]) {
-            [_record addObject:[AnimationEvent eventWithTime:time
-                                                        type:MOVE
-                                                    handleId:handleId
-                                                    position:actualLocation]];
-        }
+        [_record addObject:[AnimationEvent eventWithTime:time
+                                                    type:MOVE
+                                                handleId:handleId
+                                                position:actualLocation]];
 
         LOG_TOUCHES(@"MOVED => %@", handle);
     }
@@ -113,13 +147,9 @@ typedef enum {
     return _state == PLAYING;
 }
 
-- (BOOL)isRecording {
-    return _state == RECORDING;
-}
-
 - (void)removeTouches:(NSSet *)touches {
-    [self updateTouches:touches updateShape:NO];
-
+    NSMutableSet *moves = [NSMutableSet new];
+    
     NSDate *now = [NSDate date];
     NSTimeInterval time = [now timeIntervalSinceDate:_animationStart];
     vector<int> removed;
@@ -128,23 +158,29 @@ typedef enum {
         int handleId = handle.handleId;
         NSTimeInterval touchDuration = [now timeIntervalSinceDate:handle.lastTouchedAt];
         BOOL longTouch = touchDuration > PIN_TIME_THRESHOLD;
-        if (longTouch != [_pins containsObject:handle]) {
+
+        if (longTouch) {
+            [moves addObject:touch];
+        }
+
+        BOOL isPin = [_pins containsObject:handle];
+        if (longTouch != isPin) {
             [_touches2Points removeObjectForKey:@([self touchId:touch])];
             [_pins removeObject:handle];
             removed.push_back(handleId);
-            if ([self isRecording]) {
-                CGPoint location = [touch locationInView:self.view];
-                [_record addObject:[AnimationEvent eventWithTime:time
-                                                            type:REMOVE
-                                                        handleId:handleId
-                                                        position:location]];
-            }
+            CGPoint location = [touch locationInView:self.view];
+            [_record addObject:[AnimationEvent eventWithTime:time
+                                                        type:REMOVE
+                                                    handleId:handleId
+                                                    position:location]];
             LOG_TOUCHES(@"ENDED => %@", handle);
         }
-        else {
+        else if (!isPin) {
             [_pins addObject:handle];
         }
     }
+
+    [self updateTouches:moves updateShape:NO];
 
     [self.shapeController releaseHandles:removed update:YES];
 }
@@ -184,12 +220,10 @@ typedef enum {
         if (!foundPin) {
             LOG_TOUCHES(@"NEW => %@", ap);
             [self.shapeController addHandle:handleId atLocation:location update:YES];
-            if ([self isRecording]) {
-                [_record addObject:[AnimationEvent eventWithTime:time
-                                                            type:ADD
-                                                        handleId:handleId
-                                                        position:location]];
-            }
+            [_record addObject:[AnimationEvent eventWithTime:time
+                                                        type:ADD
+                                                    handleId:handleId
+                                                    position:location]];
         }
     }
 
@@ -273,13 +307,14 @@ typedef enum {
         return;
     }
 
+    NSTimeInterval preRecordTime = [_recordStart timeIntervalSinceDate:_recordZero];
     if (_playbackPosition >= _record.count) {
         [self stop];
         return;
     }
 
     NSDate *now = [NSDate date];
-    NSTimeInterval time = [now timeIntervalSinceDate:_animationStart];
+    NSTimeInterval time = [now timeIntervalSinceDate:_playbackStart] + preRecordTime;
     BOOL changed = NO;
     while (_playbackPosition < _record.count) {
         AnimationEvent *event = _record[_playbackPosition];
@@ -297,18 +332,11 @@ typedef enum {
                 [controller addHandle:handleId atLocation:position update:NO];
                 break;
             case MOVE: {
-                map<int, point2d<double>> moved;
-                point2d<double> location;
-                location.x = position.x;
-                location.y = position.y;
-                moved[handleId] = location;
-                [controller handlesMoved:moved update:NO];
+                [self moveHandle:controller position:position handleId:handleId];
                 break;
             }
             case REMOVE: {
-
-                vector<int> released;
-                released.push_back(handleId);
+                [self releaseHandle:controller handleId:handleId];
             }
             default:
                 break;
@@ -319,6 +347,21 @@ typedef enum {
         [controller updateOnShapeTransform];
     }
 
+}
+
+- (void)moveHandle:(ShapeController *)controller position:(CGPoint)position handleId:(int)handleId {
+    map<int, point2d<double>> moved;
+    point2d<double> location;
+    location.x = position.x;
+    location.y = position.y;
+    moved[handleId] = location;
+    [controller handlesMoved:moved update:NO];
+}
+
+- (void)releaseHandle:(ShapeController *)controller handleId:(int)handleId {
+    vector<int> released;
+    released.push_back(handleId);
+    [controller releaseHandles:released update:NO];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
