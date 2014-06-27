@@ -68,6 +68,7 @@ public:
     void releaseHandle(int);
     void releaseHandles(vector<int>);
 	void registration();
+    void reTreangulate(CvSeq *);
 	void compilation();
     void updateTriangles();
 //	bool setActiveHandle(double x, double y);

@@ -16,7 +16,15 @@ Shape::Shape(CvSeq * borderContour, int w, int h):width(w),height(h)
 {
 	Eps = std::min(width, height)/25;
 	
-	shapeGeometry.numberofpoints = (borderContour->total)/BORDERSTEP + 1;
+    reTreangulate(borderContour);
+	registration();
+
+	//trifree();
+} /**/
+
+void Shape::reTreangulate (CvSeq * borderContour)
+{
+    shapeGeometry.numberofpoints = (borderContour->total)/BORDERSTEP + 1;
 	shapeGeometry.pointlist = new REAL[2*shapeGeometry.numberofpoints];
 	shapeGeometry.numberofpointattributes = 0;
 	shapeGeometry.pointmarkerlist = 0;
@@ -49,7 +57,7 @@ Shape::Shape(CvSeq * borderContour, int w, int h):width(w),height(h)
 	triangulation.trianglearealist = NULL;
 	triangulation.triangleattributelist = NULL;
 	triangulation.trianglelist = NULL;
-		
+    
 	vout.edgelist = NULL;
 	vout.edgemarkerlist = NULL;
 	vout.holelist = NULL;
@@ -101,11 +109,7 @@ Shape::Shape(CvSeq * borderContour, int w, int h):width(w),height(h)
 	for (int i = 0; i < 2*triangulation.numberofpoints; i++){
 		pointsNew[i] = triangulation.pointlist[i];
 	}
-    
-	registration();
-
-	//trifree();
-} /**/
+}
 
 
 void Shape::registration()
@@ -114,35 +118,44 @@ void Shape::registration()
 	int Ne = triangulation.numberofedges;
     SparseMatrix<double> L1(2*Ne, 2*triangulation.numberofpoints);
     SparseMatrix<double> L2(Ne, triangulation.numberofpoints);
-	edge_1 = new int[Ne];
-	edge_2 = new int[Ne];
-	G11 = new double[Ne];
-	G22 = new double[Ne];
-	int t1, t2, pi, pj, pl, pr;
+    
+    if (g00 == NULL)
+    {
+        edge_1 = new int[Ne];
+        edge_2 = new int[Ne];
+        G11 = new double[Ne];
+        G22 = new double[Ne];
+        g00 = new double[Ne];
+        g01 = new double[Ne];
+        g10 = new double[Ne];
+        g11 = new double[Ne];
+        g20 = new double[Ne];
+        g21 = new double[Ne];
+        g30 = new double[Ne];
+        g31 = new double[Ne];
+        g40 = new double[Ne];
+        g41 = new double[Ne];
+        g50 = new double[Ne];
+        g51 = new double[Ne];
+        g60 = new double[Ne];
+        g61 = new double[Ne];
+        g70 = new double[Ne];
+        g71 = new double[Ne];
+    }
+    
+    int t1, t2, pi, pj, pl, pr;
 	double vix, viy, vjx, vjy, vlx, vly, vrx, vry, E11, E12, E21, E22;
+    for (int i = 0; i < 2*triangulation.numberofpoints; i++){
+        lastRegistrationPoints[i] = pointsNew[i];
+    }
+
+    cout << "Registration part1" << Ne << endl;
+    flush(cout);
     
-	for (int i = 0; i < 2*triangulation.numberofpoints; i++){
-		lastRegistrationPoints[i] = pointsNew[i];
-	}
+    typedef Eigen::Triplet<double> T;
+    std::vector<T> L1tripletList;
+    L1tripletList.reserve(Ne*12);
     
-	cout << "Registration part1" << Ne << endl;
-	flush(cout);
-	g00 = new double[Ne];
-	g01 = new double[Ne];
-	g10 = new double[Ne];
-	g11 = new double[Ne];
-	g20 = new double[Ne];
-	g21 = new double[Ne];
-	g30 = new double[Ne];
-	g31 = new double[Ne];
-	g40 = new double[Ne];
-	g41 = new double[Ne];
-	g50 = new double[Ne];
-	g51 = new double[Ne];
-	g60 = new double[Ne];
-	g61 = new double[Ne];
-	g70 = new double[Ne];
-	g71 = new double[Ne];
 	for (int i = 0; i < Ne; i++)
 	{
 		t1 = vout.edgelist[2*i];
@@ -196,33 +209,55 @@ void Shape::registration()
 		}
 		
 		//////////////////////Eigen
-		L1.coeffRef(2*i, 2*pi)		+= -1-E11*g00[i]-E12*g01[i];
-		L1.coeffRef(2*i, 2*pi+1)	+=   -E11*g10[i]-E12*g11[i];
-		L1.coeffRef(2*i+1, 2*pi)	+=   -E21*g00[i]-E22*g01[i];
-		L1.coeffRef(2*i+1, 2*pi+1)	+= -1-E21*g10[i]-E22*g11[i];
+//		L1.coeffRef(2*i, 2*pi)		+= -1-E11*g00[i]-E12*g01[i];
+//		L1.coeffRef(2*i, 2*pi+1)	+=   -E11*g10[i]-E12*g11[i];
+//		L1.coeffRef(2*i+1, 2*pi)	+=   -E21*g00[i]-E22*g01[i];
+//		L1.coeffRef(2*i+1, 2*pi+1)	+= -1-E21*g10[i]-E22*g11[i];
+//		
+//		L1.coeffRef(2*i, 2*pj)		+= 1 -E11*g20[i]-E12*g21[i];
+//		L1.coeffRef(2*i, 2*pj+1)	+=   -E11*g30[i]-E12*g31[i];
+//		L1.coeffRef(2*i+1, 2*pj)	+=   -E21*g20[i]-E22*g21[i];
+//		L1.coeffRef(2*i+1, 2*pj+1)	+= 1 -E21*g30[i]-E22*g31[i];
+//
+//		L1.coeffRef(2*i, 2*pl)		+= -E11*g40[i]-E12*g41[i];
+//		L1.coeffRef(2*i, 2*pl+1)	+= -E11*g50[i]-E12*g51[i];
+//		L1.coeffRef(2*i+1, 2*pl)	+= -E21*g40[i]-E22*g41[i];
+//		L1.coeffRef(2*i+1, 2*pl+1)	+= -E21*g50[i]-E22*g51[i];
+//		
+//		if(edge_2[i] != -1){
+//			L1.coeffRef(2*i, 2*pr)		+= -E11*g60[i]-E12*g61[i];
+//			L1.coeffRef(2*i, 2*pr+1)	+= -E11*g70[i]-E12*g71[i];
+//			L1.coeffRef(2*i+1, 2*pr)	+= -E21*g60[i]-E22*g61[i];
+//			L1.coeffRef(2*i+1, 2*pr+1)	+= -E21*g70[i]-E22*g71[i];
+//		}
+        
+		L1tripletList.push_back(T(2*i, 2*pi, -1-E11*g00[i]-E12*g01[i]));
+        L1tripletList.push_back(T(2*i, 2*pi+1,   -E11*g10[i]-E12*g11[i]));
+		L1tripletList.push_back(T(2*i+1, 2*pi,   -E21*g00[i]-E22*g01[i]));
+		L1tripletList.push_back(T(2*i+1, 2*pi+1, -1-E21*g10[i]-E22*g11[i]));
 		
-		L1.coeffRef(2*i, 2*pj)		+= 1 -E11*g20[i]-E12*g21[i];
-		L1.coeffRef(2*i, 2*pj+1)	+=   -E11*g30[i]-E12*g31[i];
-		L1.coeffRef(2*i+1, 2*pj)	+=   -E21*g20[i]-E22*g21[i];
-		L1.coeffRef(2*i+1, 2*pj+1)	+= 1 -E21*g30[i]-E22*g31[i];
-
-		L1.coeffRef(2*i, 2*pl)		+= -E11*g40[i]-E12*g41[i];
-		L1.coeffRef(2*i, 2*pl+1)	+= -E11*g50[i]-E12*g51[i];
-		L1.coeffRef(2*i+1, 2*pl)	+= -E21*g40[i]-E22*g41[i];
-		L1.coeffRef(2*i+1, 2*pl+1)	+= -E21*g50[i]-E22*g51[i];
+		L1tripletList.push_back(T(2*i, 2*pj, 1 -E11*g20[i]-E12*g21[i]));
+		L1tripletList.push_back(T(2*i, 2*pj+1,   -E11*g30[i]-E12*g31[i]));
+		L1tripletList.push_back(T(2*i+1, 2*pj,   -E21*g20[i]-E22*g21[i]));
+		L1tripletList.push_back(T(2*i+1, 2*pj+1, 1 -E21*g30[i]-E22*g31[i]));
+        
+		L1tripletList.push_back(T(2*i, 2*pl, -E11*g40[i]-E12*g41[i]));
+		L1tripletList.push_back(T(2*i, 2*pl+1, -E11*g50[i]-E12*g51[i]));
+		L1tripletList.push_back(T(2*i+1, 2*pl, -E21*g40[i]-E22*g41[i]));
+		L1tripletList.push_back(T(2*i+1, 2*pl+1, -E21*g50[i]-E22*g51[i]));
 		
 		if(edge_2[i] != -1){
-			L1.coeffRef(2*i, 2*pr)		+= -E11*g60[i]-E12*g61[i];
-			L1.coeffRef(2*i, 2*pr+1)	+= -E11*g70[i]-E12*g71[i];
-			L1.coeffRef(2*i+1, 2*pr)	+= -E21*g60[i]-E22*g61[i];
-			L1.coeffRef(2*i+1, 2*pr+1)	+= -E21*g70[i]-E22*g71[i];
+			L1tripletList.push_back(T(2*i, 2*pr, -E11*g60[i]-E12*g61[i]));
+			L1tripletList.push_back(T(2*i, 2*pr+1, -E11*g70[i]-E12*g71[i]));
+			L1tripletList.push_back(T(2*i+1, 2*pr, -E21*g60[i]-E22*g61[i]));
+			L1tripletList.push_back(T(2*i+1, 2*pr+1, -E21*g70[i]-E22*g71[i]));
 		}
-		
 		//////////////////////
 	}
 	
 	
 	////Eigen
+    L1.setFromTriplets(L1tripletList.begin(), L1tripletList.end());
 	L_1 = L1.transpose()*L1;
 	////
 	
