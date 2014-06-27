@@ -39,12 +39,12 @@ typedef enum {
 }
 
 - (IBAction)startRecord {
-    if (self.isPlaying) {
-        [self stop];
-    }
-
     if (!self.shapeController.hasShape) {
         return;
+    }
+
+    if (self.isPlaying) {
+        [self stop];
     }
 
     _recordZero = _animationStart;
@@ -57,7 +57,7 @@ typedef enum {
 }
 
 - (IBAction)playRecord {
-    if (!self.shapeController.hasShape) {
+    if (!self.shapeController.hasShape || !self.hasRecord) {
         return;
     }
 
@@ -75,6 +75,10 @@ typedef enum {
     _state = PLAYING;
 
     [self fastForward:preRecordTime];
+}
+
+- (BOOL)hasRecord {
+    return _recordZero != nil;
 }
 
 - (void)fastForward:(NSTimeInterval)interval {
@@ -382,6 +386,8 @@ typedef enum {
 
 - (void)clearRecord {
     _record = [NSMutableArray new];
+    _recordZero = nil;
+    _recordStart = nil;
 }
 
 - (void)setImage:(UIImage *)image {

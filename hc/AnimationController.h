@@ -7,4 +7,6 @@
 
 @interface AnimationController : UIViewController <AnimationDataSource, LoadShapeControllerDelegate>
 @property(nonatomic, strong) UIImage *image;
+
+- (BOOL)hasRecord;
 @end
