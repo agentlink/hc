@@ -50,7 +50,7 @@ public:
 	
 	int *edge_1, *edge_2;
 	double *G11, *G22;
-	double *g00, *g01, *g10, *g11, *g20, *g21, *g30, *g31, *g40, *g41, *g50, *g51, *g60, *g61, *g70, *g71;
+	double *g00 = NULL, *g01, *g10, *g11, *g20, *g21, *g30, *g31, *g40, *g41, *g50, *g51, *g60, *g61, *g70, *g71;
 	
 	double *pointsNew;
 	double *lastRegistrationPoints;
@@ -71,6 +71,7 @@ public:
     void reTreangulate(CvSeq *);
 	void compilation();
     void updateTriangles();
+    ~Shape();
 //	bool setActiveHandle(double x, double y);
 //	void modifyActiveHandle(double x, double y);
 };

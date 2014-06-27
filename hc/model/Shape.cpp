@@ -16,15 +16,7 @@ Shape::Shape(CvSeq * borderContour, int w, int h):width(w),height(h)
 {
 	Eps = std::min(width, height)/25;
 	
-    reTreangulate(borderContour);
-	registration();
-
-	//trifree();
-} /**/
-
-void Shape::reTreangulate (CvSeq * borderContour)
-{
-    shapeGeometry.numberofpoints = (borderContour->total)/BORDERSTEP + 1;
+    shapeGeometry.numberofpoints = (borderContour->total)/BORDERSTEP;
 	shapeGeometry.pointlist = new REAL[2*shapeGeometry.numberofpoints];
 	shapeGeometry.numberofpointattributes = 0;
 	shapeGeometry.pointmarkerlist = 0;
@@ -109,7 +101,11 @@ void Shape::reTreangulate (CvSeq * borderContour)
 	for (int i = 0; i < 2*triangulation.numberofpoints; i++){
 		pointsNew[i] = triangulation.pointlist[i];
 	}
-}
+    
+	registration();
+
+	//trifree();
+} /**/
 
 
 void Shape::registration()
@@ -162,7 +158,8 @@ void Shape::registration()
 		t2 = vout.edgelist[2*i+1];
 		pi = triangulation.edgelist[2*i];
 		pj = triangulation.edgelist[2*i+1];
-		pl = edge_1[i]=triangulation.trianglelist[t1*3]+triangulation.trianglelist[t1*3+1]+triangulation.trianglelist[t1*3+2]-pi-pj;
+		pl = triangulation.trianglelist[t1*3]+triangulation.trianglelist[t1*3+1]+triangulation.trianglelist[t1*3+2]-pi-pj;
+        edge_1[i]=pl;
 
 		vix = lastRegistrationPoints[pi*2];
 		viy = lastRegistrationPoints[pi*2+1];
@@ -341,6 +338,8 @@ void Shape::updateHandles(map<int, point2d<double> > newHandles)
 
 void Shape::releaseHandle(int id)
 {
+    if (handles.find(id) == handles.end())
+        return;
     handles.erase(id);
     handleTriangles.erase(id);
     handleBarCoords.erase(id);
@@ -353,6 +352,8 @@ void Shape::releaseHandles(vector<int> ids)
 {
     for (vector<int>::iterator id = ids.begin(); id != ids.end(); id++)
     {
+        if (handles.find(*id) == handles.end())
+            continue;
         handles.erase(*id);
         handleTriangles.erase(*id);
         handleBarCoords.erase(*id);
@@ -548,4 +549,67 @@ void Shape::compilation()
 	A2 = C_2 + L_2;
 	LDLT_of_A2.compute(A2);
 	//////////
+}
+
+Shape::~Shape()
+{
+    delete shapeGeometry.segmentlist;
+    delete shapeGeometry.pointlist;
+
+    trifree(triangulation.edgelist);
+    trifree(triangulation.edgemarkerlist);
+    //trifree((VOID*)triangulation.holelist);
+    trifree(triangulation.neighborlist);
+    trifree((VOID*)triangulation.normlist);
+    trifree((VOID*)triangulation.pointattributelist);
+    trifree((VOID*)triangulation.pointlist);
+    trifree((VOID*)triangulation.pointmarkerlist);
+    //trifree((VOID*)triangulation.regionlist);
+    trifree(triangulation.segmentlist);
+    trifree(triangulation.segmentmarkerlist);
+    trifree((VOID*)triangulation.trianglearealist);
+    trifree((VOID*)triangulation.triangleattributelist);
+    trifree(triangulation.trianglelist);
+
+    trifree(vout.edgelist);
+    trifree(vout.edgemarkerlist);
+    trifree((VOID*)vout.holelist);
+    trifree(vout.neighborlist);
+    trifree((VOID*)vout.normlist);
+    trifree((VOID*)vout.pointattributelist);
+    trifree((VOID*)vout.pointlist);
+    trifree(vout.pointmarkerlist);
+    trifree((VOID*)vout.regionlist);
+    trifree(vout.segmentlist);
+    trifree(vout.segmentmarkerlist);
+    trifree((VOID*)vout.trianglearealist);
+    trifree((VOID*)vout.triangleattributelist);
+    trifree(vout.trianglelist);
+
+
+    handles.clear();
+    handleTriangles.clear();
+    handleBarCoords.clear();
+    delete edge_1;
+    delete edge_2;
+    delete G11;
+    delete G22;
+    delete g00;
+    delete g01;
+    delete g10;
+    delete g11;
+    delete g20;
+    delete g21;
+    delete g30;
+    delete g31;
+    delete g40;
+    delete g41;
+    delete g50;
+    delete g51;
+    delete g60;
+    delete g61;
+    delete g70;
+    delete g71;
+    delete pointsNew;
+    delete lastRegistrationPoints;
 }
