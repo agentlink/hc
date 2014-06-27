@@ -1,9 +1,10 @@
-#import "ViewController.h"
+#import "ShapeController.h"
 #import "AnimationController.h"
+#import "ImageUtil.h"
 
 #define BUFFER_OFFSET(i) ((char *)NULL + (i))
 
-@interface ViewController ()
+@interface ShapeController ()
 @property(strong, nonatomic) EAGLContext *context;
 @property(strong, nonatomic) GLKBaseEffect *edgeEffect;
 @property(strong, nonatomic) GLKBaseEffect *triangleEffect;
@@ -13,7 +14,7 @@
 @end
 
 
-@implementation ViewController {
+@implementation ShapeController {
     GLuint _edgeVertexArray;
     GLuint _edgeVertexBuffer;
     size_t _edgeCount;
@@ -33,6 +34,8 @@
     size_t _handleVertexDataSize;
 
     GLKTextureInfo *_textureInfo;
+    Shape *_shape;
+    UIImage *_texture;
 }
 
 - (void)viewDidLoad {
@@ -80,9 +83,14 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (void)setShape:(Shape *)shape {
-    _shape = shape;
-    [self updateGLOnShape];
+- (void)setShapeImage:(UIImage *)image {
+    Shape *oldShape = _shape;
+    _shape = image == nil ? NULL : [ImageUtil loadImage:image];
+    _texture = image;
+    [self updateGLOnNewShape];
+    if (oldShape != NULL) {
+        delete oldShape;
+    }
 }
 
 
@@ -112,7 +120,7 @@
     glBindVertexArrayOES(0);
 }
 
-- (void)updateGLOnShape {
+- (void)updateGLOnNewShape {
     glActiveTexture(GL_TEXTURE0);
     CGImageRef cgImage = [_texture CGImage];
     NSError *theError = nil;
@@ -125,10 +133,10 @@
 
     self.triangleEffect.texture2d0.name = tex.name;
 
-    [self updateGLOnChange];
+    [self updateOnShapeTransform];
 }
 
-- (void)updateGLOnChange {
+- (void)updateOnShapeTransform {
     [self setupTriangles];
     [self setupEdges];
     [self setupHandles];
@@ -359,6 +367,31 @@
 
     glDrawArrays(GL_TRIANGLES, 0, 3 * _handleCount);
 
+}
+
+- (void)releaseHandles:(vector<int>)releasedHandles update:(BOOL)update {
+    _shape->releaseHandles(releasedHandles);
+    if (update) {
+        [self updateOnShapeTransform];
+    }
+}
+
+- (void)addHandle:(int)handleId atLocation:(CGPoint)location update:(BOOL)update {
+    _shape->addHandle(handleId, location.x, location.y);
+    if (update) {
+        [self updateOnShapeTransform];
+    }
+}
+
+- (void)handlesMoved:(map<int, point2d<double>>)changed update:(BOOL)update {
+    _shape->updateHandles(changed);
+    if (update) {
+        [self updateOnShapeTransform];
+    }
+}
+
+- (BOOL)hasShape {
+    return _shape != NULL;
 }
 
 @end

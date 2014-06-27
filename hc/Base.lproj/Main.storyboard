@@ -8,12 +8,16 @@
         <scene sceneID="4rI-c0-Y4Y">
             <objects>
                 <navigationController definesPresentationContext="YES" toolbarHidden="NO" id="unB-jD-8Y1" sceneMemberID="viewController">
-                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics" translucent="NO"/>
-                    <navigationBar key="navigationBar" hidden="YES" contentMode="scaleToFill" id="ADG-gO-I3X">
+                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="black" translucent="NO" prompted="NO"/>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics" barStyle="black" translucent="NO"/>
+                    <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" barStyle="black" translucent="NO" id="ADG-gO-I3X">
+                        <rect key="frame" x="0.0" y="0.0" width="0.0" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </navigationBar>
-                    <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translucent="NO" id="mKo-nu-htj">
-                        <rect key="frame" x="0.0" y="980" width="768" height="44"/>
+                    <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" barStyle="black" translucent="NO" id="mKo-nu-htj">
+                        <rect key="frame" x="0.0" y="724" width="1024" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </toolbar>
                     <connections>
@@ -24,18 +28,67 @@
             </objects>
             <point key="canvasLocation" x="-2173" y="-1020"/>
         </scene>
+        <!--Load Shape Controller - Select Shape-->
+        <scene sceneID="TBO-yq-NBN">
+            <objects>
+                <collectionViewController autoresizesArchivedViewToFullSize="NO" id="UCn-Ck-nmg" customClass="LoadShapeController" sceneMemberID="viewController">
+                    <collectionView key="view" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" minimumZoomScale="0.0" maximumZoomScale="0.0" dataMode="prototypes" id="uI7-X3-cok">
+                        <rect key="frame" x="0.0" y="44" width="1024" height="680"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
+                        <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="20" minimumInteritemSpacing="20" id="wlE-j3-jZS">
+                            <size key="itemSize" width="200" height="200"/>
+                            <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                            <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                            <inset key="sectionInset" minX="20" minY="0.0" maxX="20" maxY="0.0"/>
+                        </collectionViewFlowLayout>
+                        <cells>
+                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="shape" id="Qj4-mC-wTG" customClass="LoadShapeCell">
+                                <rect key="frame" x="20" y="0.0" width="200" height="200"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                    <rect key="frame" x="0.0" y="0.0" width="200" height="200"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="elephant.png" translatesAutoresizingMaskIntoConstraints="NO" id="R6L-vb-oSy">
+                                            <rect key="frame" x="0.0" y="0.0" width="200" height="200"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                        </imageView>
+                                    </subviews>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                </view>
+                                <size key="customSize" width="200" height="200"/>
+                                <connections>
+                                    <outlet property="imageView" destination="R6L-vb-oSy" id="xFc-Ga-sp4"/>
+                                </connections>
+                            </collectionViewCell>
+                        </cells>
+                        <connections>
+                            <outlet property="dataSource" destination="UCn-Ck-nmg" id="YtI-vU-vQa"/>
+                            <outlet property="delegate" destination="UCn-Ck-nmg" id="KRN-Qq-sds"/>
+                        </connections>
+                    </collectionView>
+                    <navigationItem key="navigationItem" title="Select Shape" id="fEG-fg-cr7">
+                        <barButtonItem key="backBarButtonItem" title="Cancel" id="Cga-Rc-VH0"/>
+                    </navigationItem>
+                </collectionViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Vqa-qG-LI7" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-2068" y="169"/>
+        </scene>
         <!--GLKit View Controller-->
         <scene sceneID="tXr-a1-R10">
             <objects>
-                <glkViewController preferredFramesPerSecond="30" id="BV1-FR-VrT" customClass="ViewController" sceneMemberID="viewController">
+                <glkViewController preferredFramesPerSecond="30" id="BV1-FR-VrT" customClass="ShapeController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="dWe-On-idd"/>
                         <viewControllerLayoutGuide type="bottom" id="nZC-s9-Y68"/>
                     </layoutGuides>
                     <glkView key="view" multipleTouchEnabled="YES" contentMode="scaleToFill" id="3se-qz-xqx">
-                        <rect key="frame" x="0.0" y="0.0" width="768" height="980"/>
+                        <rect key="frame" x="0.0" y="0.0" width="1024" height="680"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     </glkView>
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="yeL-e7-66b"/>
@@ -44,7 +97,7 @@
             </objects>
             <point key="canvasLocation" x="-641" y="287"/>
         </scene>
-        <!--Animation Controller-->
+        <!--Animation Controller - HandCartoon-->
         <scene sceneID="CTu-dQ-pJl">
             <objects>
                 <viewController id="Jdy-0P-7NV" customClass="AnimationController" sceneMemberID="viewController">
@@ -53,11 +106,11 @@
                         <viewControllerLayoutGuide type="bottom" id="vHD-qd-kUZ"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="mcc-L0-F9G">
-                        <rect key="frame" x="0.0" y="0.0" width="768" height="980"/>
+                        <rect key="frame" x="0.0" y="44" width="1024" height="680"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hey-rQ-OsC">
-                                <rect key="frame" x="0.0" y="0.0" width="768" height="980"/>
+                                <rect key="frame" x="0.0" y="0.0" width="1024" height="680"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <connections>
@@ -65,7 +118,7 @@
                                 </connections>
                             </containerView>
                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="J7Z-td-QnB">
-                                <rect key="frame" x="0.0" y="0.0" width="768" height="980"/>
+                                <rect key="frame" x="0.0" y="0.0" width="1024" height="680"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" cocoaTouchSystemColor="scrollViewTexturedBackgroundColor"/>
                             </imageView>
@@ -81,9 +134,14 @@
                             <constraint firstItem="J7Z-td-QnB" firstAttribute="leading" secondItem="mcc-L0-F9G" secondAttribute="leading" id="qSk-Qd-mt4"/>
                             <constraint firstItem="J7Z-td-QnB" firstAttribute="top" secondItem="hey-rQ-OsC" secondAttribute="top" id="zpr-sg-gBH"/>
                         </constraints>
+                        <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     </view>
                     <toolbarItems>
-                        <barButtonItem systemItem="add" id="yPC-iJ-7xA"/>
+                        <barButtonItem systemItem="add" id="yPC-iJ-7xA">
+                            <connections>
+                                <segue destination="UCn-Ck-nmg" kind="push" identifier="select_shape" id="M7Y-JI-O9g"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="Wfe-OX-bmA"/>
                         <barButtonItem systemItem="play" id="DGY-ok-gBO">
                             <connections>
@@ -98,17 +156,20 @@
                         </barButtonItem>
                         <barButtonItem systemItem="stop" id="te9-xi-EbJ">
                             <connections>
-                                <action selector="stopRecord" destination="Jdy-0P-7NV" id="som-GE-DMK"/>
+                                <action selector="stop" destination="Jdy-0P-7NV" id="som-GE-DMK"/>
                             </connections>
                         </barButtonItem>
                     </toolbarItems>
-                    <navigationItem key="navigationItem" id="kR5-ea-yfK"/>
+                    <navigationItem key="navigationItem" title="HandCartoon" id="kR5-ea-yfK"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="jnr-aN-HoO" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-641" y="-1020"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="elephant.png" width="709" height="600"/>
+    </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <nil key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>

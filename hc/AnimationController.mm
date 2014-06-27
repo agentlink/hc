@@ -1,5 +1,4 @@
 #import "AnimationController.h"
-#import "ImageUtil.h"
 #import "ShapeHandle.h"
 #import "AnimationEvent.h"
 
@@ -17,52 +16,41 @@ typedef enum {
 
 @implementation AnimationController {
     NSMutableDictionary *_touches2Points;
-    Shape *_shape;
     NSMutableArray *_record;
     NSUInteger _playbackPosition;
     NSDate *_animationStart;
     State _state;
 }
 
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-
-    self.view.backgroundColor = [UIColor greenColor];
-    ViewController *glController = [self glController];
-    UIView *childView = glController.view;
-    childView.frame = self.view.bounds;
-    [self.view addSubview:childView];
-
-    [self resetShape];
-}
 
 - (void)resetShape {
-    UIImage *image = [UIImage imageNamed:@"elephant.png"];
-    Shape *oldShape = _shape;
-    _shape = [ImageUtil loadImage:image];
-    ViewController *controller = self.glController;
-    controller.texture = image;
-    controller.shape = _shape;
-    if (oldShape != nullptr) {
-        delete oldShape;
-    }
+    self.shapeController.shapeImage = _image;
 }
 
 - (IBAction)startRecord {
-    _record = [NSMutableArray new];
+    if (self.isPlaying) {
+        [self stop];
+    }
+
+    if (!self.shapeController.hasShape) {
+        return;
+    }
+
+    [self clearRecord];
     _animationStart = [NSDate date];
     _state = RECORDING;
 }
 
-- (IBAction)stopRecord {
+- (IBAction)stop {
     _state = IDLE;
 }
 
 - (IBAction)playRecord {
-    if (_state != IDLE) {
-        [self stop];
+    if (!self.shapeController.hasShape) {
         return;
     }
+
+    [self stop];
 
     [_touches2Points removeAllObjects];
     [self resetShape];
@@ -71,13 +59,8 @@ typedef enum {
     _state = PLAYING;
 }
 
-- (void)stop {
-    _state = IDLE;
-}
-
-
-- (ViewController *)glController {
-    ViewController *child = self.childViewControllers.firstObject;
+- (ShapeController *)shapeController {
+    ShapeController *child = self.childViewControllers.firstObject;
     return child;
 }
 
@@ -93,7 +76,6 @@ typedef enum {
     for (UITouch *touch in touches) {
         CGPoint location = [touch locationInView:self.view];
         ShapeHandle *handle = [self getHandle:touch];
-        handle.current = location;
         point2d<double> point;
         point.x = location.x;
         point.y = location.y;
@@ -110,10 +92,7 @@ typedef enum {
         LOG_TOUCHES(@"MOVED => %@", handle);
     }
 
-    _shape->updateHandles(changed);
-    if (updateGL) {
-        [self.glController updateGLOnChange];
-    }
+    [self.shapeController handlesMoved:changed update:updateGL];
 }
 
 - (ShapeHandle *)getHandle:(UITouch *)touch {
@@ -148,12 +127,12 @@ typedef enum {
                                                     position:location]];
         }
     }
-    _shape->releaseHandles(removed);
-    [self.glController updateGLOnChange];
+
+    [self.shapeController releaseHandles:removed update:YES];
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-    if (self.isPlaying) {
+    if (self.isPlaying || !self.shapeController.hasShape) {
         return;
     }
 
@@ -166,10 +145,8 @@ typedef enum {
         _touches2Points[@(ptr)] = ap;
         LOG_TOUCHES(@"NEW => %@", ap);
         int handleId = ap.handleId;
-        CGFloat x = location.x;
-        CGFloat y = location.y;
-        _shape->addHandle(handleId, x, y);
-        [self.glController updateGLOnChange];
+
+        [self.shapeController addHandle:handleId atLocation:location update:YES];
         if ([self isRecording]) {
             [_record addObject:[AnimationEvent eventWithTime:time
                                                         type:ADD
@@ -180,7 +157,7 @@ typedef enum {
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
-    if (self.isPlaying) {
+    if (self.isPlaying || !self.shapeController.hasShape) {
         return;
     }
 
@@ -188,7 +165,7 @@ typedef enum {
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-    if (self.isPlaying) {
+    if (self.isPlaying || !self.shapeController.hasShape) {
         return;
     }
 
@@ -196,7 +173,7 @@ typedef enum {
 }
 
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
-    if (self.isPlaying) {
+    if (self.isPlaying || !self.shapeController.hasShape) {
         return;
     }
 
@@ -205,14 +182,39 @@ typedef enum {
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+
+    ShapeController *shapeController = self.shapeController;
+    UIView *childView = shapeController.view;
+    childView.frame = self.view.bounds;
+    [self.view addSubview:childView];
+
     _touches2Points = [NSMutableDictionary new];
-    self.glController.animationDataSource = self;
+    shapeController.animationDataSource = self;
     [self stop];
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
 
-- (void)updateAnimation:(ViewController *)controller {
-    if (!self.isPlaying) {
+    [self.navigationController setNavigationBarHidden:YES animated:YES];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+
+    if (!self.shapeController.hasShape) {
+        [self performSegueWithIdentifier:SEGUE_SELECT_SHAPE sender:nil];
+    }
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+
+    [self.navigationController setNavigationBarHidden:NO animated:YES];
+}
+
+- (void)updateAnimation:(ShapeController *)controller {
+    if (!self.isPlaying || !self.shapeController.hasShape) {
         return;
     }
 
@@ -234,24 +236,59 @@ typedef enum {
         changed = YES;
 
         CGPoint position = event.position;
+        int handleId = event.handleId;
         switch (event.type) {
             case ADD:
-                _shape->addHandle(event.handleId, position.x, position.y);
+                [controller addHandle:handleId atLocation:position update:NO];
                 break;
-            case MOVE:
-                _shape->updateHandle(event.handleId, position.x, position.y);
+            case MOVE: {
+                map<int, point2d<double>> moved;
+                point2d<double> location;
+                location.x = position.x;
+                location.y = position.y;
+                moved[handleId] = location;
+                [controller handlesMoved:moved update:NO];
                 break;
-            case REMOVE:
-                _shape->updateHandle(event.handleId, position.x, position.y);
+            }
+            case REMOVE: {
+
+                vector<int> released;
+                released.push_back(handleId);
+            }
             default:
                 break;
         }
     }
 
     if (changed) {
-        [controller updateGLOnChange];
+        [controller updateOnShapeTransform];
     }
 
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    if ([SEGUE_SELECT_SHAPE isEqual:segue.identifier]) {
+        LoadShapeController *sc = segue.destinationViewController;
+        sc.selectionDelegate = self;
+    }
+
+    [super prepareForSegue:segue sender:sender];
+}
+
+- (void)imageSelected:(UIImage *)image {
+    [self stop];
+
+    self.image = image;
+}
+
+- (void)clearRecord {
+    _record = [NSMutableArray new];
+}
+
+- (void)setImage:(UIImage *)image {
+    _image = image;
+    [self clearRecord];
+    [self resetShape];
 }
 
 @end
