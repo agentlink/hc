@@ -65,7 +65,7 @@ public:
     void updateHandle(int, double, double);
     void updateHandles(map<int, point2d<double>>);
     void releaseHandle(int);
-    void Shape::releaseHandles(vector<int>);
+    void releaseHandles(vector<int>);
 	void registration();
 	void compilation();
     void updateTriangles();

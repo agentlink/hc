@@ -102,19 +102,22 @@ Shape::Shape(CvSeq * borderContour, int w, int h):width(w),height(h)
 
 void Shape::registration()
 {
-	
 	cout << "REGISTRATION STARTED" << endl;
 	int Ne = triangulation.numberofedges;
     SparseMatrix<double> L1(2*Ne, 2*triangulation.numberofpoints);
     SparseMatrix<double> L2(Ne, triangulation.numberofpoints);
-	
 	edge_1 = new int[Ne];
 	edge_2 = new int[Ne];
 	G11 = new double[Ne];
 	G22 = new double[Ne];
 	int t1, t2, pi, pj, pl, pr;
 	double vix, viy, vjx, vjy, vlx, vly, vrx, vry, E11, E12, E21, E22;
-	
+    
+    double *currentPoints = new double[triangulation.numberofpoints*2];
+	for (int i = 0; i < 2*triangulation.numberofpoints; i++){
+		currentPoints[i] = triangulation.pointlist[i];
+	}
+    
 	cout << "Registration part1" << Ne << endl;
 	flush(cout);
 	g00 = new double[Ne];
@@ -141,19 +144,19 @@ void Shape::registration()
 		pj = triangulation.edgelist[2*i+1];
 		pl = edge_1[i]=triangulation.trianglelist[t1*3]+triangulation.trianglelist[t1*3+1]+triangulation.trianglelist[t1*3+2]-pi-pj;
 
-		vix = triangulation.pointlist[pi*2];
-		viy = triangulation.pointlist[pi*2+1];
-		vjx = triangulation.pointlist[pj*2];
-		vjy = triangulation.pointlist[pj*2+1];
-		vlx = triangulation.pointlist[pl*2];
-		vly = triangulation.pointlist[pl*2+1];
+		vix = currentPoints[pi*2];
+		viy = currentPoints[pi*2+1];
+		vjx = currentPoints[pj*2];
+		vjy = currentPoints[pj*2+1];
+		vlx = currentPoints[pl*2];
+		vly = currentPoints[pl*2+1];
 		
 		//////
 		L2.coeffRef(i,pi) -= 1;
 		L2.coeffRef(i,pj) += 1;
 		//////
 		
-		cout << pi << " " <<  pj << " " << pl << endl;
+		//cout << pi << " " <<  pj << " " << pl << endl;
 		
 		E11 = vjx - vix;
 		E22 = -E11;
@@ -162,8 +165,8 @@ void Shape::registration()
 		
 		if (t2 >= 0){
 			pr = edge_2[i]=triangulation.trianglelist[t2*3]+triangulation.trianglelist[t2*3+1]+triangulation.trianglelist[t2*3+2]-pi-pj;
-			vrx = triangulation.pointlist[pr*2];
-			vry = triangulation.pointlist[pr*2+1];
+			vrx = currentPoints[pr*2];
+			vry = currentPoints[pr*2+1];
 			
 			G11[i] = 1/4.0/(vix*vix+vjx*vjx+viy*viy+vjy*vjy+vlx*vlx+vly*vly+vrx*vrx+vry*vry
 						          -vlx*vix-vlx*vjx-vly*viy-vly*vjy-vrx*vix-vrx*vjx-vry*viy-vry*vjy);
@@ -173,7 +176,7 @@ void Shape::registration()
 			g51[i] = -(g40[i] = (4*vlx-2*vix-2*vjx)*G11[i]); g50[i] = g41[i] = (4*vly-2*viy-2*vjy)*G11[i];
 			g71[i] = -(g60[i] = (4*vrx-2*vix-2*vjx)*G11[i]); g70[i] = g61[i] = (4*vry-2*viy-2*vjy)*G11[i];
 			
-			cout << pr << endl;
+			//cout << pr << endl;
 		}else/**/ {
 			edge_2[i] = -1;
 			G11[i] = 1/(3*(viy*viy+vjy*vjy+vix*vix+vjx*vjx)-2*(viy*vjy+vjx*vix)+
@@ -301,13 +304,21 @@ void Shape::updateHandles(map<int, point2d<double> > newHandles)
 void Shape::releaseHandle(int id)
 {
     handles.erase(id);
+    handleTriangles.erase(id);
+    handleBarCoords.erase(id);
+    compilation();
     updateTriangles();
 }
 
 void Shape::releaseHandles(vector<int> ids)
 {
     for (vector<int>::iterator id = ids.begin(); id != ids.end(); id++)
+    {
         handles.erase(*id);
+        handleTriangles.erase(*id);
+        handleBarCoords.erase(*id);
+    }
+    compilation();
     updateTriangles();
 }
 
