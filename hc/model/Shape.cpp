@@ -94,6 +94,13 @@ Shape::Shape(CvSeq * borderContour, int w, int h):width(w),height(h)
 	}
 	
 	triangulate("pq25eza500v", &shapeGeometry, &triangulation, &vout);
+    
+    pointsNew = new double[triangulation.numberofpoints*2];
+    
+	for (int i = 0; i < 2*triangulation.numberofpoints; i++){
+		pointsNew[i] = triangulation.pointlist[i];
+	}
+    
 	registration();
 
 	//trifree();
@@ -229,11 +236,7 @@ void Shape::registration()
 	L_2 = L2_t*L2;
 	////
 	
-	pointsNew = new double[triangulation.numberofpoints*2];
 
-	for (int i = 0; i < 2*triangulation.numberofpoints; i++){
-		pointsNew[i] = triangulation.pointlist[i];
-	}
 /**/
 }
 
@@ -324,6 +327,29 @@ void Shape::releaseHandles(vector<int> ids)
 
 void Shape::updateTriangles()
 {
+    if (handles.size() == 0)
+    {
+        for (int i = 0; i < 2*triangulation.numberofpoints; i++){
+            pointsNew[i] = triangulation.pointlist[i];
+        }
+        return;
+    }
+    
+    if (handles.size() == 1)
+    {
+        int id = handles.begin()->first;
+        point2d<double> h = handles.begin()->second;
+        point2d<double> t_Point;
+        t_Point.x = triangulation.pointlist[handleTriangles[id][0] * 2];
+        t_Point.y = triangulation.pointlist[handleTriangles[id][0] * 2 + 1];
+       
+        for (int i = 0; i < 2*triangulation.numberofpoints; i+=2){
+            pointsNew[i] = triangulation.pointlist[i] + h.x - t_Point.x;
+            pointsNew[i+1] = triangulation.pointlist[i+1] + h.y - t_Point.y;
+        }
+        return;
+    }
+    
 	double *tmpPoints = new double[2*triangulation.numberofpoints];
     ///////////////////////////
 	///   Part 1 /////////////
@@ -432,6 +458,8 @@ void Shape::updateTriangles()
 
 void Shape::compilation()
 {
+    if (handles.size() == 0)
+        return;
 	int Np = triangulation.numberofpoints;
 	SparseMatrix<double> C1(2*handles.size(),2*Np), C2(handles.size(),Np);
 
