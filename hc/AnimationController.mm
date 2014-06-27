@@ -29,6 +29,7 @@ typedef enum {
     NSDate *_recordZero;
     NSDate *_recordStart;
     NSDate *_playbackStart;
+    NSDateFormatter *_dateFormatter;
 }
 
 
@@ -43,9 +44,7 @@ typedef enum {
         return;
     }
 
-    if (self.isPlaying) {
-        [self stop];
-    }
+    [self stop];
 
     _recordZero = _animationStart;
     _recordStart = [NSDate date];
@@ -63,6 +62,13 @@ typedef enum {
 
     [self stop];
 
+    _state = PLAYING;
+    NSDate *now = [NSDate date];
+    _playbackStart = now;
+    [self preparePlayback];
+}
+
+- (void)preparePlayback {
     [_touches2Points removeAllObjects];
     [_pins removeAllObjects];
 
@@ -70,10 +76,6 @@ typedef enum {
 
     [self resetShape];
     _playbackPosition = 0;
-    NSDate *now = [NSDate date];
-    _playbackStart = now;
-    _state = PLAYING;
-
     [self fastForward:preRecordTime];
 }
 
@@ -94,10 +96,10 @@ typedef enum {
                 [shapeController addHandle:event.handleId atLocation:event.position update:NO];
                 break;
             case REMOVE:
+                [self moveHandle:shapeController position:event.position handleId:event.handleId];
                 [self releaseHandle:shapeController handleId:event.handleId];
                 break;
             case MOVE:
-                [self moveHandle:shapeController position:event.position handleId:event.handleId];
             default:
                 break;
         }
@@ -312,14 +314,20 @@ typedef enum {
         return;
     }
 
+    NSDate *now = [NSDate date];
+    NSTimeInterval playbackTime = [now timeIntervalSinceDate:_playbackStart];
+
+    [self updateAnimation:controller playbackTime:playbackTime];
+}
+
+- (BOOL)updateAnimation:(ShapeController *)controller playbackTime:(NSTimeInterval)playbackTime {
     NSTimeInterval preRecordTime = [_recordStart timeIntervalSinceDate:_recordZero];
     if (_playbackPosition >= _record.count) {
         [self stop];
-        return;
+        return NO;
     }
 
-    NSDate *now = [NSDate date];
-    NSTimeInterval time = [now timeIntervalSinceDate:_playbackStart] + preRecordTime;
+    NSTimeInterval time = playbackTime + preRecordTime;
     BOOL changed = NO;
     while (_playbackPosition < _record.count) {
         AnimationEvent *event = _record[_playbackPosition];
@@ -352,6 +360,7 @@ typedef enum {
         [controller updateOnShapeTransform];
     }
 
+    return changed;
 }
 
 - (void)moveHandle:(ShapeController *)controller position:(CGPoint)position handleId:(int)handleId {
@@ -396,13 +405,51 @@ typedef enum {
     [self resetShape];
 }
 
-- (IBAction)snapshot {
-    UIImage *image = [self.shapeController snapshot];
-    CGSize size = image.size;
-    image = [ImageUtil imageWithImage:image scaledToSize:CGSizeMake(floor(size.width/2), floor(size.height/2))];
-    NSData *data = UIImagePNGRepresentation(image);
-    NSString *directory = [LoadShapeController applicationDocumentsDirectory];
-    [data writeToFile:[directory stringByAppendingPathComponent:@"snapshot.png"] atomically:YES];
+- (IBAction)export {
+    if (!self.hasRecord) {
+        return;
+    }
+
+    [self stop];
+
+    if (!_dateFormatter) {
+        _dateFormatter = [NSDateFormatter new];
+        _dateFormatter.dateFormat = @"yyyy'_'MM'_'dd'__'HH'_'mm'_'ss";
+    }
+
+    NSString *dateString = [_dateFormatter stringFromDate:[NSDate date]];
+    NSString *directoryName = [NSString stringWithFormat:@"export_%@", dateString];
+    NSString *directory = [[LoadShapeController applicationDocumentsDirectory] stringByAppendingPathComponent:directoryName];
+
+    NSError *error = nil;
+    BOOL dirCreated = [[NSFileManager defaultManager] createDirectoryAtPath:directory withIntermediateDirectories:YES attributes:nil error:&error];
+    if (!dirCreated) {
+        NSLog(@"dir %@ can't be created: %@", directory, error);
+        return;
+    }
+
+    _state = PLAYING;
+
+    [self preparePlayback];
+
+    ShapeController *shapeController = self.shapeController;
+
+    int frameIndex = 0;
+    NSData *imageData = nil;
+    while (_state == PLAYING) {
+        BOOL changed = [self updateAnimation:shapeController playbackTime:frameIndex*0.03];
+        if (changed || !imageData) {
+            UIImage *image = nil;
+            image = [shapeController snapshot];
+            CGSize size = image.size;
+            image = [ImageUtil imageWithImage:image scaledToSize:CGSizeMake(floor(size.width / 2), floor(size.height / 2))];
+            imageData = UIImagePNGRepresentation(image);
+        }
+
+        NSString *name = [NSString stringWithFormat:@"%05d.png", frameIndex];
+        [imageData writeToFile:[directory stringByAppendingPathComponent:name] atomically:YES];
+        frameIndex++;
+    }
 }
 
 @end

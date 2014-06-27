@@ -144,9 +144,9 @@
                             </connections>
                         </barButtonItem>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="Wfe-OX-bmA"/>
-                        <barButtonItem title="Snapshot" id="PsI-in-piY">
+                        <barButtonItem title="Export" id="PsI-in-piY">
                             <connections>
-                                <action selector="snapshot" destination="Jdy-0P-7NV" id="SMH-ag-hjB"/>
+                                <action selector="export" destination="Jdy-0P-7NV" id="SMH-ag-hjB"/>
                             </connections>
                         </barButtonItem>
                         <barButtonItem width="42" style="plain" systemItem="fixedSpace" id="1c6-1W-oJj"/>
