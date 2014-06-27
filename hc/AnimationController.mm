@@ -21,7 +21,6 @@ typedef enum {
     NSMutableArray *_record;
     NSUInteger _playbackPosition;
     NSDate *_animationStart;
-    NSDate *_lastUpdate;
     State _state;
 }
 
@@ -83,19 +82,18 @@ typedef enum {
     return ptr;
 }
 
-- (void)updateTouches:(NSSet *)touches shouldRemove:(BOOL)shouldRemove {
+- (void)updateTouches:(NSSet *)touches {
     map<int, point2d<double>> changed;
 
     NSTimeInterval time = [[NSDate date] timeIntervalSinceDate:_animationStart];
     for (UITouch *touch in touches) {
-        size_t ptr = [self touchId:touch];
         CGPoint location = [touch locationInView:self.view];
-        ShapeHandle *ap = _touches2Points[@((ptr))];
-        ap.current = location;
+        ShapeHandle *handle = [self getHandle:touch];
+        handle.current = location;
         point2d<double> point;
         point.x = location.x;
         point.y = location.y;
-        int handleId = ap.handleId;
+        int handleId = handle.handleId;
         changed[handleId] = point;
 
         [self.glController updateGLOnChange];
@@ -107,22 +105,16 @@ typedef enum {
                                                     position:location]];
         }
 
-        if (shouldRemove) {
-            [_touches2Points removeObjectForKey:@((ptr))];
-            LOG_TOUCHES(@"ENDED => %@", ap);
-            if ([self isRecording]) {
-                [_record addObject:[AnimationEvent eventWithTime:time
-                                                            type:REMOVE
-                                                        handleId:handleId
-                                                        position:location]];
-            }
-        }
-        else {
-            LOG_TOUCHES(@"MOVED => %@", ap);
-        }
+        LOG_TOUCHES(@"MOVED => %@", handle);
     }
 
     _shape->updateHandles(changed);
+}
+
+- (ShapeHandle *)getHandle:(UITouch *)touch {
+    size_t ptr = [self touchId:touch];
+    ShapeHandle *ap = _touches2Points[@((ptr))];
+    return ap;
 }
 
 - (BOOL)isPlaying {
@@ -131,6 +123,27 @@ typedef enum {
 
 - (BOOL)isRecording {
     return _state == RECORDING;
+}
+
+- (void)removeTouches:(NSSet *)touches {
+    [self updateTouches:touches];
+
+    NSTimeInterval time = [[NSDate date] timeIntervalSinceDate:_animationStart];
+    vector<int> removed(touches.count);
+    for (UITouch *touch in touches) {
+        ShapeHandle *handle = [self getHandle:touch];
+        int handleId = handle.handleId;
+        removed.push_back(handleId);
+        LOG_TOUCHES(@"ENDED => %@", handle);
+        if ([self isRecording]) {
+            CGPoint location = [touch locationInView:self.view];
+            [_record addObject:[AnimationEvent eventWithTime:time
+                                                        type:REMOVE
+                                                    handleId:handleId
+                                                    position:location]];
+        }
+    }
+    _shape->releaseHandles(removed);
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
@@ -165,7 +178,7 @@ typedef enum {
         return;
     }
 
-    [self updateTouches:touches shouldRemove:NO];
+    [self updateTouches:touches];
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
@@ -173,7 +186,7 @@ typedef enum {
         return;
     }
 
-    [self updateTouches:touches shouldRemove:YES];
+    [self removeTouches:touches];
 }
 
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
@@ -181,7 +194,7 @@ typedef enum {
         return;
     }
 
-    [self updateTouches:touches shouldRemove:YES];
+    [self removeTouches:touches];
 }
 
 - (void)viewDidLoad {
