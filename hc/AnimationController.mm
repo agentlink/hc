@@ -82,7 +82,7 @@ typedef enum {
     return ptr;
 }
 
-- (void)updateTouches:(NSSet *)touches {
+- (void)updateTouches:(NSSet *)touches updateGL:(BOOL)updateGL {
     map<int, point2d<double>> changed;
 
     NSTimeInterval time = [[NSDate date] timeIntervalSinceDate:_animationStart];
@@ -96,8 +96,6 @@ typedef enum {
         int handleId = handle.handleId;
         changed[handleId] = point;
 
-        [self.glController updateGLOnChange];
-
         if ([self isRecording]) {
             [_record addObject:[AnimationEvent eventWithTime:time
                                                         type:MOVE
@@ -109,6 +107,9 @@ typedef enum {
     }
 
     _shape->updateHandles(changed);
+    if (updateGL) {
+        [self.glController updateGLOnChange];
+    }
 }
 
 - (ShapeHandle *)getHandle:(UITouch *)touch {
@@ -126,7 +127,7 @@ typedef enum {
 }
 
 - (void)removeTouches:(NSSet *)touches {
-    [self updateTouches:touches];
+    [self updateTouches:touches updateGL:NO];
 
     NSTimeInterval time = [[NSDate date] timeIntervalSinceDate:_animationStart];
     vector<int> removed;
@@ -144,6 +145,7 @@ typedef enum {
         }
     }
     _shape->releaseHandles(removed);
+    [self.glController updateGLOnChange];
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
@@ -178,7 +180,7 @@ typedef enum {
         return;
     }
 
-    [self updateTouches:touches];
+    [self updateTouches:touches updateGL:YES];
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
