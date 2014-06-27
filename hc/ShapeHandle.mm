@@ -24,7 +24,7 @@ static int actionPointCount;
     NSMutableString *description = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
     [description appendFormat:@"ID = %d, ", _handleId];
     [description appendFormat:@"start = %@, ", NSStringFromCGPoint(_start)];
-    [description appendFormat:@"current = %@", NSStringFromCGPoint(_current)];
+    [description appendFormat:@"current = %@, ", NSStringFromCGPoint(_current)];
     [description appendFormat:@"lastTouched = %@", _lastTouchedAt];
     [description appendString:@">"];
     return description;

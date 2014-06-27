@@ -6,6 +6,10 @@
 
 @property(nonatomic, strong) NSDate *lastTouchedAt;
 
+@property(nonatomic) CGFloat xCorrection;
+
+@property(nonatomic) CGFloat yCorrection;
+
 - (instancetype)initWithStart:(CGPoint)aStart;
 
 + (instancetype)pointWithStart:(CGPoint)aStart;
