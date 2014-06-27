@@ -25,4 +25,6 @@
 - (void)addHandle:(int)handleId atLocation:(CGPoint)location update:(BOOL)update;
 
 - (void)handlesMoved:(map<int, point2d<double>>)map update:(BOOL)GL;
+
+- (UIImage *)snapshot;
 @end

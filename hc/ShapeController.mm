@@ -394,4 +394,7 @@
     return _shape != NULL;
 }
 
+- (UIImage *)snapshot {
+    return [((GLKView *)self.view) snapshot];
+}
 @end

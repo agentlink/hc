@@ -3,16 +3,14 @@
 #import <MobileCoreServices/MobileCoreServices.h>
 
 @interface LoadShapeController ()
-@property(nonatomic, strong) NSMutableArray *images;
+@property(nonatomic, strong) NSMutableArray *imagePaths;
 @end
 
-@implementation LoadShapeController {
-
-}
+@implementation LoadShapeController
 
 + (NSString *)applicationDocumentsDirectory {
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *basePath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
+    NSString *basePendering initialath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
 
 #if TARGET_IPHONE_SIMULATOR
     NSArray *comps = [basePath pathComponents];
@@ -42,13 +40,13 @@
             [images addObject:[docDir stringByAppendingPathComponent:doc]];
         }
     }
-    
-    self.images = images;
+
+    self.imagePaths = images;
 }
 
 
 - (UIImage *)getImage:(NSIndexPath *)indexPath {
-    NSString *imagePath = [self.images objectAtIndex:(NSUInteger) indexPath.item];
+    NSString *imagePath = [self.imagePaths objectAtIndex:(NSUInteger) indexPath.item];
     return [[UIImage alloc] initWithContentsOfFile:imagePath];
 }
 
@@ -59,7 +57,7 @@
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return self.images.count;
+    return self.imagePaths.count;
 }
 
 
@@ -68,6 +66,5 @@
     [self.selectionDelegate imageSelected:image];
     [self.navigationController popViewControllerAnimated:YES];
 }
-
 
 @end

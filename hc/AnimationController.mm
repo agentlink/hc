@@ -1,6 +1,7 @@
 #import "AnimationController.h"
 #import "ShapeHandle.h"
 #import "AnimationEvent.h"
+#import "ImageUtil.h"
 
 #define LOG_TOUCHES(fmt, ...)
 //#define LOG_TOUCHES(fmt, ...) NSLog(fmt, ##__VA_ARGS__)
@@ -387,6 +388,15 @@ typedef enum {
     _image = image;
     [self clearRecord];
     [self resetShape];
+}
+
+- (IBAction)snapshot {
+    UIImage *image = [self.shapeController snapshot];
+    CGSize size = image.size;
+    image = [ImageUtil imageWithImage:image scaledToSize:CGSizeMake(floor(size.width/2), floor(size.height/2))];
+    NSData *data = UIImagePNGRepresentation(image);
+    NSString *directory = [LoadShapeController applicationDocumentsDirectory];
+    [data writeToFile:[directory stringByAppendingPathComponent:@"snapshot.png"] atomically:YES];
 }
 
 @end

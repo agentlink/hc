@@ -50,7 +50,7 @@
                                     <rect key="frame" x="0.0" y="0.0" width="200" height="200"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="elephant.png" translatesAutoresizingMaskIntoConstraints="NO" id="R6L-vb-oSy">
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="R6L-vb-oSy">
                                             <rect key="frame" x="0.0" y="0.0" width="200" height="200"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         </imageView>
@@ -68,6 +68,7 @@
                             <outlet property="delegate" destination="UCn-Ck-nmg" id="KRN-Qq-sds"/>
                         </connections>
                     </collectionView>
+                    <toolbarItems/>
                     <navigationItem key="navigationItem" title="Select Shape" id="fEG-fg-cr7">
                         <barButtonItem key="backBarButtonItem" title="Cancel" id="Cga-Rc-VH0"/>
                     </navigationItem>
@@ -143,6 +144,12 @@
                             </connections>
                         </barButtonItem>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="Wfe-OX-bmA"/>
+                        <barButtonItem title="Snapshot" id="PsI-in-piY">
+                            <connections>
+                                <action selector="snapshot" destination="Jdy-0P-7NV" id="SMH-ag-hjB"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem width="42" style="plain" systemItem="fixedSpace" id="1c6-1W-oJj"/>
                         <barButtonItem systemItem="play" id="DGY-ok-gBO">
                             <connections>
                                 <action selector="playRecord" destination="Jdy-0P-7NV" id="vhh-2i-CcE"/>
@@ -154,11 +161,6 @@
                                 <action selector="startRecord" destination="Jdy-0P-7NV" id="aH7-69-cYA"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem systemItem="stop" id="te9-xi-EbJ">
-                            <connections>
-                                <action selector="stop" destination="Jdy-0P-7NV" id="som-GE-DMK"/>
-                            </connections>
-                        </barButtonItem>
                     </toolbarItems>
                     <navigationItem key="navigationItem" title="HandCartoon" id="kR5-ea-yfK"/>
                 </viewController>
@@ -167,9 +169,6 @@
             <point key="canvasLocation" x="-641" y="-1020"/>
         </scene>
     </scenes>
-    <resources>
-        <image name="elephant.png" width="709" height="600"/>
-    </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <nil key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>

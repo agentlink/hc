@@ -136,7 +136,6 @@
 		2C8CCAB5195C2D9500B17BD1 /* wykobi_normalization.inl in Resources */ = {isa = PBXBuildFile; fileRef = 2C8CCAA4195C2D9500B17BD1 /* wykobi_normalization.inl */; };
 		2C8CCAB6195C2D9500B17BD1 /* wykobi_ordered_polygon.inl in Resources */ = {isa = PBXBuildFile; fileRef = 2C8CCAA5195C2D9500B17BD1 /* wykobi_ordered_polygon.inl */; };
 		30F441CE4AA3CAB41D383EBB /* Record.m in Sources */ = {isa = PBXBuildFile; fileRef = 30F44531C6ADD9463B6581A2 /* Record.m */; };
-		30F443E1740023096803BC0D /* tux.png in Resources */ = {isa = PBXBuildFile; fileRef = 30F446FE88330A85E21D98FA /* tux.png */; };
 		30F446D9098666674B58A3C1 /* AnimationController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 30F449C764F3B21C8C2FB120 /* AnimationController.mm */; };
 		30F44A6C9CBD7808CC7598B9 /* AnimationEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 30F44826B312F9D2AC7EC1BA /* AnimationEvent.m */; };
 		30F44D173EC466CBE64D74D6 /* ImageUtil.mm in Sources */ = {isa = PBXBuildFile; fileRef = 30F441453DFC418608C150EB /* ImageUtil.mm */; };
@@ -161,8 +160,8 @@
 		DAAABA92195C151C0036C526 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAAABA6C195C151C0036C526 /* UIKit.framework */; };
 		DAAABA9A195C151C0036C526 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = DAAABA98195C151C0036C526 /* InfoPlist.strings */; };
 		DAAABA9C195C151C0036C526 /* hcTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DAAABA9B195C151C0036C526 /* hcTests.m */; };
-		DAAABAA8195D61BB0036C526 /* elephant.png in Resources */ = {isa = PBXBuildFile; fileRef = DAAABAA7195D61BB0036C526 /* elephant.png */; };
 		DAAABAAA195D6B010036C526 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAAABAA9195D6B010036C526 /* MobileCoreServices.framework */; };
+		DAAABAAC195DC87A0036C526 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAAABAAB195DC87A0036C526 /* AVFoundation.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -638,7 +637,6 @@
 		30F44531C6ADD9463B6581A2 /* Record.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Record.m; sourceTree = "<group>"; };
 		30F4461A7D792CE57F6C06F5 /* Record.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Record.h; sourceTree = "<group>"; };
 		30F4469B4C004E03F4B3D070 /* LoadShapeCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoadShapeCell.h; sourceTree = "<group>"; };
-		30F446FE88330A85E21D98FA /* tux.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tux.png; sourceTree = "<group>"; };
 		30F44813A51BFBCAFB88AF51 /* ImageUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageUtil.h; sourceTree = "<group>"; };
 		30F44826B312F9D2AC7EC1BA /* AnimationEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AnimationEvent.m; sourceTree = "<group>"; };
 		30F448E177E7981973CBD3A6 /* AnimationEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnimationEvent.h; sourceTree = "<group>"; };
@@ -671,8 +669,8 @@
 		DAAABA97195C151C0036C526 /* hcTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "hcTests-Info.plist"; sourceTree = "<group>"; };
 		DAAABA99195C151C0036C526 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		DAAABA9B195C151C0036C526 /* hcTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = hcTests.m; sourceTree = "<group>"; };
-		DAAABAA7195D61BB0036C526 /* elephant.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = elephant.png; sourceTree = "<group>"; };
 		DAAABAA9195D6B010036C526 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
+		DAAABAAB195DC87A0036C526 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -680,6 +678,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DAAABAAC195DC87A0036C526 /* AVFoundation.framework in Frameworks */,
 				DAAABAAA195D6B010036C526 /* MobileCoreServices.framework in Frameworks */,
 				2C8CC7CA195C217500B17BD1 /* opencv2.framework in Frameworks */,
 				DAAABA71195C151C0036C526 /* OpenGLES.framework in Frameworks */,
@@ -1663,6 +1662,7 @@
 		DAAABA67195C151C0036C526 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				DAAABAAB195DC87A0036C526 /* AVFoundation.framework */,
 				DAAABAA9195D6B010036C526 /* MobileCoreServices.framework */,
 				2C8CC7C9195C217500B17BD1 /* opencv2.framework */,
 				DAAABA68195C151C0036C526 /* Foundation.framework */,
@@ -1678,7 +1678,6 @@
 		DAAABA72195C151C0036C526 /* hc */ = {
 			isa = PBXGroup;
 			children = (
-				DAAABAA7195D61BB0036C526 /* elephant.png */,
 				2C8CC7CF195C21B600B17BD1 /* lib */,
 				2C8CC7CB195C219E00B17BD1 /* model */,
 				DAAABA7B195C151C0036C526 /* AppDelegate.h */,
@@ -1692,7 +1691,6 @@
 				DAAABA73195C151C0036C526 /* Supporting Files */,
 				30F449C764F3B21C8C2FB120 /* AnimationController.mm */,
 				30F44F60E61C92CC7B5B9E5D /* AnimationController.h */,
-				30F446FE88330A85E21D98FA /* tux.png */,
 				30F44A2556F9C5AE05D0E89C /* ShapeHandle.h */,
 				30F44A24CB6D11BCA7BE4B5D /* ShapeHandle.mm */,
 				30F44826B312F9D2AC7EC1BA /* AnimationEvent.m */,
@@ -1917,7 +1915,6 @@
 				2C8CC976195C21B700B17BD1 /* CMakeLists.txt in Resources */,
 				2C8CCAB1195C2D9500B17BD1 /* wykobi_matrix.inl in Resources */,
 				2C8CC93E195C21B700B17BD1 /* Cholesky in Resources */,
-				DAAABAA8195D61BB0036C526 /* elephant.png in Resources */,
 				2C8CC974195C21B700B17BD1 /* CMakeLists.txt in Resources */,
 				2C8CC970195C21B700B17BD1 /* CMakeLists.txt in Resources */,
 				2C8CCA5C195C2B3200B17BD1 /* CMakeLists.txt in Resources */,
@@ -1940,7 +1937,6 @@
 				2C8CC97F195C21B700B17BD1 /* StdVector in Resources */,
 				2C8CCA4B195C2B3200B17BD1 /* AutoDiff in Resources */,
 				2C8CCA6B195C2B3200B17BD1 /* CMakeLists.txt in Resources */,
-				30F443E1740023096803BC0D /* tux.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
