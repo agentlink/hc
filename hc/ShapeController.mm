@@ -1,5 +1,4 @@
 #import "ShapeController.h"
-#import "AnimationController.h"
 #import "ImageUtil.h"
 
 #define BUFFER_OFFSET(i) ((char *)NULL + (i))
@@ -163,12 +162,12 @@
         int e1 = tr.edgelist[2 * i];
         _edgeVertexData[i * 6] = (GLfloat) newPoints[e1 * 2];
         _edgeVertexData[i * 6 + 1] = (GLfloat) (newPoints[e1 * 2 + 1]);
-        _edgeVertexData[i * 6 + 2] = 1.01;
+        _edgeVertexData[i * 6 + 2] = 2.0;
 
         int e2 = tr.edgelist[2 * i + 1];
         _edgeVertexData[i * 6 + 3] = (GLfloat) newPoints[e2 * 2];
         _edgeVertexData[i * 6 + 4] = (GLfloat) (newPoints[e2 * 2 + 1]);
-        _edgeVertexData[i * 6 + 5] = 1.01;
+        _edgeVertexData[i * 6 + 5] = 2.0;
     }
 
     glBindVertexArrayOES(_edgeVertexArray);
