@@ -96,6 +96,7 @@ Shape::Shape(CvSeq * borderContour, int w, int h):width(w),height(h)
 	triangulate("pq25eza500v", &shapeGeometry, &triangulation, &vout);
     
     pointsNew = new double[triangulation.numberofpoints*2];
+    lastRegistrationPoints = new double[triangulation.numberofpoints*2];
     
 	for (int i = 0; i < 2*triangulation.numberofpoints; i++){
 		pointsNew[i] = triangulation.pointlist[i];
@@ -120,9 +121,8 @@ void Shape::registration()
 	int t1, t2, pi, pj, pl, pr;
 	double vix, viy, vjx, vjy, vlx, vly, vrx, vry, E11, E12, E21, E22;
     
-    double *currentPoints = new double[triangulation.numberofpoints*2];
 	for (int i = 0; i < 2*triangulation.numberofpoints; i++){
-		currentPoints[i] = triangulation.pointlist[i];
+		lastRegistrationPoints[i] = pointsNew[i];
 	}
     
 	cout << "Registration part1" << Ne << endl;
@@ -151,12 +151,12 @@ void Shape::registration()
 		pj = triangulation.edgelist[2*i+1];
 		pl = edge_1[i]=triangulation.trianglelist[t1*3]+triangulation.trianglelist[t1*3+1]+triangulation.trianglelist[t1*3+2]-pi-pj;
 
-		vix = currentPoints[pi*2];
-		viy = currentPoints[pi*2+1];
-		vjx = currentPoints[pj*2];
-		vjy = currentPoints[pj*2+1];
-		vlx = currentPoints[pl*2];
-		vly = currentPoints[pl*2+1];
+		vix = lastRegistrationPoints[pi*2];
+		viy = lastRegistrationPoints[pi*2+1];
+		vjx = lastRegistrationPoints[pj*2];
+		vjy = lastRegistrationPoints[pj*2+1];
+		vlx = lastRegistrationPoints[pl*2];
+		vly = lastRegistrationPoints[pl*2+1];
 		
 		//////
 		L2.coeffRef(i,pi) -= 1;
@@ -172,8 +172,8 @@ void Shape::registration()
 		
 		if (t2 >= 0){
 			pr = edge_2[i]=triangulation.trianglelist[t2*3]+triangulation.trianglelist[t2*3+1]+triangulation.trianglelist[t2*3+2]-pi-pj;
-			vrx = currentPoints[pr*2];
-			vry = currentPoints[pr*2+1];
+			vrx = lastRegistrationPoints[pr*2];
+			vry = lastRegistrationPoints[pr*2+1];
 			
 			G11[i] = 1/4.0/(vix*vix+vjx*vjx+viy*viy+vjy*vjy+vlx*vlx+vly*vly+vrx*vrx+vry*vry
 						          -vlx*vix-vlx*vjx-vly*viy-vly*vjy-vrx*vix-vrx*vjx-vry*viy-vry*vjy);
@@ -309,6 +309,7 @@ void Shape::releaseHandle(int id)
     handles.erase(id);
     handleTriangles.erase(id);
     handleBarCoords.erase(id);
+    registration();
     compilation();
     updateTriangles();
 }
@@ -321,6 +322,7 @@ void Shape::releaseHandles(vector<int> ids)
         handleTriangles.erase(*id);
         handleBarCoords.erase(*id);
     }
+    registration();
     compilation();
     updateTriangles();
 }
@@ -329,26 +331,26 @@ void Shape::updateTriangles()
 {
     if (handles.size() == 0)
     {
-        for (int i = 0; i < 2*triangulation.numberofpoints; i++){
-            pointsNew[i] = triangulation.pointlist[i];
-        }
+//        for (int i = 0; i < 2*triangulation.numberofpoints; i++){
+//            pointsNew[i] = triangulation.pointlist[i];
+//        }
         return;
     }
     
-    if (handles.size() == 1)
-    {
-        int id = handles.begin()->first;
-        point2d<double> h = handles.begin()->second;
-        point2d<double> t_Point;
-        t_Point.x = triangulation.pointlist[handleTriangles[id][0] * 2];
-        t_Point.y = triangulation.pointlist[handleTriangles[id][0] * 2 + 1];
-       
-        for (int i = 0; i < 2*triangulation.numberofpoints; i+=2){
-            pointsNew[i] = triangulation.pointlist[i] + h.x - t_Point.x;
-            pointsNew[i+1] = triangulation.pointlist[i+1] + h.y - t_Point.y;
-        }
-        return;
-    }
+//    if (handles.size() == 1)
+//    {
+//        int id = handles.begin()->first;
+//        point2d<double> h = handles.begin()->second;
+//        point2d<double> t_Point;
+//        t_Point.x = triangulation.pointlist[handleTriangles[id][0] * 2];
+//        t_Point.y = triangulation.pointlist[handleTriangles[id][0] * 2 + 1];
+//       
+//        for (int i = 0; i < 2*triangulation.numberofpoints; i+=2){
+//            pointsNew[i] = triangulation.pointlist[i] + h.x - t_Point.x;
+//            pointsNew[i+1] = triangulation.pointlist[i+1] + h.y - t_Point.y;
+//        }
+//        return;
+//    }
     
 	double *tmpPoints = new double[2*triangulation.numberofpoints];
     ///////////////////////////
@@ -416,10 +418,16 @@ void Shape::updateTriangles()
 		
 		//cout << "Ck Sk " << ck << " " << sk << endl;
         
-		vix = triangulation.pointlist[pi*2];
-		viy = triangulation.pointlist[pi*2+1];
-		vjx = triangulation.pointlist[pj*2];
-		vjy = triangulation.pointlist[pj*2+1];
+        if (handles.size() == 1)
+        {
+            ck = 1;
+            sk = 0;
+        }
+        
+		vix = lastRegistrationPoints[pi*2];
+		viy = lastRegistrationPoints[pi*2+1];
+		vjx = lastRegistrationPoints[pj*2];
+		vjy = lastRegistrationPoints[pj*2+1];
 		
 		n = 1/pow((ck*ck + sk*sk),0.5);
 		ck *= n; sk *= n;

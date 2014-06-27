@@ -53,6 +53,7 @@ public:
 	double *g00, *g01, *g10, *g11, *g20, *g21, *g30, *g31, *g40, *g41, *g50, *g51, *g60, *g61, *g70, *g71;
 	
 	double *pointsNew;
+	double *lastRegistrationPoints;
 
 ///Eigen
 	SparseMatrix<double> L_1,L_2, C_1, C_2, A1, A2;
