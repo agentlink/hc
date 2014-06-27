@@ -129,7 +129,7 @@ typedef enum {
     [self updateTouches:touches];
 
     NSTimeInterval time = [[NSDate date] timeIntervalSinceDate:_animationStart];
-    vector<int> removed(touches.count);
+    vector<int> removed;
     for (UITouch *touch in touches) {
         ShapeHandle *handle = [self getHandle:touch];
         int handleId = handle.handleId;
