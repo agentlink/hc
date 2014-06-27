@@ -41,7 +41,7 @@
     CvMemStorage *storage = cvCreateMemStorage(0);
     CvSeq *contour = 0;
     cvFindContours(mask, storage, &contour, sizeof(CvContour), CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE, cvPoint(0, 0));
-    Shape *shape = new Shape(contour, width, height);
+    Shape *shape = new Shape(contour, width, height, NULL);
 
     cvReleaseMemStorage(&storage);
 

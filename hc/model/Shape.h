@@ -50,6 +50,7 @@ public:
 	int *edge_1, *edge_2;
 	double *G11, *G22;
 	double *g00 = NULL, *g01, *g10, *g11, *g20, *g21, *g30, *g31, *g40, *g41, *g50, *g51, *g60, *g61, *g70, *g71;
+    double *Weights = NULL;
 	
 	double *pointsNew;
 	double *lastRegistrationPoints;
@@ -60,7 +61,7 @@ public:
 	SparseMatrix<double> C1_t, C2_t, L2_t;
 	
 public:
-	Shape(CvSeq * borderContour, int w, int h);
+	Shape(CvSeq * borderContour, int w, int h, IplImage * weightMask);
 	int addHandle(int, double, double);
     void updateHandle(int, double, double);
     void updateHandles(map<int, point2d<double>>);

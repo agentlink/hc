@@ -12,7 +12,7 @@
 
 //Конструктор бы надо по уму переписать, чтобы он принимал нормальные входные значения
 
-Shape::Shape(CvSeq * borderContour, int w, int h):width(w),height(h)
+Shape::Shape(CvSeq * borderContour, int w, int h, IplImage * weightMask):width(w),height(h)
 {
 	Eps = std::min(width, height)/25;
     borderStep = (width+height)/125;
@@ -99,7 +99,23 @@ Shape::Shape(CvSeq * borderContour, int w, int h):width(w),height(h)
     string params = os.str();
 	
 	triangulate((char *) params.c_str(), &shapeGeometry, &triangulation, &vout);
-    
+
+    Weights = new double[triangulation.numberofedges];
+    for (int i = 0; i < triangulation.numberofedges; i++){
+        if (weightMask == NULL) {
+            Weights[i] = 1;
+            continue;
+        }
+        int p1 = triangulation.edgelist[2 * i];
+        int p2 = triangulation.edgelist[2 * i + 1];
+        int x1 = floor(triangulation.pointlist[2 * p1]);
+        int y1 = floor(triangulation.pointlist[2 * p1  + 1]);
+        int x2 = floor(triangulation.pointlist[2 * p2]);
+        int y2 = floor(triangulation.pointlist[2 * p2  + 1]);
+        if (cvGet2D(weightMask, x1, y1).val[0] != 0 || cvGet2D(weightMask, x2, y2).val[0] != 0)
+            Weights[i] = 10000;
+    }
+
     pointsNew = new double[triangulation.numberofpoints*2];
     lastRegistrationPoints = new double[triangulation.numberofpoints*2];
     
@@ -220,8 +236,9 @@ void Shape::registration()
 			g51[i] = -(g40[i] = (4*vlx-2*vix-2*vjx)*G11[i]); g50[i] = g41[i] = (4*vly-2*viy-2*vjy)*G11[i];
 
 		}
-		weight = -1;
-        cout << "weight: " << weight << endl;
+		//weight = -1;
+        weight = Weights[i];
+//        cout << "weight: " << weight << endl;
 
 		//////////////////////Eigen
 		L1tripletList.push_back(T(2*i, 2*pi, (-1-E11*g00[i]-E12*g01[i])*weight));
@@ -446,8 +463,9 @@ void Shape::updateTriangles()
             g41[i]*tmpPoints[pl*2]+g51[i]*tmpPoints[pl*2+1];
 		}
 
-        weight = -1;
-        cout << "weight1: " << weight << endl;
+//        weight = -1;
+        weight = Weights[i];
+//        cout << "weight1: " << weight << endl;
 
 
 
