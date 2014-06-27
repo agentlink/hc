@@ -15,8 +15,9 @@
 Shape::Shape(CvSeq * borderContour, int w, int h):width(w),height(h)
 {
 	Eps = std::min(width, height)/25;
+    borderStep = (width+height)/125;
 	
-    shapeGeometry.numberofpoints = (borderContour->total)/BORDERSTEP;
+    shapeGeometry.numberofpoints = (borderContour->total)/borderStep;
 	shapeGeometry.pointlist = new REAL[2*shapeGeometry.numberofpoints];
 	shapeGeometry.numberofpointattributes = 0;
 	shapeGeometry.pointmarkerlist = 0;
@@ -82,7 +83,7 @@ Shape::Shape(CvSeq * borderContour, int w, int h):width(w),height(h)
 	CvPoint val;
 	for (int i=0; i < borderContour->total; i++) {
 		CV_READ_SEQ_ELEM( val, reader );
-		if (i % BORDERSTEP == 0){
+		if (i % borderStep == 0){
 			shapeGeometry.pointlist[index++] = val.x;
 			shapeGeometry.pointlist[index++] = val.y;
 		}
@@ -92,8 +93,12 @@ Shape::Shape(CvSeq * borderContour, int w, int h):width(w),height(h)
 		shapeGeometry.segmentlist[2*i]=i;
 		shapeGeometry.segmentlist[2*i+1]=(i+1)%shapeGeometry.numberofpoints;
 	}
+
+    ostringstream os;
+    os << "pq25eza" << width*height/500 << "v";
+    string params = os.str();
 	
-	triangulate("pq25eza500v", &shapeGeometry, &triangulation, &vout);
+	triangulate((char *) params.c_str(), &shapeGeometry, &triangulation, &vout);
     
     pointsNew = new double[triangulation.numberofpoints*2];
     lastRegistrationPoints = new double[triangulation.numberofpoints*2];

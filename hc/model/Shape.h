@@ -34,14 +34,13 @@ extern "C" {
 using namespace std;
 using namespace Eigen;
 using namespace wykobi;
-
-const int BORDERSTEP = 15;
 const int W = 1000;
 
 class Shape{
 public:
 	triangulateio shapeGeometry, triangulation, vout;
 	int width, height;
+    int borderStep;
 	
     map<int, point2d<double>> handles;
 	map<int, int*> handleTriangles;
