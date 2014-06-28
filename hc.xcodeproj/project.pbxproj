@@ -136,7 +136,9 @@
 		2C8CCAB5195C2D9500B17BD1 /* wykobi_normalization.inl in Resources */ = {isa = PBXBuildFile; fileRef = 2C8CCAA4195C2D9500B17BD1 /* wykobi_normalization.inl */; };
 		2C8CCAB6195C2D9500B17BD1 /* wykobi_ordered_polygon.inl in Resources */ = {isa = PBXBuildFile; fileRef = 2C8CCAA5195C2D9500B17BD1 /* wykobi_ordered_polygon.inl */; };
 		30F441CE4AA3CAB41D383EBB /* Record.m in Sources */ = {isa = PBXBuildFile; fileRef = 30F44531C6ADD9463B6581A2 /* Record.m */; };
+		30F4444500CF627107041E5D /* PaintView.m in Sources */ = {isa = PBXBuildFile; fileRef = 30F44B4E6B7BA5DEFA6D96BD /* PaintView.m */; };
 		30F446D9098666674B58A3C1 /* AnimationController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 30F449C764F3B21C8C2FB120 /* AnimationController.mm */; };
+		30F449E4E2BAACE1BCDA20C5 /* ImportShapeController.m in Sources */ = {isa = PBXBuildFile; fileRef = 30F44DD408298BE6E330F971 /* ImportShapeController.m */; };
 		30F44A6C9CBD7808CC7598B9 /* AnimationEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 30F44826B312F9D2AC7EC1BA /* AnimationEvent.m */; };
 		30F44D173EC466CBE64D74D6 /* ImageUtil.mm in Sources */ = {isa = PBXBuildFile; fileRef = 30F441453DFC418608C150EB /* ImageUtil.mm */; };
 		30F44D28CAD908705F0FACE8 /* LoadShapeController.m in Sources */ = {isa = PBXBuildFile; fileRef = 30F4448A3B8A53FF06C4188E /* LoadShapeController.m */; };
@@ -163,6 +165,8 @@
 		DAAABA9C195C151C0036C526 /* hcTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DAAABA9B195C151C0036C526 /* hcTests.m */; };
 		DAAABAAA195D6B010036C526 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAAABAA9195D6B010036C526 /* MobileCoreServices.framework */; };
 		DAAABAAC195DC87A0036C526 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAAABAAB195DC87A0036C526 /* AVFoundation.framework */; };
+		DAAABAB2195E2DCF0036C526 /* UIImage+Resizing.m in Sources */ = {isa = PBXBuildFile; fileRef = DAAABAB1195E2DCF0036C526 /* UIImage+Resizing.m */; };
+		DAAABAB5195E2E370036C526 /* NYXImagesHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = DAAABAB4195E2E370036C526 /* NYXImagesHelper.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -638,14 +642,18 @@
 		30F44531C6ADD9463B6581A2 /* Record.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Record.m; sourceTree = "<group>"; };
 		30F4461A7D792CE57F6C06F5 /* Record.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Record.h; sourceTree = "<group>"; };
 		30F4469B4C004E03F4B3D070 /* LoadShapeCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoadShapeCell.h; sourceTree = "<group>"; };
+		30F44785CE7CD2562ED58518 /* ImportShapeController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImportShapeController.h; sourceTree = "<group>"; };
 		30F44813A51BFBCAFB88AF51 /* ImageUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageUtil.h; sourceTree = "<group>"; };
 		30F44826B312F9D2AC7EC1BA /* AnimationEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AnimationEvent.m; sourceTree = "<group>"; };
 		30F448E177E7981973CBD3A6 /* AnimationEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnimationEvent.h; sourceTree = "<group>"; };
 		30F449C764F3B21C8C2FB120 /* AnimationController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AnimationController.mm; sourceTree = "<group>"; };
 		30F44A24CB6D11BCA7BE4B5D /* ShapeHandle.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ShapeHandle.mm; sourceTree = "<group>"; };
 		30F44A2556F9C5AE05D0E89C /* ShapeHandle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShapeHandle.h; sourceTree = "<group>"; };
+		30F44B4E6B7BA5DEFA6D96BD /* PaintView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PaintView.m; sourceTree = "<group>"; };
+		30F44DD408298BE6E330F971 /* ImportShapeController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImportShapeController.m; sourceTree = "<group>"; };
 		30F44E6422C209CB44D5827B /* LoadShapeController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoadShapeController.h; sourceTree = "<group>"; };
 		30F44EF6759C2F11CA3C29BD /* LoadShapeCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoadShapeCell.m; sourceTree = "<group>"; };
+		30F44F1B225D267E9FDE3147 /* PaintView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PaintView.h; sourceTree = "<group>"; };
 		30F44F60E61C92CC7B5B9E5D /* AnimationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnimationController.h; sourceTree = "<group>"; };
 		62E98146FC7FB9BA5C0D8D98 /* RobustMatting.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RobustMatting.cpp; sourceTree = "<group>"; };
 		62E984CCC72606600D69DBC6 /* RobustMatting.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RobustMatting.h; sourceTree = "<group>"; };
@@ -674,6 +682,10 @@
 		DAAABA9B195C151C0036C526 /* hcTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = hcTests.m; sourceTree = "<group>"; };
 		DAAABAA9195D6B010036C526 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		DAAABAAB195DC87A0036C526 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		DAAABAB0195E2DCF0036C526 /* UIImage+Resizing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Resizing.h"; sourceTree = "<group>"; };
+		DAAABAB1195E2DCF0036C526 /* UIImage+Resizing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Resizing.m"; sourceTree = "<group>"; };
+		DAAABAB3195E2E370036C526 /* NYXImagesHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYXImagesHelper.h; sourceTree = "<group>"; };
+		DAAABAB4195E2E370036C526 /* NYXImagesHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYXImagesHelper.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1683,6 +1695,10 @@
 		DAAABA72195C151C0036C526 /* hc */ = {
 			isa = PBXGroup;
 			children = (
+				DAAABAB3195E2E370036C526 /* NYXImagesHelper.h */,
+				DAAABAB4195E2E370036C526 /* NYXImagesHelper.m */,
+				DAAABAB0195E2DCF0036C526 /* UIImage+Resizing.h */,
+				DAAABAB1195E2DCF0036C526 /* UIImage+Resizing.m */,
 				2C8CC7CF195C21B600B17BD1 /* lib */,
 				2C8CC7CB195C219E00B17BD1 /* model */,
 				DAAABA7B195C151C0036C526 /* AppDelegate.h */,
@@ -1704,6 +1720,10 @@
 				30F44E6422C209CB44D5827B /* LoadShapeController.h */,
 				30F44EF6759C2F11CA3C29BD /* LoadShapeCell.m */,
 				30F4469B4C004E03F4B3D070 /* LoadShapeCell.h */,
+				30F44DD408298BE6E330F971 /* ImportShapeController.m */,
+				30F44785CE7CD2562ED58518 /* ImportShapeController.h */,
+				30F44B4E6B7BA5DEFA6D96BD /* PaintView.m */,
+				30F44F1B225D267E9FDE3147 /* PaintView.h */,
 			);
 			path = hc;
 			sourceTree = "<group>";
@@ -1964,7 +1984,9 @@
 				2C8CCAA7195C2D9500B17BD1 /* Makefile in Sources */,
 				2C8CC984195C21B700B17BD1 /* triangle.c in Sources */,
 				DAAABA7D195C151C0036C526 /* AppDelegate.m in Sources */,
+				DAAABAB2195E2DCF0036C526 /* UIImage+Resizing.m in Sources */,
 				DAAABA79195C151C0036C526 /* main.m in Sources */,
+				DAAABAB5195E2E370036C526 /* NYXImagesHelper.m in Sources */,
 				30F446D9098666674B58A3C1 /* AnimationController.mm in Sources */,
 				2C8CC7CE195C219E00B17BD1 /* Shape.cpp in Sources */,
 				30F44D173EC466CBE64D74D6 /* ImageUtil.mm in Sources */,
@@ -1974,6 +1996,8 @@
 				30F44D28CAD908705F0FACE8 /* LoadShapeController.m in Sources */,
 				30F44F7611FB2483D7D3542B /* LoadShapeCell.m in Sources */,
 				62E98C0FE4D466BC45C3C3C2 /* RobustMatting.cpp in Sources */,
+				30F449E4E2BAACE1BCDA20C5 /* ImportShapeController.m in Sources */,
+				30F4444500CF627107041E5D /* PaintView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

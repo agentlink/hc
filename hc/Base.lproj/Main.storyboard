@@ -62,6 +62,25 @@
                                     <outlet property="imageView" destination="R6L-vb-oSy" id="xFc-Ga-sp4"/>
                                 </connections>
                             </collectionViewCell>
+                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="import" id="dco-ZV-EXS">
+                                <rect key="frame" x="281" y="0.0" width="200" height="200"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                    <rect key="frame" x="0.0" y="0.0" width="200" height="200"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="+" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VKr-rq-Ld3">
+                                            <rect key="frame" x="20" y="68" width="160" height="51"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="64"/>
+                                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                </view>
+                                <size key="customSize" width="200" height="200"/>
+                            </collectionViewCell>
                         </cells>
                         <connections>
                             <outlet property="dataSource" destination="UCn-Ck-nmg" id="YtI-vU-vQa"/>
@@ -72,10 +91,96 @@
                     <navigationItem key="navigationItem" title="Select Shape" id="fEG-fg-cr7">
                         <barButtonItem key="backBarButtonItem" title="Cancel" id="Cga-Rc-VH0"/>
                     </navigationItem>
+                    <connections>
+                        <segue destination="uuR-DE-RLZ" kind="push" identifier="import_image" id="VnC-Ra-feg"/>
+                    </connections>
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Vqa-qG-LI7" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-2068" y="169"/>
+        </scene>
+        <!--Import Shape Controller - Import Image-->
+        <scene sceneID="8pl-zD-LpY">
+            <objects>
+                <viewController id="uuR-DE-RLZ" customClass="ImportShapeController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Czf-8d-dRc"/>
+                        <viewControllerLayoutGuide type="bottom" id="dp4-ca-bbg"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="fjf-Ua-ZBO">
+                        <rect key="frame" x="0.0" y="44" width="1024" height="680"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="5DW-IH-d6i">
+                                <rect key="frame" x="0.0" y="0.0" width="1024" height="680"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                            </imageView>
+                            <view contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="aiS-Y3-LL3" customClass="PaintView">
+                                <rect key="frame" x="0.0" y="0.0" width="1024" height="680"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <connections>
+                                    <outletCollection property="gestureRecognizers" destination="fIA-fA-Lcq" appends="YES" id="ETT-Cb-c8I"/>
+                                </connections>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="aiS-Y3-LL3" firstAttribute="top" secondItem="fjf-Ua-ZBO" secondAttribute="top" id="5pO-b7-LKX"/>
+                            <constraint firstItem="aiS-Y3-LL3" firstAttribute="trailing" secondItem="5DW-IH-d6i" secondAttribute="trailing" id="7Qy-A7-NDg"/>
+                            <constraint firstItem="5DW-IH-d6i" firstAttribute="bottom" secondItem="aiS-Y3-LL3" secondAttribute="bottom" id="BYP-dd-b0J"/>
+                            <constraint firstItem="5DW-IH-d6i" firstAttribute="leading" secondItem="aiS-Y3-LL3" secondAttribute="leading" id="CUN-gL-2e3"/>
+                            <constraint firstAttribute="bottom" secondItem="5DW-IH-d6i" secondAttribute="bottom" id="CXe-E1-geC"/>
+                            <constraint firstAttribute="trailing" secondItem="aiS-Y3-LL3" secondAttribute="trailing" id="G2T-Ii-noc"/>
+                            <constraint firstItem="aiS-Y3-LL3" firstAttribute="top" secondItem="5DW-IH-d6i" secondAttribute="top" id="bMs-Bv-Uab"/>
+                            <constraint firstItem="aiS-Y3-LL3" firstAttribute="leading" secondItem="fjf-Ua-ZBO" secondAttribute="leading" id="ni3-zh-ZmR"/>
+                        </constraints>
+                        <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
+                    </view>
+                    <toolbarItems>
+                        <barButtonItem title="Collection" id="gV8-kH-V1Y">
+                            <connections>
+                                <action selector="showCameraRoll:" destination="uuR-DE-RLZ" id="MGG-rQ-xGJ"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem width="42" style="plain" systemItem="fixedSpace" id="6qy-8B-sxJ"/>
+                        <barButtonItem systemItem="camera" id="FFU-bD-3sJ">
+                            <connections>
+                                <segue destination="57W-xy-ZQq" kind="modal" identifier="pick_camera" id="Vc3-kv-MFO"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="JFb-R9-OOz"/>
+                        <barButtonItem systemItem="undo" id="fKY-m4-zQv">
+                            <connections>
+                                <action selector="resetChanges" destination="uuR-DE-RLZ" id="0By-Y0-pe5"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem width="80" style="plain" systemItem="fixedSpace" id="eay-h2-JJC"/>
+                        <barButtonItem title="Remove Background" id="shd-d1-q7V">
+                            <connections>
+                                <action selector="removeBackground" destination="uuR-DE-RLZ" id="ghR-zX-4W7"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="dhw-EA-OYO"/>
+                        <barButtonItem systemItem="save" id="9vX-aM-5yv"/>
+                    </toolbarItems>
+                    <navigationItem key="navigationItem" title="Import Image" id="Dhr-R8-gTp"/>
+                    <connections>
+                        <outlet property="collectionButton" destination="gV8-kH-V1Y" id="qgL-JH-v01"/>
+                        <outlet property="imageView" destination="5DW-IH-d6i" id="t0E-rz-gvw"/>
+                        <outlet property="paintView" destination="aiS-Y3-LL3" id="HFz-U3-TrO"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Wnh-ci-G3v" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <panGestureRecognizer minimumNumberOfTouches="1" maximumNumberOfTouches="1" id="fIA-fA-Lcq">
+                    <connections>
+                        <action selector="pan:" destination="uuR-DE-RLZ" id="bcS-PI-kwh"/>
+                    </connections>
+                </panGestureRecognizer>
+            </objects>
+            <point key="canvasLocation" x="-2061" y="1181"/>
         </scene>
         <!--GLKit View Controller-->
         <scene sceneID="tXr-a1-R10">
@@ -97,6 +202,25 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SZV-WD-TEh" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-641" y="287"/>
+        </scene>
+        <!--Image Picker Controller-->
+        <scene sceneID="vEF-DW-SxY">
+            <objects>
+                <viewController id="57W-xy-ZQq" customClass="UIImagePickerController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="7AR-bD-yg5"/>
+                        <viewControllerLayoutGuide type="bottom" id="1kv-eD-tLp"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="U6r-UV-XEg">
+                        <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="4Qd-rG-cwg" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-768" y="2043"/>
         </scene>
         <!--Animation Controller - HandCartoon-->
         <scene sceneID="CTu-dQ-pJl">
@@ -167,6 +291,23 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="jnr-aN-HoO" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-641" y="-1020"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="Jan-V3-Q5M">
+            <objects>
+                <viewController id="iwe-63-gHj" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="LIH-lf-f3N"/>
+                        <viewControllerLayoutGuide type="bottom" id="JVm-HO-IZf"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="ZwI-Fi-geA">
+                        <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="07L-40-d3o" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
         </scene>
     </scenes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">

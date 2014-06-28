@@ -46,22 +46,31 @@
 
 
 - (UIImage *)getImage:(NSIndexPath *)indexPath {
-    NSString *imagePath = [self.imagePaths objectAtIndex:(NSUInteger) indexPath.item];
+    NSString *imagePath = [self.imagePaths objectAtIndex:(NSUInteger) indexPath.item - 1];
     return [[UIImage alloc] initWithContentsOfFile:imagePath];
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.item == 0) {
+        return [self.collectionView dequeueReusableCellWithReuseIdentifier:@"import" forIndexPath:indexPath];
+    }
+
     LoadShapeCell *result = [self.collectionView dequeueReusableCellWithReuseIdentifier:@"shape" forIndexPath:indexPath];
     result.imageView.image = [self getImage:indexPath];
     return result;
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return self.imagePaths.count;
+    return self.imagePaths.count + 1;
 }
 
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.item == 0) {
+        [self performSegueWithIdentifier:@"import_image" sender:nil];
+        return;
+    }
+
     UIImage *image = [self getImage:indexPath];
     [self.selectionDelegate imageSelected:image];
     [self.navigationController popViewControllerAnimated:YES];
