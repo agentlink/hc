@@ -74,6 +74,28 @@ typedef enum {
 - (void)setState:(State)state {
     _state = state;
     self.shapeController.shouldDrawHandles = _state != PLAYING;
+    [self updateButtons];
+}
+
+- (void)updateButtons {
+    NSMutableArray *toolbarItems = [NSMutableArray new];
+    [toolbarItems addObject:self.loadShapeItem];
+    [toolbarItems addObject:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:NULL]];
+    if (self.hasRecord) {
+        [toolbarItems addObject:self.exportItem];
+        [toolbarItems addObject:[self createfixedSpaceItem]];
+        [toolbarItems addObject:self.playItem];
+        [toolbarItems addObject:[self createfixedSpaceItem]];
+    }
+    [toolbarItems addObject:self.recordItem];
+
+    self.toolbarItems = [toolbarItems copy];
+}
+
+- (UIBarButtonItem *)createfixedSpaceItem {
+    UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:NULL];
+    item.width = 44;
+    return item;
 }
 
 - (void)preparePlayback {
@@ -413,9 +435,11 @@ typedef enum {
 }
 
 - (void)setShape:(ShapeInfo *)shape {
+    [self stop];
     _shape = shape;
     [self clearRecord];
     [self resetShape];
+    [self stop];
 }
 
 - (IBAction)export {

@@ -386,6 +386,12 @@
                         </barButtonItem>
                     </toolbarItems>
                     <navigationItem key="navigationItem" title="HandCartoon" id="kR5-ea-yfK"/>
+                    <connections>
+                        <outlet property="exportItem" destination="PsI-in-piY" id="P2N-C0-zyS"/>
+                        <outlet property="loadShapeItem" destination="yPC-iJ-7xA" id="XcJ-jF-1io"/>
+                        <outlet property="playItem" destination="DGY-ok-gBO" id="Y5m-Wh-46D"/>
+                        <outlet property="recordItem" destination="2FX-BN-YXs" id="HO9-BH-Bjg"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="jnr-aN-HoO" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

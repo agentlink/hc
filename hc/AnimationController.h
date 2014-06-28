@@ -8,6 +8,11 @@
 
 @property(nonatomic, strong) ShapeInfo *shape;
 
+@property(nonatomic, strong) IBOutlet UIBarButtonItem *loadShapeItem;
+@property(nonatomic, strong) IBOutlet UIBarButtonItem *exportItem;
+@property(nonatomic, strong) IBOutlet UIBarButtonItem *playItem;
+@property(nonatomic, strong) IBOutlet UIBarButtonItem *recordItem;
+
 - (BOOL)hasRecord;
 
 @end
