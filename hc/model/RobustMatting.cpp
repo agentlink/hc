@@ -273,6 +273,11 @@ Mat RobustMatting::CalculateMatting(const Mat& src, const Mat& trimap)
     const MatrixXd Alpha( SolveRobustMatting( src, trimap ) ), AlphaT( Alpha.transpose( ) );
     const Mat alpha( src.size( ), CV_MAKETYPE( DataDepth<double>::value,1 ), (void*)AlphaT.data( ) );
 
+    int morph_size = 8;
+    Mat element = getStructuringElement( MORPH_ELLIPSE, Size( 2*morph_size + 1, 2*morph_size+1 ), Point( morph_size, morph_size ) );
+
+    morphologyEx(alpha, alpha, MORPH_OPEN, element);
+
     return AddAlpha(src, alpha);
 //    return alpha;
 }
