@@ -1,4 +1,3 @@
-#import <MobileCoreServices/MobileCoreServices.h>
 #import "LoadShapeController.h"
 #import "UIImageUtil.h"
 #import "ImageUtil.h"
@@ -601,22 +600,6 @@ namespace cv1 {
     UIImage *result = [ImageUtil UIImageFromMat:matRes];
 //    UIImage *result = [ImageUtil UIImageFromMat:matTrimap3];
     return result;
-}
-
-+ (NSMutableArray *)loadImagePaths {
-    NSString *docDir = [UIImageUtil applicationDocumentsDirectory];
-    NSError *error = nil;
-    NSArray *docs = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:docDir error:&error];
-    NSMutableArray *images = [NSMutableArray new];
-    for (id doc in docs) {
-        NSString *extension = [doc pathExtension];
-        CFStringRef fileUTI = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, (__bridge CFStringRef) extension, NULL);
-
-        if (UTTypeConformsTo(fileUTI, kUTTypeImage)) {
-            [images addObject:[docDir stringByAppendingPathComponent:doc]];
-        }
-    }
-    return images;
 }
 
 + (NSString *)applicationDocumentsDirectory {

@@ -135,6 +135,7 @@
 		2C8CCAB4195C2D9500B17BD1 /* wykobi_nd.inl in Resources */ = {isa = PBXBuildFile; fileRef = 2C8CCAA3195C2D9500B17BD1 /* wykobi_nd.inl */; };
 		2C8CCAB5195C2D9500B17BD1 /* wykobi_normalization.inl in Resources */ = {isa = PBXBuildFile; fileRef = 2C8CCAA4195C2D9500B17BD1 /* wykobi_normalization.inl */; };
 		2C8CCAB6195C2D9500B17BD1 /* wykobi_ordered_polygon.inl in Resources */ = {isa = PBXBuildFile; fileRef = 2C8CCAA5195C2D9500B17BD1 /* wykobi_ordered_polygon.inl */; };
+		30F4400E218EAA5FDFB30096 /* ShapePath.m in Sources */ = {isa = PBXBuildFile; fileRef = 30F44D4D3AB9F25F45618FB0 /* ShapePath.m */; };
 		30F441CE4AA3CAB41D383EBB /* Record.m in Sources */ = {isa = PBXBuildFile; fileRef = 30F44531C6ADD9463B6581A2 /* Record.m */; };
 		30F44221E67AD019B7100597 /* ImagePaintController.m in Sources */ = {isa = PBXBuildFile; fileRef = 30F446F984751F5846E4E7B7 /* ImagePaintController.m */; };
 		30F4444500CF627107041E5D /* PaintView.m in Sources */ = {isa = PBXBuildFile; fileRef = 30F44B4E6B7BA5DEFA6D96BD /* PaintView.m */; };
@@ -663,8 +664,10 @@
 		30F449C764F3B21C8C2FB120 /* AnimationController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AnimationController.mm; sourceTree = "<group>"; };
 		30F44A24CB6D11BCA7BE4B5D /* ShapeHandle.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ShapeHandle.mm; sourceTree = "<group>"; };
 		30F44A2556F9C5AE05D0E89C /* ShapeHandle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShapeHandle.h; sourceTree = "<group>"; };
+		30F44AD3076F4748079D9741 /* ShapePath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShapePath.h; sourceTree = "<group>"; };
 		30F44AD4696B545586820674 /* ImagePaintController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImagePaintController.h; sourceTree = "<group>"; };
 		30F44B4E6B7BA5DEFA6D96BD /* PaintView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PaintView.m; sourceTree = "<group>"; };
+		30F44D4D3AB9F25F45618FB0 /* ShapePath.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShapePath.m; sourceTree = "<group>"; };
 		30F44DD408298BE6E330F971 /* ImportShapeController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImportShapeController.m; sourceTree = "<group>"; };
 		30F44E6422C209CB44D5827B /* LoadShapeController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoadShapeController.h; sourceTree = "<group>"; };
 		30F44EF6759C2F11CA3C29BD /* LoadShapeCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoadShapeCell.m; sourceTree = "<group>"; };
@@ -749,6 +752,8 @@
 				30F444EA032E54D007205226 /* UIImageUtil.h */,
 				30F445B256BA931205D3DCF6 /* ShapeInfo.m */,
 				30F44877E4CD1767A40325BD /* ShapeInfo.h */,
+				30F44D4D3AB9F25F45618FB0 /* ShapePath.m */,
+				30F44AD3076F4748079D9741 /* ShapePath.h */,
 			);
 			path = model;
 			sourceTree = "<group>";
@@ -2028,6 +2033,7 @@
 				30F44221E67AD019B7100597 /* ImagePaintController.m in Sources */,
 				30F44924CACF83943A146E3E /* EditWeightsController.m in Sources */,
 				30F44FD2DA40C7E6DC1467A0 /* ShapeInfo.m in Sources */,
+				30F4400E218EAA5FDFB30096 /* ShapePath.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

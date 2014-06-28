@@ -4,6 +4,7 @@
 @implementation ShapeInfo {
 
 }
+
 - (instancetype)initWithImage:(UIImage *)image weights:(UIImage *)weights {
     self = [super init];
     if (self) {
