@@ -37,6 +37,8 @@ typedef enum {
 
 
 - (void)resetShape {
+    [self stop];
+
     self.shapeController.shapeInfo = _shape;
 
     _animationStart = [NSDate date];
@@ -65,11 +67,21 @@ typedef enum {
 
     [self stop];
 
+    [self preparePlayback];
     self.state = PLAYING;
     NSDate *now = [NSDate date];
     _playbackStart = now;
-    [self preparePlayback];
 }
+
+- (IBAction)resetScene {
+    [self setShape:_shape];
+}
+
+- (IBAction)toggleTriangles {
+    ShapeController *controller = self.shapeController;
+    controller.shouldDrawTriangulation = !controller.shouldDrawTriangulation;
+}
+
 
 - (void)setState:(State)state {
     _state = state;
@@ -80,19 +92,23 @@ typedef enum {
 - (void)updateButtons {
     NSMutableArray *toolbarItems = [NSMutableArray new];
     [toolbarItems addObject:self.loadShapeItem];
+    [toolbarItems addObject:[self createFixedSpaceItem]];
+    [toolbarItems addObject:self.resetSceneItem];
     [toolbarItems addObject:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:NULL]];
     if (self.hasRecord) {
         [toolbarItems addObject:self.exportItem];
-        [toolbarItems addObject:[self createfixedSpaceItem]];
+        [toolbarItems addObject:[self createFixedSpaceItem]];
         [toolbarItems addObject:self.playItem];
-        [toolbarItems addObject:[self createfixedSpaceItem]];
+        [toolbarItems addObject:[self createFixedSpaceItem]];
     }
     [toolbarItems addObject:self.recordItem];
+    [toolbarItems addObject:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:NULL]];
+    [toolbarItems addObject:self.toggleTrianglesItem];
 
     self.toolbarItems = [toolbarItems copy];
 }
 
-- (UIBarButtonItem *)createfixedSpaceItem {
+- (UIBarButtonItem *)createFixedSpaceItem {
     UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:NULL];
     item.width = 44;
     return item;
@@ -439,7 +455,6 @@ typedef enum {
     _shape = shape;
     [self clearRecord];
     [self resetShape];
-    [self stop];
 }
 
 - (IBAction)export {
@@ -466,9 +481,8 @@ typedef enum {
         return;
     }
 
-    self.state = PLAYING;
-
     [self preparePlayback];
+    self.state = PLAYING;
 
     ShapeController *shapeController = self.shapeController;
 

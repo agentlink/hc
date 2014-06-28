@@ -366,6 +366,18 @@
                                 <segue destination="UCn-Ck-nmg" kind="push" identifier="select_shape" id="M7Y-JI-O9g"/>
                             </connections>
                         </barButtonItem>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="0p6-KU-ul0"/>
+                        <barButtonItem title="Clean" id="d3O-fr-0lr">
+                            <connections>
+                                <action selector="resetScene" destination="Jdy-0P-7NV" id="TK4-6N-bud"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem width="42" style="plain" systemItem="fixedSpace" id="hRP-gz-Qob"/>
+                        <barButtonItem title="Triangles" id="K6r-gE-WDW">
+                            <connections>
+                                <action selector="toggleTriangles" destination="Jdy-0P-7NV" id="3NJ-KB-wpU"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="Wfe-OX-bmA"/>
                         <barButtonItem title="Export" id="PsI-in-piY">
                             <connections>
@@ -391,6 +403,8 @@
                         <outlet property="loadShapeItem" destination="yPC-iJ-7xA" id="XcJ-jF-1io"/>
                         <outlet property="playItem" destination="DGY-ok-gBO" id="Y5m-Wh-46D"/>
                         <outlet property="recordItem" destination="2FX-BN-YXs" id="HO9-BH-Bjg"/>
+                        <outlet property="resetSceneItem" destination="d3O-fr-0lr" id="2My-MR-UKm"/>
+                        <outlet property="toggleTrianglesItem" destination="K6r-gE-WDW" id="EM2-Xa-nkL"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="jnr-aN-HoO" userLabel="First Responder" sceneMemberID="firstResponder"/>
