@@ -173,6 +173,7 @@
 		DAAABAAC195DC87A0036C526 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAAABAAB195DC87A0036C526 /* AVFoundation.framework */; };
 		DAAABAB2195E2DCF0036C526 /* UIImage+Resizing.m in Sources */ = {isa = PBXBuildFile; fileRef = DAAABAB1195E2DCF0036C526 /* UIImage+Resizing.m */; };
 		DAAABAB5195E2E370036C526 /* NYXImagesHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = DAAABAB4195E2E370036C526 /* NYXImagesHelper.m */; };
+		DAAABAB7195EAD600036C526 /* LightGrey@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DAAABAB6195EAD600036C526 /* LightGrey@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -704,6 +705,7 @@
 		DAAABAB1195E2DCF0036C526 /* UIImage+Resizing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Resizing.m"; sourceTree = "<group>"; };
 		DAAABAB3195E2E370036C526 /* NYXImagesHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NYXImagesHelper.h; sourceTree = "<group>"; };
 		DAAABAB4195E2E370036C526 /* NYXImagesHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NYXImagesHelper.m; sourceTree = "<group>"; };
+		DAAABAB6195EAD600036C526 /* LightGrey@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "LightGrey@2x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1721,6 +1723,7 @@
 		DAAABA72195C151C0036C526 /* hc */ = {
 			isa = PBXGroup;
 			children = (
+				DAAABAB6195EAD600036C526 /* LightGrey@2x.png */,
 				DAAABAB3195E2E370036C526 /* NYXImagesHelper.h */,
 				DAAABAB4195E2E370036C526 /* NYXImagesHelper.m */,
 				DAAABAB0195E2DCF0036C526 /* UIImage+Resizing.h */,
@@ -1882,6 +1885,7 @@
 				2C8CC960195C21B700B17BD1 /* CMakeLists.txt in Resources */,
 				2C8CCA4C195C2B3200B17BD1 /* BVH in Resources */,
 				2C8CC946195C21B700B17BD1 /* Geometry in Resources */,
+				DAAABAB7195EAD600036C526 /* LightGrey@2x.png in Resources */,
 				2C8CCA63195C2B3200B17BD1 /* CopyrightMINPACK.txt in Resources */,
 				2C8CCA6F195C2B3200B17BD1 /* SVD in Resources */,
 				2C8CC95B195C21B700B17BD1 /* CMakeLists.txt in Resources */,

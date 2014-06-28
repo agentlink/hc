@@ -345,7 +345,7 @@
                                     <segue destination="BV1-FR-VrT" kind="embed" id="sIS-Sq-pWO"/>
                                 </connections>
                             </containerView>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="J7Z-td-QnB">
+                            <imageView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="LightGrey.png" translatesAutoresizingMaskIntoConstraints="NO" id="J7Z-td-QnB">
                                 <rect key="frame" x="0.0" y="0.0" width="1024" height="680"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" cocoaTouchSystemColor="scrollViewTexturedBackgroundColor"/>
@@ -433,6 +433,9 @@
             </objects>
         </scene>
     </scenes>
+    <resources>
+        <image name="LightGrey.png" width="1024" height="768"/>
+    </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <nil key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>
