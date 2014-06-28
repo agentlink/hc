@@ -112,8 +112,15 @@ Shape::Shape(CvSeq * borderContour, int w, int h, IplImage * weightMask):width(w
         int y1 = floor(triangulation.pointlist[2 * p1  + 1]);
         int x2 = floor(triangulation.pointlist[2 * p2]);
         int y2 = floor(triangulation.pointlist[2 * p2  + 1]);
-        if (cvGet2D(weightMask, x1, y1).val[0] != 0 || cvGet2D(weightMask, x2, y2).val[0] != 0)
-            Weights[i] = 10000;
+        cout << x1 << " " << y1 << " - " << x2  << " " << y2 << endl;
+        if (cvGet2D(weightMask, y1, x1).val[0] != 0 || cvGet2D(weightMask, y2, x2).val[0] != 0) {
+            cout << "hard" << endl;
+            Weights[i] = 20;
+        }
+        else {
+            cout << "weak" << " " << cvGet2D(weightMask, y1, x1).val[1] << cvGet2D(weightMask, y1, x1).val[2] << cvGet2D(weightMask, y1, x1).val[3] << endl;
+            Weights[i] = 1;
+        }
     }
 
     pointsNew = new double[triangulation.numberofpoints*2];
