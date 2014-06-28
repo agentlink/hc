@@ -7,11 +7,12 @@
 #ifndef __RobustMatting_H_
 #define __RobustMatting_H_
 
+using namespace cv;
 
 class RobustMatting {
 public:
-    IplImage* CalculateMatting(const IplImage* , const IplImage* );
-    IplImage* GenerateTrimap(IplImage* contourImage);
+    Mat CalculateMatting(const Mat& , const Mat& );
+    void GenerateTrimap(Mat& contourImage);
 };
 
 

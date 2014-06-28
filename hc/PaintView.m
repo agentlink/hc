@@ -56,7 +56,7 @@
     [super awakeFromNib];
 
     paths = [NSMutableArray new];
-    _strokeWidth = 50;
+    _strokeWidth = 20;
 }
 
 - (void)clearPaths {

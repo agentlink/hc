@@ -252,35 +252,35 @@ void CreateAlphaMat(Mat &res, const Mat &src, const Mat &alpha)
             rgba[1] = srcRgb[1];
             rgba[2] = srcRgb[2];
             rgba[3] = alpha.at<uchar>(i, j);
+//            rgba[0] = rgba[3];
+//            rgba[1] = rgba[3];
+//            rgba[2] = rgba[3];
         }
     }
 }
 
-IplImage* SaveToIpl(const Mat &src, const Mat &alpha) {
+Mat AddAlpha(const Mat &src, const Mat &alpha) {
     Mat ucharAlpha = convertTo<uchar>(alpha, 255);
     Mat srcWithAlpha(src.size(), CV_8UC4);
 
     CreateAlphaMat(srcWithAlpha, src, ucharAlpha);
 
-    return new IplImage(srcWithAlpha);
+    return srcWithAlpha;
 }
 
-IplImage* RobustMatting::CalculateMatting(const IplImage* srcImg, const IplImage* trimapImg)
+Mat RobustMatting::CalculateMatting(const Mat& src, const Mat& trimap)
 {
-    Mat src(srcImg);
-    Mat trimap(trimapImg);
     const MatrixXd Alpha( SolveRobustMatting( src, trimap ) ), AlphaT( Alpha.transpose( ) );
     const Mat alpha( src.size( ), CV_MAKETYPE( DataDepth<double>::value,1 ), (void*)AlphaT.data( ) );
 
-    return SaveToIpl(src, alpha);
+    return AddAlpha(src, alpha);
+//    return alpha;
 }
 
 
-IplImage* RobustMatting::GenerateTrimap(IplImage *contourImage)
+void RobustMatting::GenerateTrimap(Mat& contourImage)
 {
-    Mat src(contourImage);
-    floodFill(src, Point(0,0), Scalar(0,0,0));
-    return new IplImage(src);
+    floodFill(contourImage, Point(0,0), Scalar(0,0,0,0));
 }
 //int main(int argc,char**argv)
 //{

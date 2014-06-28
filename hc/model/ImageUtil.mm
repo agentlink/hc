@@ -64,58 +64,88 @@
 }
 
 // NOTE You should convert color mode as RGB before passing to this function
-+ (UIImage *)UIImageFromIplImage:(IplImage *)image {
-    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-    // Allocating the buffer for CGImage
-    NSData *data =
-            [NSData dataWithBytes:image->imageData length:image->imageSize];
-    CGDataProviderRef provider =
-            CGDataProviderCreateWithCFData((__bridge CFDataRef)data);
-    // Creating CGImage from chunk of IplImage
-    CGImageRef imageRef = CGImageCreate(
-            image->width, image->height,
-            image->depth, image->depth * image->nChannels, image->widthStep,
-            colorSpace, kCGImageAlphaNone|kCGBitmapByteOrderDefault,
-            provider, NULL, false, kCGRenderingIntentDefault
++ (UIImage *)UIImageFromMat:(Mat)cvMat {
+    NSData *data = [NSData dataWithBytes:cvMat.data length:cvMat.elemSize()*cvMat.total()];
+    CGColorSpaceRef colorSpace;
+
+    if (cvMat.elemSize() == 1) {
+        colorSpace = CGColorSpaceCreateDeviceGray();
+    } else {
+        colorSpace = CGColorSpaceCreateDeviceRGB();
+    }
+
+    CGDataProviderRef provider = CGDataProviderCreateWithCFData((__bridge CFDataRef)data);
+
+    // Creating CGImage from cv::Mat
+    CGImageRef imageRef = CGImageCreate(cvMat.cols,                                 //width
+            cvMat.rows,                                 //height
+            8,                                          //bits per component
+            8 * cvMat.elemSize(),                       //bits per pixel
+            cvMat.step[0],                            //bytesPerRow
+            colorSpace,                                 //colorspace
+            kCGImageAlphaPremultipliedLast,             // bitmap info
+            provider,                                   //CGDataProviderRef
+            NULL,                                       //decode
+            false,                                      //should interpolate
+            kCGRenderingIntentDefault                   //intent
     );
+
+
     // Getting UIImage from CGImage
-    UIImage *ret = [UIImage imageWithCGImage:imageRef];
+    UIImage *finalImage = [UIImage imageWithCGImage:imageRef];
     CGImageRelease(imageRef);
     CGDataProviderRelease(provider);
     CGColorSpaceRelease(colorSpace);
-    return ret;
+
+    return finalImage;
 }
 
-+ (IplImage *)CreateIplImageFromUIImage:(UIImage *)image {
-    // Getting CGImage from UIImage
-    CGImageRef imageRef = image.CGImage;
++ (Mat)CreateMatFromUIImage:(UIImage *)image {
+    CGColorSpaceRef colorSpace = CGImageGetColorSpace(image.CGImage);
+    CGFloat cols = image.size.width;
+    CGFloat rows = image.size.height;
+    if  (image.imageOrientation == UIImageOrientationLeft
+            || image.imageOrientation == UIImageOrientationRight) {
+        cols = image.size.height;
+        rows = image.size.width;
+    }
 
-    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-    // Creating temporal IplImage for drawing
-    IplImage *iplimage = cvCreateImage(
-            cvSize(image.size.width,image.size.height), IPL_DEPTH_8U, 4
-    );
-    // Creating CGContext for temporal IplImage
-    CGContextRef contextRef = CGBitmapContextCreate(
-            iplimage->imageData, iplimage->width, iplimage->height,
-            iplimage->depth, iplimage->widthStep,
-            colorSpace, kCGImageAlphaPremultipliedLast|kCGBitmapByteOrderDefault
-    );
-    // Drawing CGImage to CGContext
-    CGContextDrawImage(
-            contextRef,
-            CGRectMake(0, 0, image.size.width, image.size.height),
-            imageRef
-    );
-    CGContextRelease(contextRef);
-    CGColorSpaceRelease(colorSpace);
+    cv::Mat cvMat(rows, cols, CV_8UC4); // 8 bits per component, 4 channels (color channels + alpha)
 
-    // Creating result IplImage
-    IplImage *ret = cvCreateImage(cvGetSize(iplimage), IPL_DEPTH_8U, 3);
-    cvCvtColor(iplimage, ret, CV_RGBA2RGB);
-    cvReleaseImage(&iplimage);
 
-    return ret;
+    CGContextRef contextRef = CGBitmapContextCreate(cvMat.data,                 // Pointer to  data
+            cols,                       // Width of bitmap
+            rows,                       // Height of bitmap
+            8,                          // Bits per component
+            cvMat.step[0],              // Bytes per row
+            colorSpace,                 // Colorspace
+//            kCGImageAlphaNoneSkipLast |
+//                    kCGBitmapByteOrderDefault); // Bitmap info flags
+            kCGImageAlphaPremultipliedLast);
+
+        CGContextDrawImage(contextRef, CGRectMake(0, 0, cols, rows),
+                image.CGImage);
+        CGContextRelease(contextRef);
+
+    if  (image.imageOrientation == UIImageOrientationLeft) {
+//        cv::Mat dst;
+        cv::transpose(cvMat, cvMat);
+        cv::flip(cvMat, cvMat, 0);
+    }
+
+    if  (image.imageOrientation == UIImageOrientationRight) {
+//        cv::Mat dst;
+        cv::transpose(cvMat, cvMat);
+        cv::flip(cvMat, cvMat, 1);
+    }
+
+    if  (image.imageOrientation == UIImageOrientationDown) {
+//        cv::Mat dst;
+        cv::flip(cvMat, cvMat, 1);
+        cv::flip(cvMat, cvMat, 0);
+    }
+
+    return cvMat;
 }
 
 @end
