@@ -61,7 +61,7 @@ public:
 	SparseMatrix<double> C1_t, C2_t, L2_t;
 	
 public:
-	Shape(CvSeq * borderContour, int w, int h, IplImage * weightMask);
+	Shape(CvSeq * borderContour, int w, int h, cv::Mat* weightMask);
 	int addHandle(int, double, double);
     void updateHandle(int, double, double);
     void updateHandles(map<int, point2d<double>>);

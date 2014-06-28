@@ -10,9 +10,11 @@
 #include "Shape.h"
 #include "stdio.h"
 
+using namespace cv;
+
 //Конструктор бы надо по уму переписать, чтобы он принимал нормальные входные значения
 
-Shape::Shape(CvSeq * borderContour, int w, int h, IplImage * weightMask):width(w),height(h)
+Shape::Shape(CvSeq * borderContour, int w, int h, Mat * weightMask):width(w),height(h)
 {
 	Eps = std::min(width, height)/25;
     borderStep = (width+height)/125;
@@ -112,13 +114,15 @@ Shape::Shape(CvSeq * borderContour, int w, int h, IplImage * weightMask):width(w
         int y1 = floor(triangulation.pointlist[2 * p1  + 1]);
         int x2 = floor(triangulation.pointlist[2 * p2]);
         int y2 = floor(triangulation.pointlist[2 * p2  + 1]);
-        cout << x1 << " " << y1 << " - " << x2  << " " << y2 << endl;
-        if (cvGet2D(weightMask, y1, x1).val[0] != 0 || cvGet2D(weightMask, y2, x2).val[0] != 0) {
-            cout << "hard" << endl;
-            Weights[i] = 20;
+//        cout << x1 << " " << y1 << " - " << x2  << " " << y2 << endl;
+        if (weightMask->at<Vec4b>(y1, x1)[0] != 0 ||
+            weightMask->at<Vec4b>(y2, x2)[0] != 0)
+        {
+//            cout << "hard" << endl;
+            Weights[i] = 15;
         }
         else {
-            cout << "weak" << " " << cvGet2D(weightMask, y1, x1).val[1] << cvGet2D(weightMask, y1, x1).val[2] << cvGet2D(weightMask, y1, x1).val[3] << endl;
+//            cout << "weak" << " " << cvGet2D(weightMask, y1, x1).val[1] << cvGet2D(weightMask, y1, x1).val[2] << cvGet2D(weightMask, y1, x1).val[3] << endl;
             Weights[i] = 1;
         }
     }

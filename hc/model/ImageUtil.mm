@@ -45,7 +45,11 @@
     CvMemStorage *storage = cvCreateMemStorage(0);
     CvSeq *contour = 0;
     cvFindContours(mask, storage, &contour, sizeof(CvContour), CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE, cvPoint(0, 0));
-    Shape *shape = new Shape(contour, width, height, NULL);
+
+    Mat weightsMask;
+//    if (weights != nil)
+//       weightsMask = [ImageUtil CreateMatFromUIImage:weights];
+    Shape *shape = new Shape(contour, width, height, NULL);//weights == nil ? NULL : &weightsMask);
 
     cvReleaseMemStorage(&storage);
 
