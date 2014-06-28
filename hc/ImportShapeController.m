@@ -1,5 +1,6 @@
 #import <MobileCoreServices/MobileCoreServices.h>
 #import "ImportShapeController.h"
+#import "UIImageUtil.h"
 
 
 @interface ImportShapeController () <UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIPopoverControllerDelegate>
@@ -55,8 +56,8 @@
     UIImage *borders = [self maskWithFillColor:fillColor strokeColor:strokeColor];
     [self clearBorders];
 
-//    UIImage *result = [UIImageUtil removeBackground:image borders:borders];
-    self.imageView.image = borders;
+    UIImage *result = [UIImageUtil removeBackground:self.imageView.image borders:borders];
+    self.imageView.image = result;
 }
 
 - (void)setImageWithoutBackground:(UIImage *)image {
