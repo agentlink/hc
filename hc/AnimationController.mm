@@ -131,6 +131,7 @@ typedef enum {
 - (void)fastForward:(NSTimeInterval)interval {
     ShapeController *shapeController = self.shapeController;
 
+//    NSMutableDictionary *handles = [NSMutableDictionary new];
     for (AnimationEvent *event in _record) {
         if (event.time >= interval) {
             break;
@@ -140,11 +141,19 @@ typedef enum {
             case ADD:
                 [shapeController addHandle:event.handleId atLocation:event.position update:NO];
                 break;
-            case REMOVE:
-                [self moveHandle:shapeController position:event.position handleId:event.handleId];
+            case REMOVE: {
+//                NSNumber *hId = @(event.handleId);
+//                AnimationEvent *move = handles[hId];
+//                if (move) {
+//                    [self moveHandle:shapeController position:move.position handleId:move.handleId];
+//                    [handles removeObjectForKey:hId];
+//                }
                 [self releaseHandle:shapeController handleId:event.handleId];
                 break;
+            }
             case MOVE:
+//                handles[@(event.handleId)] = event;
+                [self moveHandle:shapeController position:event.position handleId:event.handleId];
             default:
                 break;
         }
