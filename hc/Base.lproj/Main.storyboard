@@ -183,7 +183,7 @@
                             </connections>
                         </barButtonItem>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="JFb-R9-OOz"/>
-                        <barButtonItem title="Clear" id="fKY-m4-zQv">
+                        <barButtonItem title="Reset" id="fKY-m4-zQv">
                             <connections>
                                 <action selector="resetChanges" destination="uuR-DE-RLZ" id="0By-Y0-pe5"/>
                             </connections>
