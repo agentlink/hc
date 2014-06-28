@@ -2,6 +2,8 @@
 #import "ImportShapeController.h"
 #import "UIImage+Resizing.h"
 #import "PaintView.h"
+#import "IplImageWrapper.h"
+#import "UIImageUtil.h"
 
 
 @interface ImportShapeController () <UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIPopoverControllerDelegate>
@@ -91,11 +93,11 @@
                    fillColor:[UIColor whiteColor]
                  strokeColor:[UIColor colorWithRed:0.5f green:0.5f blue:0.5f alpha:1]];
 
-    UIImage *finalImage = UIGraphicsGetImageFromCurrentImageContext();
-    self.imageView.image = finalImage;
+    UIImage *borders = UIGraphicsGetImageFromCurrentImageContext();
     [self clearBorders];
 
-
+    UIImage *result = [UIImageUtil removeBackground:image borders:borders];
+    self.imageView.image = result;
 }
 
 - (void)setImageWithoutBackground:(UIImage *)image {

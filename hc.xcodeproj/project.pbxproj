@@ -137,7 +137,9 @@
 		2C8CCAB6195C2D9500B17BD1 /* wykobi_ordered_polygon.inl in Resources */ = {isa = PBXBuildFile; fileRef = 2C8CCAA5195C2D9500B17BD1 /* wykobi_ordered_polygon.inl */; };
 		30F441CE4AA3CAB41D383EBB /* Record.m in Sources */ = {isa = PBXBuildFile; fileRef = 30F44531C6ADD9463B6581A2 /* Record.m */; };
 		30F4444500CF627107041E5D /* PaintView.m in Sources */ = {isa = PBXBuildFile; fileRef = 30F44B4E6B7BA5DEFA6D96BD /* PaintView.m */; };
+		30F4446DC38AAB3A46CA790D /* IplImageWrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = 30F442D7591A4B4F47ACA108 /* IplImageWrapper.mm */; };
 		30F446D9098666674B58A3C1 /* AnimationController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 30F449C764F3B21C8C2FB120 /* AnimationController.mm */; };
+		30F448BCCC6FFC668E987A85 /* UIImageUtil.mm in Sources */ = {isa = PBXBuildFile; fileRef = 30F44325E746ADC7FFE450FA /* UIImageUtil.mm */; };
 		30F449E4E2BAACE1BCDA20C5 /* ImportShapeController.m in Sources */ = {isa = PBXBuildFile; fileRef = 30F44DD408298BE6E330F971 /* ImportShapeController.m */; };
 		30F44A6C9CBD7808CC7598B9 /* AnimationEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 30F44826B312F9D2AC7EC1BA /* AnimationEvent.m */; };
 		30F44D173EC466CBE64D74D6 /* ImageUtil.mm in Sources */ = {isa = PBXBuildFile; fileRef = 30F441453DFC418608C150EB /* ImageUtil.mm */; };
@@ -638,7 +640,11 @@
 		2C8CCAA5195C2D9500B17BD1 /* wykobi_ordered_polygon.inl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = wykobi_ordered_polygon.inl; sourceTree = "<group>"; };
 		2C8CCAA6195C2D9500B17BD1 /* wykobi_utilities.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = wykobi_utilities.hpp; sourceTree = "<group>"; };
 		30F441453DFC418608C150EB /* ImageUtil.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ImageUtil.mm; sourceTree = "<group>"; };
+		30F442D7591A4B4F47ACA108 /* IplImageWrapper.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = IplImageWrapper.mm; sourceTree = "<group>"; };
+		30F44325E746ADC7FFE450FA /* UIImageUtil.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = UIImageUtil.mm; sourceTree = "<group>"; };
+		30F44337D258C3E9480FD53F /* IplImageWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IplImageWrapper.h; sourceTree = "<group>"; };
 		30F4448A3B8A53FF06C4188E /* LoadShapeController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoadShapeController.m; sourceTree = "<group>"; };
+		30F444EA032E54D007205226 /* UIImageUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIImageUtil.h; sourceTree = "<group>"; };
 		30F44531C6ADD9463B6581A2 /* Record.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Record.m; sourceTree = "<group>"; };
 		30F4461A7D792CE57F6C06F5 /* Record.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Record.h; sourceTree = "<group>"; };
 		30F4469B4C004E03F4B3D070 /* LoadShapeCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoadShapeCell.h; sourceTree = "<group>"; };
@@ -728,6 +734,10 @@
 				30F4461A7D792CE57F6C06F5 /* Record.h */,
 				62E98146FC7FB9BA5C0D8D98 /* RobustMatting.cpp */,
 				62E984CCC72606600D69DBC6 /* RobustMatting.h */,
+				30F442D7591A4B4F47ACA108 /* IplImageWrapper.mm */,
+				30F44337D258C3E9480FD53F /* IplImageWrapper.h */,
+				30F44325E746ADC7FFE450FA /* UIImageUtil.mm */,
+				30F444EA032E54D007205226 /* UIImageUtil.h */,
 			);
 			path = model;
 			sourceTree = "<group>";
@@ -1998,6 +2008,8 @@
 				62E98C0FE4D466BC45C3C3C2 /* RobustMatting.cpp in Sources */,
 				30F449E4E2BAACE1BCDA20C5 /* ImportShapeController.m in Sources */,
 				30F4444500CF627107041E5D /* PaintView.m in Sources */,
+				30F4446DC38AAB3A46CA790D /* IplImageWrapper.mm in Sources */,
+				30F448BCCC6FFC668E987A85 /* UIImageUtil.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

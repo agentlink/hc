@@ -9,6 +9,7 @@
 
 
 class RobustMatting {
+public:
     IplImage* CalculateMatting(const IplImage* , const IplImage* );
     IplImage* GenerateTrimap(IplImage* contourImage);
 };

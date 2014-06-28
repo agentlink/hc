@@ -35,6 +35,10 @@
     CGContextSetFillColorWithColor(ctx, fillColor.CGColor);
     CGContextFillRect(ctx, rect);
 
+    CGContextSetShouldAntialias(ctx, NO);
+    CGContextSetAllowsAntialiasing(ctx, NO);
+    CGContextSetInterpolationQuality(ctx, kCGInterpolationNone);
+
     CGContextTranslateCTM(ctx, translation.x, translation.y);
     CGContextSetLineWidth(ctx, _strokeWidth);
     CGContextSetLineCap(ctx, kCGLineCapRound);
