@@ -51,11 +51,11 @@ typedef enum {
 
     _recordZero = _animationStart;
     _recordStart = [NSDate date];
-    _state = RECORDING;
+    self.state = RECORDING;
 }
 
 - (IBAction)stop {
-    _state = IDLE;
+    self.state = IDLE;
 }
 
 - (IBAction)playRecord {
@@ -65,10 +65,15 @@ typedef enum {
 
     [self stop];
 
-    _state = PLAYING;
+    self.state = PLAYING;
     NSDate *now = [NSDate date];
     _playbackStart = now;
     [self preparePlayback];
+}
+
+- (void)setState:(State)state {
+    _state = state;
+    self.shapeController.shouldDrawHandles = _state != PLAYING;
 }
 
 - (void)preparePlayback {
@@ -165,13 +170,21 @@ typedef enum {
     vector<int> removed;
     for (UITouch *touch in touches) {
         ShapeHandle *handle = [self getHandle:touch];
-        int handleId = handle.handleId;
         NSTimeInterval touchDuration = [now timeIntervalSinceDate:handle.lastTouchedAt];
         BOOL longTouch = touchDuration > PIN_TIME_THRESHOLD;
 
         if (longTouch) {
             [moves addObject:touch];
         }
+    }
+
+    [self updateTouches:moves updateShape:NO];
+
+    for (UITouch *touch in touches) {
+        ShapeHandle *handle = [self getHandle:touch];
+        int handleId = handle.handleId;
+        NSTimeInterval touchDuration = [now timeIntervalSinceDate:handle.lastTouchedAt];
+        BOOL longTouch = touchDuration > PIN_TIME_THRESHOLD;
 
         BOOL isPin = [_pins containsObject:handle];
         if (longTouch != isPin) {
@@ -189,8 +202,6 @@ typedef enum {
             [_pins addObject:handle];
         }
     }
-
-    [self updateTouches:moves updateShape:NO];
 
     [self.shapeController releaseHandles:removed update:YES];
 }
@@ -431,7 +442,7 @@ typedef enum {
         return;
     }
 
-    _state = PLAYING;
+    self.state = PLAYING;
 
     [self preparePlayback];
 
@@ -457,7 +468,7 @@ typedef enum {
 
     NSTimeInterval time = [[NSDate date] timeIntervalSinceDate:start];
     double fps = 1 / EXPORT_TIME_PER_FRAME;
-    double rFps = frameIndex/time;
+    double rFps = frameIndex / time;
     double total = frameIndex * EXPORT_TIME_PER_FRAME;
     NSLog(@"exported %d frames at %.2f FPS (%.2f s) in %.2f sec (%.2f f/s) to %@", frameIndex, fps, total, time, rFps, directory);
 }

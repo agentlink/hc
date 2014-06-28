@@ -250,7 +250,7 @@
 
     map<int, point2d<double>> handles = _shape->handles;
     _handleCount = handles.size();
-    size_t dataSize = (_handleCount * 6) * 3 * sizeof(GLfloat);
+    size_t dataSize = (_handleCount * 6) * 6 * sizeof(GLfloat);
 
     if (_handleVertexDataSize < dataSize) {
         _handleVertexData = (GLfloat *) realloc(_handleVertexData, dataSize);
@@ -262,34 +262,60 @@
     size_t i = 0;
     for (auto kv : handles) {
         point2d<double> point = kv.second;
-        size_t base = i * 18;
+        size_t base = i * 36;
 
         GLfloat x = (GLfloat) point.x;
         GLfloat y = (GLfloat) point.y;
 
-        _handleVertexData[base + 0] = x;
-        _handleVertexData[base + 1] = y;
+        int shift = 4;
+        _handleVertexData[base + 0] = x - shift;
+        _handleVertexData[base + 1] = y + shift;
         _handleVertexData[base + 2] = 1.2;
 
         _handleVertexData[base + 3] = 0;
         _handleVertexData[base + 4] = 0;
-        _handleVertexData[base + 5] = 1;
+        _handleVertexData[base + shift] = 1;
 
-        _handleVertexData[base + 6] = x + 10;
-        _handleVertexData[base + 7] = y + 10;
+        _handleVertexData[base + 6] = x + shift;
+        _handleVertexData[base + 7] = y + shift;
         _handleVertexData[base + 8] = 1.2;
 
         _handleVertexData[base + 9] = 0;
         _handleVertexData[base + 10] = 0;
         _handleVertexData[base + 11] = 1;
 
-        _handleVertexData[base + 12] = x + 10;
-        _handleVertexData[base + 13] = y;
+        _handleVertexData[base + 12] = x - shift;
+        _handleVertexData[base + 13] = y - shift;
         _handleVertexData[base + 14] = 1.2;
 
         _handleVertexData[base + 15] = 0;
         _handleVertexData[base + 16] = 0;
         _handleVertexData[base + 17] = 1;
+
+        _handleVertexData[base + 18] = x - shift;
+        _handleVertexData[base + 19] = y - shift;
+        _handleVertexData[base + 20] = 1.2;
+
+        _handleVertexData[base + 21] = 0;
+        _handleVertexData[base + 22] = 0;
+        _handleVertexData[base + 23] = 1;
+
+        _handleVertexData[base + 24] = x + shift;
+        _handleVertexData[base + 25] = y + shift;
+        _handleVertexData[base + 26] = 1.2;
+
+        _handleVertexData[base + 27] = 0;
+        _handleVertexData[base + 28] = 0;
+        _handleVertexData[base + 29] = 1;
+
+        _handleVertexData[base + 30] = x + shift;
+        _handleVertexData[base + 31] = y - shift;
+        _handleVertexData[base + 32] = 1.2;
+
+        _handleVertexData[base + 33] = 0;
+        _handleVertexData[base + 34] = 0;
+        _handleVertexData[base + 35] = 1;
+
         i++;
     }
 
@@ -356,16 +382,20 @@
     glDrawArrays(GL_TRIANGLES, 0, 3 * _triCount);
 
     // edges
-    glBindVertexArrayOES(_edgeVertexArray);
+    if (_shouldDrawTriangulation) {
+        glBindVertexArrayOES(_edgeVertexArray);
 
-    glDrawArrays(GL_LINES, 0, 2 * _edgeCount);
+        glDrawArrays(GL_LINES, 0, 2 * _edgeCount);
+    }
 
     // handles
-    glBindVertexArrayOES(_handleVertexArray);
+    if (_shouldDrawHandles) {
+        glBindVertexArrayOES(_handleVertexArray);
 
-    [self.edgeEffect prepareToDraw];
+        [self.edgeEffect prepareToDraw];
 
-    glDrawArrays(GL_TRIANGLES, 0, 3 * _handleCount);
+        glDrawArrays(GL_TRIANGLES, 0, 6 * _handleCount);
+    }
 
 }
 

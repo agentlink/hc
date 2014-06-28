@@ -17,6 +17,10 @@
 
 @property(nonatomic, readonly) BOOL hasShape;
 
+@property(nonatomic) BOOL shouldDrawHandles;
+
+@property(nonatomic) BOOL shouldDrawTriangulation;
+
 - (void)setShapeInfo:(ShapeInfo *)info;
 
 - (void)updateOnShapeTransform;
