@@ -28,16 +28,18 @@
 - (void)drawRect:(CGRect)rect {
     CGContextRef ctx = UIGraphicsGetCurrentContext();
 
-    [self drawRect:rect context:ctx translation:CGPointZero fillColor:[UIColor clearColor] strokeColor:[[UIColor redColor] colorWithAlphaComponent:0.5]];
+    [self drawRect:rect context:ctx translation:CGPointZero fillColor:[UIColor clearColor] strokeColor:[[UIColor redColor] colorWithAlphaComponent:0.5] useAntialiasing:YES];
 }
 
-- (void)drawRect:(CGRect)rect context:(CGContextRef)ctx translation:(CGPoint)translation fillColor:(UIColor *)fillColor strokeColor:(UIColor *)strokeColor {
+- (void)drawRect:(CGRect)rect context:(CGContextRef)ctx translation:(CGPoint)translation fillColor:(UIColor *)fillColor strokeColor:(UIColor *)strokeColor useAntialiasing:(BOOL)useAntialiasing {
     CGContextSetFillColorWithColor(ctx, fillColor.CGColor);
     CGContextFillRect(ctx, rect);
 
-    CGContextSetShouldAntialias(ctx, NO);
-    CGContextSetAllowsAntialiasing(ctx, NO);
-    CGContextSetInterpolationQuality(ctx, kCGInterpolationNone);
+    if (!useAntialiasing) {
+        CGContextSetShouldAntialias(ctx, NO);
+        CGContextSetAllowsAntialiasing(ctx, NO);
+        CGContextSetInterpolationQuality(ctx, kCGInterpolationNone);
+    }
 
     CGContextTranslateCTM(ctx, translation.x, translation.y);
     CGContextSetLineWidth(ctx, _strokeWidth);

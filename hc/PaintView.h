@@ -12,5 +12,5 @@
 
 - (void)clearPaths;
 
-- (void)drawRect:(CGRect)rect context:(CGContextRef)context translation:(CGPoint)translation fillColor:(UIColor *)fillColor strokeColor:(UIColor *)strokeColor;
+- (void)drawRect:(CGRect)rect context:(CGContextRef)context translation:(CGPoint)translation fillColor:(UIColor *)fillColor strokeColor:(UIColor *)strokeColor useAntialiasing:(BOOL)useAntialiasing;
 @end

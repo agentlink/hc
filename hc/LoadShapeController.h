@@ -1,11 +1,13 @@
 #import <Foundation/Foundation.h>
 
+@class ShapeInfo;
+
+
 @protocol LoadShapeControllerDelegate
-- (void)imageSelected:(UIImage *)image;
+- (void)shapeSelected:(ShapeInfo *)info;
 @end
 
 @interface LoadShapeController : UICollectionViewController<UICollectionViewDataSource>
 @property(nonatomic, strong) id<LoadShapeControllerDelegate> selectionDelegate;
 
-+ (NSString *)applicationDocumentsDirectory;
 @end

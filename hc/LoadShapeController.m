@@ -1,22 +1,17 @@
 #import "LoadShapeController.h"
 #import "LoadShapeCell.h"
-#import <MobileCoreServices/MobileCoreServices.h>
+#import "UIImageUtil.h"
+#import "EditWeightsController.h"
+#import "ShapeInfo.h"
 
-@interface LoadShapeController ()
+static NSString *const SEGUE_WEIGHTS = @"edit_weights";
+
+@interface LoadShapeController () <EditWeightsControllerDelegate>
 @property(nonatomic, strong) NSMutableArray *imagePaths;
+@property(nonatomic, strong) NSIndexPath *selectedImagePath;
 @end
 
-@implementation LoadShapeController
-
-+ (NSString *)applicationDocumentsDirectory {
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *basePath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
-
-#if TARGET_IPHONE_SIMULATOR
-    NSArray *comps = [basePath pathComponents];
-    return [NSString stringWithFormat:@"%@%@/%@/%@", comps[0], comps[1], comps[2], @"Documents/hc_images/"];
-#endif
-    return basePath;
+@implementation LoadShapeController {
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -27,21 +22,9 @@
     [self reloadData];
 }
 
+
 - (void)reloadData {
-    NSString *docDir = [LoadShapeController applicationDocumentsDirectory];
-    NSError *error = nil;
-    NSArray *docs = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:docDir error:&error];
-    NSMutableArray *images = [NSMutableArray new];
-    for (id doc in docs) {
-        NSString *extension = [doc pathExtension];
-        CFStringRef fileUTI = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, (__bridge CFStringRef) extension, NULL);
-
-        if (UTTypeConformsTo(fileUTI, kUTTypeImage)) {
-            [images addObject:[docDir stringByAppendingPathComponent:doc]];
-        }
-    }
-
-    self.imagePaths = images;
+    self.imagePaths = [UIImageUtil loadImagePaths];
 }
 
 
@@ -71,9 +54,33 @@
         return;
     }
 
-    UIImage *image = [self getImage:indexPath];
-    [self.selectionDelegate imageSelected:image];
-    [self.navigationController popViewControllerAnimated:YES];
+    [self doneWith:[self getImage:indexPath] weights:nil];
 }
 
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    if ([segue.identifier isEqualToString:SEGUE_WEIGHTS]) {
+        EditWeightsController *ec = segue.destinationViewController;
+        ec.originalImage = [self getImage:self.selectedImagePath];
+        ec.weightDelegate = self;
+    }
+}
+
+
+- (void)edited:(UIImage *)image weights:(UIImage *)weights {
+    [self doneWith:image weights:weights];
+}
+
+- (void)doneWith:(UIImage *)image weights:(UIImage *)weights {
+    ShapeInfo *info = [ShapeInfo infoWithImage:image weights:weights];
+    [self.selectionDelegate shapeSelected:info];
+}
+
+- (IBAction)editWeights:(UITapGestureRecognizer *)gr {
+    CGPoint point = [gr locationInView:self.collectionView];
+    NSIndexPath *path = [self.collectionView indexPathForItemAtPoint:point];
+    if (path && path.item != 0) {
+        self.selectedImagePath = path;
+        [self performSegueWithIdentifier:SEGUE_WEIGHTS sender:nil];
+    }
+}
 @end

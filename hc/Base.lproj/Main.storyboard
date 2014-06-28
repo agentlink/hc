@@ -85,6 +85,7 @@
                         <connections>
                             <outlet property="dataSource" destination="UCn-Ck-nmg" id="YtI-vU-vQa"/>
                             <outlet property="delegate" destination="UCn-Ck-nmg" id="KRN-Qq-sds"/>
+                            <outletCollection property="gestureRecognizers" destination="7pO-7R-bOr" appends="YES" id="MCe-Hn-ige"/>
                         </connections>
                     </collectionView>
                     <toolbarItems/>
@@ -93,9 +94,15 @@
                     </navigationItem>
                     <connections>
                         <segue destination="uuR-DE-RLZ" kind="push" identifier="import_image" id="VnC-Ra-feg"/>
+                        <segue destination="9uE-n6-UPD" kind="push" identifier="edit_weights" id="KPm-03-sT2"/>
                     </connections>
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Vqa-qG-LI7" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer delaysTouchesBegan="YES" numberOfTapsRequired="2" id="7pO-7R-bOr">
+                    <connections>
+                        <action selector="editWeights:" destination="UCn-Ck-nmg" id="a3j-XP-U7Y"/>
+                    </connections>
+                </tapGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="-2068" y="169"/>
         </scene>
@@ -152,7 +159,7 @@
                             </connections>
                         </barButtonItem>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="JFb-R9-OOz"/>
-                        <barButtonItem systemItem="undo" id="fKY-m4-zQv">
+                        <barButtonItem title="Clear" id="fKY-m4-zQv">
                             <connections>
                                 <action selector="resetChanges" destination="uuR-DE-RLZ" id="0By-Y0-pe5"/>
                             </connections>
@@ -176,11 +183,79 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Wnh-ci-G3v" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <panGestureRecognizer minimumNumberOfTouches="1" maximumNumberOfTouches="1" id="fIA-fA-Lcq">
                     <connections>
-                        <action selector="pan:" destination="uuR-DE-RLZ" id="bcS-PI-kwh"/>
+                        <action selector="draw:" destination="uuR-DE-RLZ" id="bcS-PI-kwh"/>
                     </connections>
                 </panGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="-2061" y="1181"/>
+        </scene>
+        <!--Edit Weights Controller - Import Image-->
+        <scene sceneID="BEa-S6-r4G">
+            <objects>
+                <viewController id="9uE-n6-UPD" customClass="EditWeightsController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="tDy-Lq-y1Y"/>
+                        <viewControllerLayoutGuide type="bottom" id="1Vd-To-rjE"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="676-5R-iPZ">
+                        <rect key="frame" x="0.0" y="44" width="1024" height="680"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="SA7-Ys-skG">
+                                <rect key="frame" x="0.0" y="0.0" width="1024" height="680"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                            </imageView>
+                            <view contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="v5m-KV-o6z" customClass="PaintView">
+                                <rect key="frame" x="0.0" y="0.0" width="1024" height="680"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <connections>
+                                    <outletCollection property="gestureRecognizers" destination="dha-lh-Wtq" appends="YES" id="U8z-ew-s1Z"/>
+                                </connections>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="v5m-KV-o6z" firstAttribute="top" secondItem="676-5R-iPZ" secondAttribute="top" id="9E7-tr-iib"/>
+                            <constraint firstItem="v5m-KV-o6z" firstAttribute="leading" secondItem="676-5R-iPZ" secondAttribute="leading" id="BgK-Qp-4mn"/>
+                            <constraint firstAttribute="bottom" secondItem="SA7-Ys-skG" secondAttribute="bottom" id="TJY-KJ-Udi"/>
+                            <constraint firstItem="v5m-KV-o6z" firstAttribute="top" secondItem="SA7-Ys-skG" secondAttribute="top" id="U04-Bh-Fob"/>
+                            <constraint firstAttribute="trailing" secondItem="v5m-KV-o6z" secondAttribute="trailing" id="dvm-Fs-vkx"/>
+                            <constraint firstItem="v5m-KV-o6z" firstAttribute="trailing" secondItem="SA7-Ys-skG" secondAttribute="trailing" id="nk1-23-5pm"/>
+                            <constraint firstItem="SA7-Ys-skG" firstAttribute="bottom" secondItem="v5m-KV-o6z" secondAttribute="bottom" id="w8x-3N-SWD"/>
+                            <constraint firstItem="SA7-Ys-skG" firstAttribute="leading" secondItem="v5m-KV-o6z" secondAttribute="leading" id="z93-oK-mPI"/>
+                        </constraints>
+                        <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
+                    </view>
+                    <toolbarItems>
+                        <barButtonItem title="Clear" id="XAF-on-hPG">
+                            <connections>
+                                <action selector="resetChanges" destination="9uE-n6-UPD" id="u0v-TJ-A06"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="9ZH-Gi-Gml"/>
+                        <barButtonItem systemItem="done" id="4dc-Eo-PJe">
+                            <connections>
+                                <action selector="done" destination="9uE-n6-UPD" id="CYq-Dn-6Q0"/>
+                            </connections>
+                        </barButtonItem>
+                    </toolbarItems>
+                    <navigationItem key="navigationItem" title="Import Image" id="g7g-dQ-b8a"/>
+                    <connections>
+                        <outlet property="imageView" destination="SA7-Ys-skG" id="nUP-ba-pcF"/>
+                        <outlet property="paintView" destination="v5m-KV-o6z" id="0ik-YM-fBS"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="nhk-7M-vIn" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <panGestureRecognizer minimumNumberOfTouches="1" maximumNumberOfTouches="1" id="dha-lh-Wtq">
+                    <connections>
+                        <action selector="draw:" destination="9uE-n6-UPD" id="vy3-Ba-b9x"/>
+                    </connections>
+                </panGestureRecognizer>
+            </objects>
+            <point key="canvasLocation" x="-2418" y="2165"/>
         </scene>
         <!--GLKit View Controller-->
         <scene sceneID="tXr-a1-R10">

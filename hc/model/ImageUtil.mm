@@ -1,16 +1,19 @@
 #import "ImageUtil.h"
 #import "IplImageWrapper.h"
+#import "ShapeInfo.h"
 
 
 @implementation ImageUtil {
 
 }
 
-+ (Shape *)loadImage:(UIImage *)uiImage {
-    CGImageRef image = [uiImage CGImage];
++ (Shape *)loadImage:(ShapeInfo *)shapeInfo {
+    CGImageRef image = [shapeInfo.image CGImage];
     unsigned width = CGImageGetWidth(image);
     unsigned height = CGImageGetHeight(image);
-
+    
+    UIImage *weights = shapeInfo.weights;
+    
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
 
     CGContextRef context = CGBitmapContextCreate(

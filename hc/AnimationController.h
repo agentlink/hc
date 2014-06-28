@@ -2,8 +2,12 @@
 #import "ShapeController.h"
 #import "LoadShapeController.h"
 
+@class ShapeInfo;
+
 @interface AnimationController : UIViewController <AnimationDataSource, LoadShapeControllerDelegate>
-@property(nonatomic, strong) UIImage *image;
+
+@property(nonatomic, strong) ShapeInfo *shape;
 
 - (BOOL)hasRecord;
+
 @end

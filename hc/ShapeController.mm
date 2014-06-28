@@ -1,5 +1,6 @@
 #import "ShapeController.h"
 #import "ImageUtil.h"
+#import "ShapeInfo.h"
 
 #define BUFFER_OFFSET(i) ((char *)NULL + (i))
 
@@ -82,16 +83,15 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (void)setShapeImage:(UIImage *)image {
+- (void)setShapeInfo:(ShapeInfo *)info {
     Shape *oldShape = _shape;
-    _shape = image == nil ? NULL : [ImageUtil loadImage:image];
-    _texture = image;
+    _shape = info == nil ? NULL : [ImageUtil loadImage:info];
+    _texture = info.image;
     [self updateGLOnNewShape];
     if (oldShape != NULL) {
         delete oldShape;
     }
 }
-
 
 - (void)setupGL {
     [EAGLContext setCurrentContext:self.context];

@@ -4,6 +4,7 @@
 
 @class AnimationController;
 @class ShapeController;
+@class ShapeInfo;
 
 @protocol AnimationDataSource
 - (void)updateAnimation:(ShapeController *)controller;
@@ -12,11 +13,11 @@
 @interface ShapeController : GLKViewController {
 }
 
-@property(nonatomic, assign) UIImage *shapeImage;
-
 @property(nonatomic, weak) id<AnimationDataSource> animationDataSource;
 
 @property(nonatomic, readonly) BOOL hasShape;
+
+- (void)setShapeInfo:(ShapeInfo *)info;
 
 - (void)updateOnShapeTransform;
 

@@ -1,3 +1,5 @@
+#import <MobileCoreServices/MobileCoreServices.h>
+#import "LoadShapeController.h"
 #import "UIImageUtil.h"
 #import "ImageUtil.h"
 #include "RobustMatting.h"
@@ -601,4 +603,30 @@ namespace cv1 {
     return result;
 }
 
++ (NSMutableArray *)loadImagePaths {
+    NSString *docDir = [UIImageUtil applicationDocumentsDirectory];
+    NSError *error = nil;
+    NSArray *docs = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:docDir error:&error];
+    NSMutableArray *images = [NSMutableArray new];
+    for (id doc in docs) {
+        NSString *extension = [doc pathExtension];
+        CFStringRef fileUTI = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, (__bridge CFStringRef) extension, NULL);
+
+        if (UTTypeConformsTo(fileUTI, kUTTypeImage)) {
+            [images addObject:[docDir stringByAppendingPathComponent:doc]];
+        }
+    }
+    return images;
+}
+
++ (NSString *)applicationDocumentsDirectory {
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *basePath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
+
+#if TARGET_IPHONE_SIMULATOR
+    NSArray *comps = [basePath pathComponents];
+    return [NSString stringWithFormat:@"%@%@/%@/%@", comps[0], comps[1], comps[2], @"Documents/hc_images/"];
+#endif
+    return basePath;
+}
 @end

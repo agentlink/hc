@@ -2,6 +2,8 @@
 #import "ShapeHandle.h"
 #import "AnimationEvent.h"
 #import "ImageUtil.h"
+#import "UIImageUtil.h"
+#import "ShapeInfo.h"
 
 #define LOG_TOUCHES(fmt, ...)
 //#define LOG_TOUCHES(fmt, ...) NSLog(fmt, ##__VA_ARGS__)
@@ -35,7 +37,7 @@ typedef enum {
 
 
 - (void)resetShape {
-    self.shapeController.shapeImage = _image;
+    self.shapeController.shapeInfo = _shape;
 
     _animationStart = [NSDate date];
 }
@@ -388,10 +390,9 @@ typedef enum {
     [super prepareForSegue:segue sender:sender];
 }
 
-- (void)imageSelected:(UIImage *)image {
-    [self stop];
-
-    self.image = image;
+- (void)shapeSelected:(ShapeInfo *)info {
+    self.shape = info;
+    [self.navigationController popToViewController:self animated:YES];
 }
 
 - (void)clearRecord {
@@ -400,8 +401,8 @@ typedef enum {
     _recordStart = nil;
 }
 
-- (void)setImage:(UIImage *)image {
-    _image = image;
+- (void)setShape:(ShapeInfo *)shape {
+    _shape = shape;
     [self clearRecord];
     [self resetShape];
 }
@@ -421,7 +422,7 @@ typedef enum {
     NSDate *start = [NSDate date];
     NSString *dateString = [_dateFormatter stringFromDate:start];
     NSString *directoryName = [NSString stringWithFormat:@"export_%@", dateString];
-    NSString *directory = [[LoadShapeController applicationDocumentsDirectory] stringByAppendingPathComponent:directoryName];
+    NSString *directory = [[UIImageUtil applicationDocumentsDirectory] stringByAppendingPathComponent:directoryName];
 
     NSError *error = nil;
     BOOL dirCreated = [[NSFileManager defaultManager] createDirectoryAtPath:directory withIntermediateDirectories:YES attributes:nil error:&error];
