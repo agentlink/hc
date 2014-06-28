@@ -63,6 +63,7 @@ static NSString *const SEGUE_WEIGHTS = @"edit_weights";
 
 - (void)reloadData {
     self.shapePaths = [LoadShapeController loadShapePaths];
+    [self.collectionView reloadData];
 }
 
 

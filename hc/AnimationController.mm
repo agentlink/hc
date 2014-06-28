@@ -32,7 +32,6 @@ typedef enum {
     NSDate *_recordZero;
     NSDate *_recordStart;
     NSDate *_playbackStart;
-    NSDateFormatter *_dateFormatter;
 }
 
 
@@ -464,13 +463,10 @@ typedef enum {
 
     [self stop];
 
-    if (!_dateFormatter) {
-        _dateFormatter = [NSDateFormatter new];
-        _dateFormatter.dateFormat = @"yyyy'_'MM'_'dd'__'HH'_'mm'_'ss";
-    }
-
     NSDate *start = [NSDate date];
-    NSString *dateString = [_dateFormatter stringFromDate:start];
+
+    NSString *dateString = [UIImageUtil formatDate:start];
+
     NSString *directoryName = [NSString stringWithFormat:@"export_%@", dateString];
     NSString *directory = [[UIImageUtil applicationDocumentsDirectory] stringByAppendingPathComponent:directoryName];
 

@@ -60,8 +60,22 @@
     self.imageView.image = result;
 }
 
-- (void)setImageWithoutBackground:(UIImage *)image {
-    self.imageView.image = image;
+- (IBAction)save {
+    NSString *docDir = [UIImageUtil applicationDocumentsDirectory];
+    NSString *dateStr = [UIImageUtil formatDate:[NSDate date]];
+    NSString *shapeDirName = [NSString stringWithFormat:@"image_%@.hc", dateStr];
+    NSString *shapeDir = [docDir stringByAppendingPathComponent:shapeDirName];
+    NSString *imagePath = [shapeDir stringByAppendingPathComponent:@"image.png"];
+
+    NSError *error = nil;
+    [[NSFileManager defaultManager] createDirectoryAtPath:shapeDir
+                              withIntermediateDirectories:YES
+                                               attributes:nil error:&error];
+
+    UIImage *result = self.imageView.image;
+    NSData *data = UIImagePNGRepresentation(result);
+    [data writeToFile:imagePath atomically:YES];
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {

@@ -195,7 +195,11 @@
                             </connections>
                         </barButtonItem>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="dhw-EA-OYO"/>
-                        <barButtonItem systemItem="save" id="9vX-aM-5yv"/>
+                        <barButtonItem systemItem="save" id="9vX-aM-5yv">
+                            <connections>
+                                <action selector="save" destination="uuR-DE-RLZ" id="wO0-F4-53o"/>
+                            </connections>
+                        </barButtonItem>
                     </toolbarItems>
                     <navigationItem key="navigationItem" title="Import Image" id="Dhr-R8-gTp"/>
                     <connections>

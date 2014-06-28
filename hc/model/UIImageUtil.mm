@@ -1,3 +1,5 @@
+#include <valarray>
+#import "AnimationController.h"
 #import "LoadShapeController.h"
 #import "UIImageUtil.h"
 #import "ImageUtil.h"
@@ -611,5 +613,17 @@ namespace cv1 {
     return [NSString stringWithFormat:@"%@%@/%@/%@", comps[0], comps[1], comps[2], @"Documents/hc_images/"];
 #endif
     return basePath;
+}
+
++ (NSString *)formatDate:(NSDate *)start {
+    static NSDateFormatter *_dateFormatter;
+
+    if (!_dateFormatter) {
+        _dateFormatter = [NSDateFormatter new];
+        _dateFormatter.dateFormat = @"yyyy'_'MM'_'dd'__'HH'_'mm'_'ss";
+    }
+
+    NSString *dateString = [_dateFormatter stringFromDate:start];
+    return dateString;
 }
 @end

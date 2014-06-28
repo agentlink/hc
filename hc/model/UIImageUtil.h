@@ -5,4 +5,6 @@
 + (UIImage *)removeBackground:(UIImage *)image borders:(UIImage *)borders;
 
 + (NSString *)applicationDocumentsDirectory;
+
++ (NSString *)formatDate:(NSDate *)start;
 @end
